@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+      <title>Posts on Code by Nate Finch </title>
+      <generator uri="https://hugo.spf13.com">Hugo</generator>
+    <link>http://localhost:52783/post/index.xml</link>
+    <language>en-us</language>
+    
+    
+    <updated>Mon, 28 Jul 2014 11:19:12 UTC</updated>
+    
+    <item>
+      <title>Something New</title>
+      <link>http://localhost:52783/post/first</link>
+      <pubDate>Mon, 28 Jul 2014 11:19:12 UTC</pubDate>
+      
+      <guid>http://localhost:52783/post/first</guid>
+      <description>&lt;p&gt;This is the first post of my new blog.  You may see old posts showing up behind
+here, those have been pulled in from my personal blog at blog.natefinch.com.
+I&amp;rsquo;ve decided to split off my programming posts so that people who only want to
+see the coding stuff don&amp;rsquo;t have to see my personal posts, and people that only
+want to see my personal stuff don&amp;rsquo;t have to get inundated with programming
+posts.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
