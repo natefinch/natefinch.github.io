@@ -3,7 +3,7 @@
   <channel>
       <title>Recent Content on Code by Nate Finch </title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>http://localhost:52783/index.xml</link>
+    <link>http://natefinch.github.io/index.xml</link>
     <language>en-us</language>
     
     
@@ -11,10 +11,10 @@
     
     <item>
       <title>Lumberjack</title>
-      <link>http://localhost:52783/lumberjack</link>
+      <link>http://natefinch.github.io/lumberjack</link>
       <pubDate>Mon, 28 Jul 2014 11:28:15 UTC</pubDate>
       
-      <guid>http://localhost:52783/lumberjack</guid>
+      <guid>http://natefinch.github.io/lumberjack</guid>
       <description>
 
 &lt;h4 id=&#34;toc_0&#34;&gt;Lumberjack is a Go package for writing logs to rolling files.&lt;/h4&gt;
@@ -162,10 +162,10 @@ If the length of the write is greater than MaxSize, an error is returned.&lt;/p&
     
     <item>
       <title>Something New</title>
-      <link>http://localhost:52783/post/first</link>
+      <link>http://natefinch.github.io/post/first</link>
       <pubDate>Mon, 28 Jul 2014 11:19:12 UTC</pubDate>
       
-      <guid>http://localhost:52783/post/first</guid>
+      <guid>http://natefinch.github.io/post/first</guid>
       <description>&lt;p&gt;This is the first post of my new blog.  You may see old posts showing up behind
 here, those have been pulled in from my personal blog at blog.natefinch.com.
 I&amp;rsquo;ve decided to split off my programming posts so that people who only want to
@@ -177,10 +177,10 @@ posts.&lt;/p&gt;
     
     <item>
       <title>About</title>
-      <link>http://localhost:52783/about</link>
+      <link>http://natefinch.github.io/about</link>
       <pubDate>Mon, 28 Jul 2014 11:14:25 UTC</pubDate>
       
-      <guid>http://localhost:52783/about</guid>
+      <guid>http://natefinch.github.io/about</guid>
       <description>&lt;p&gt;I am a developer at Canonical, working on Juju, a service orchestration tool.  I love coding in Go both at work and in my spare time.  When I&amp;rsquo;m not coding, I&amp;rsquo;m spending time with my family in semi-rural Massachusetts.  I love tabletop gaming and have been playing D&amp;amp;D since the 80&amp;rsquo;s.&lt;/p&gt;
 </description>
     </item>

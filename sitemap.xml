@@ -2,23 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://localhost:52783/</loc>
+    <loc>http://natefinch.github.io/</loc>
     <lastmod>2014-07-28T11:28:15+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:52783/lumberjack</loc>
+    <loc>http://natefinch.github.io/lumberjack</loc>
     <lastmod>2014-07-28T11:28:15+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:52783/post/first</loc>
+    <loc>http://natefinch.github.io/post/first</loc>
     <lastmod>2014-07-28T11:19:12+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:52783/about</loc>
+    <loc>http://natefinch.github.io/about</loc>
     <lastmod>2014-07-28T11:14:25+00:00</lastmod>
   </url>
   
