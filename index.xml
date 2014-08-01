@@ -11,10 +11,10 @@
     
     <item>
       <title>Lumberjack</title>
-      <link>http://natefinch.github.io/lumberjack</link>
+      <link>http://natefinch.github.io/lumberjack.v2</link>
       <pubDate>Mon, 28 Jul 2014 11:28:15 UTC</pubDate>
       
-      <guid>http://natefinch.github.io/lumberjack</guid>
+      <guid>http://natefinch.github.io/lumberjack.v2</guid>
       <description>
 
 &lt;h4 id=&#34;toc_0&#34;&gt;Lumberjack is a Go package for writing logs to rolling files.&lt;/h4&gt;
