@@ -7,7 +7,373 @@
     <language>en-us</language>
     
     
-    <updated>Mon, 28 Jul 2014 11:28:15 UTC</updated>
+    <updated>Fri, 01 Aug 2014 10:15:15 UTC</updated>
+    
+    <item>
+      <title>npipe</title>
+      <link>http://natefinch.github.io/npipe.v2</link>
+      <pubDate>Fri, 01 Aug 2014 10:15:15 UTC</pubDate>
+      
+      <guid>http://natefinch.github.io/npipe.v2</guid>
+      <description>
+
+&lt;p&gt;npipe provides a pure Go wrapper around Windows named pipes.&lt;/p&gt;
+
+&lt;p&gt;Windows named pipe documentation: &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa365780&#34;&gt;http://msdn.microsoft.com/en-us/library/windows/desktop/aa365780&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Note that the code lives at &lt;a href=&#34;https://github.com/natefinch/npipe&#34;&gt;https://github.com/natefinch/npipe&lt;/a&gt; (v2 branch)
+but should be imported as gopkg.in/natefinch/npipe.v2 (the package name is
+still npipe).&lt;/p&gt;
+
+&lt;p&gt;npipe provides an interface based on stdlib&amp;rsquo;s net package, with Dial, Listen,
+and Accept functions, as well as associated implementations of net.Conn and
+net.Listener.  It supports rpc over the connection.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_0&#34;&gt;Notes&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Deadlines for reading/writing to the connection are only functional in Windows Vista/Server 2008 and above, due to limitations with the Windows API.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;The pipes support byte mode only (no support for message mode)&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;toc_1&#34;&gt;Examples&lt;/h3&gt;
+
+&lt;p&gt;The Dial function connects a client to a named pipe:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;conn, err := npipe.Dial(`\\.\pipe\mypipename`)
+if err != nil {
+    &amp;lt;handle error&amp;gt;
+}
+fmt.Fprintf(conn, &amp;quot;Hi server!\n&amp;quot;)
+msg, err := bufio.NewReader(conn).ReadString(&#39;\n&#39;)
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The Listen function creates servers:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ln, err := npipe.Listen(`\\.\pipe\mypipename`)
+if err != nil {
+    // handle error
+}
+for {
+    conn, err := ln.Accept()
+    if err != nil {
+        // handle error
+        continue
+    }
+    go handleConnection(conn)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;toc_2&#34;&gt;Variables&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;var ErrClosed = PipeError{&amp;quot;Pipe has been closed.&amp;quot;, false}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ErrClosed is the error returned by PipeListener.Accept when Close is called
+on the PipeListener.&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_3&#34;&gt;type PipeAddr&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;type PipeAddr string
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;PipeAddr represents the address of a named pipe.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_4&#34;&gt;func (PipeAddr) Network&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (a PipeAddr) Network() string
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Network returns the address&amp;rsquo;s network name, &amp;ldquo;pipe&amp;rdquo;.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_5&#34;&gt;func (PipeAddr) String&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (a PipeAddr) String() string
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;String returns the address of the pipe&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_6&#34;&gt;type PipeConn&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;type PipeConn struct {
+    // contains filtered or unexported fields
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;PipeConn is the implementation of the net.Conn interface for named pipe connections.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_7&#34;&gt;func Dial&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func Dial(address string) (*PipeConn, error)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Dial connects to a named pipe with the given address. If the specified pipe is not available,
+it will wait indefinitely for the pipe to become available.&lt;/p&gt;
+
+&lt;p&gt;The address must be of the form \.\pipe&amp;lt;name&amp;gt; for local pipes and \&lt;computer&gt;\pipe&amp;lt;name&amp;gt;
+for remote pipes.&lt;/p&gt;
+
+&lt;p&gt;Dial will return a PipeError if you pass in a badly formatted pipe name.&lt;/p&gt;
+
+&lt;p&gt;Examples:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// local pipe
+conn, err := Dial(`\\.\pipe\mypipename`)
+
+// remote pipe
+conn, err := Dial(`\\othercomp\pipe\mypipename`)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;toc_8&#34;&gt;func DialTimeout&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func DialTimeout(address string, timeout time.Duration) (*PipeConn, error)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;DialTimeout acts like Dial, but will time out after the duration of timeout&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_9&#34;&gt;func (*PipeConn) Close&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (c *PipeConn) Close() error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Close closes the connection.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_10&#34;&gt;func (*PipeConn) LocalAddr&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (c *PipeConn) LocalAddr() net.Addr
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;LocalAddr returns the local network address.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_11&#34;&gt;func (*PipeConn) Read&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (c *PipeConn) Read(b []byte) (int, error)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Read implements the net.Conn Read method.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_12&#34;&gt;func (*PipeConn) RemoteAddr&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (c *PipeConn) RemoteAddr() net.Addr
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;RemoteAddr returns the remote network address.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_13&#34;&gt;func (*PipeConn) SetDeadline&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (c *PipeConn) SetDeadline(t time.Time) error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;SetDeadline implements the net.Conn SetDeadline method.
+Note that timeouts are only supported on Windows Vista/Server 2008 and above&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_14&#34;&gt;func (*PipeConn) SetReadDeadline&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (c *PipeConn) SetReadDeadline(t time.Time) error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;SetReadDeadline implements the net.Conn SetReadDeadline method.
+Note that timeouts are only supported on Windows Vista/Server 2008 and above&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_15&#34;&gt;func (*PipeConn) SetWriteDeadline&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (c *PipeConn) SetWriteDeadline(t time.Time) error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;SetWriteDeadline implements the net.Conn SetWriteDeadline method.
+Note that timeouts are only supported on Windows Vista/Server 2008 and above&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_16&#34;&gt;func (*PipeConn) Write&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (c *PipeConn) Write(b []byte) (int, error)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Write implements the net.Conn Write method.&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_17&#34;&gt;type PipeError&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;type PipeError struct {
+    // contains filtered or unexported fields
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;PipeError is an error related to a call to a pipe&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_18&#34;&gt;func (PipeError) Error&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (e PipeError) Error() string
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Error implements the error interface&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_19&#34;&gt;func (PipeError) Temporary&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (e PipeError) Temporary() bool
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Temporary implements net.AddrError.Temporary()&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_20&#34;&gt;func (PipeError) Timeout&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (e PipeError) Timeout() bool
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Timeout implements net.AddrError.Timeout()&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_21&#34;&gt;type PipeListener&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;type PipeListener struct {
+    // contains filtered or unexported fields
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;PipeListener is a named pipe listener. Clients should typically
+use variables of type net.Listener instead of assuming named pipe.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_22&#34;&gt;func Listen&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func Listen(address string) (*PipeListener, error)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Listen returns a new PipeListener that will listen on a pipe with the given
+address. The address must be of the form \.\pipe&amp;lt;name&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;Listen will return a PipeError for an incorrectly formatted pipe name.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_23&#34;&gt;func (*PipeListener) Accept&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (l *PipeListener) Accept() (net.Conn, error)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Accept implements the Accept method in the net.Listener interface; it
+waits for the next call and returns a generic net.Conn.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_24&#34;&gt;func (*PipeListener) AcceptPipe&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (l *PipeListener) AcceptPipe() (*PipeConn, error)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;AcceptPipe accepts the next incoming call and returns the new connection.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_25&#34;&gt;func (*PipeListener) Addr&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (l *PipeListener) Addr() net.Addr
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Addr returns the listener&amp;rsquo;s network address, a PipeAddr.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_26&#34;&gt;func (*PipeListener) Close&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;go&#34;&gt;func (l *PipeListener) Close() error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Close stops listening on the address.
+Already Accepted connections are not closed.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Hugo is Friggin&#39; Awesome</title>
+      <link>http://natefinch.github.io/post/first</link>
+      <pubDate>Fri, 01 Aug 2014 06:30:00 UTC</pubDate>
+      
+      <guid>http://natefinch.github.io/post/first</guid>
+      <description>&lt;p&gt;This is the first post of my new blog.  You may (eventually) see old posts
+showing up behind here, those have been pulled in from my personal blog at
+&lt;a href=&#34;http://blog.natefinch.com&#34;&gt;blog.natefinch.com&lt;/a&gt;. I&amp;rsquo;ve decided to split off my
+programming posts so that people who only want to see the coding stuff don&amp;rsquo;t
+have to see my personal posts, and people that only want to see my personal
+stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
+
+&lt;p&gt;This blog is powered by &lt;a href=&#34;http://hugo.spf13.com&#34;&gt;Hugo&lt;/a&gt;, a static site generator
+written by Steve Francia (aka spf13).  It is, of course, written in Go.  It is
+pretty similar to &lt;a href=&#34;jekyllrb.com&#34;&gt;Jekyll&lt;/a&gt;, in that you write markdown, run a
+little program (hugo) and html pages come out the other end in the form of a
+full static site.  What&amp;rsquo;s different is that Jekyll is written in ruby and is
+relatively slow, and Hugo is written in Go and is super fast&amp;hellip; only taking a
+few milliseconds to render each page.&lt;/p&gt;
+
+&lt;p&gt;Hugo includes a webserver to serve the content, which will regenerate the site
+automatically when you change your content.  Your browser will update with the
+changes immediately, making your development cycle for a site a very tight
+loop.&lt;/p&gt;
+
+&lt;p&gt;The basic premise of Hugo is that your content is organized in a specific way on
+purpose.  Folders of content and the name of the files combine to turn into the
+url at which they are hosted. For example, content/foo/bar/baz.md will be hosted
+at &lt;site&gt;/foo/bar/baz.&lt;/p&gt;
+
+&lt;p&gt;Every content file has a section of metadata at the top that allows you to
+specify information about the content, like the title, date, even arbitrary data
+for your specific site (for example, I have lists of badges that are shown on
+pages for code projects).&lt;/p&gt;
+
+&lt;p&gt;All the data in a content file is just that - data.  Other than markdown
+specifying a rough view of your page, the actual way the content is viewed is
+completely separated from the data.  Views are written in Go&amp;rsquo;s templating
+language, which is quick to pick up and easy to use if you&amp;rsquo;ve used other
+templating languages (or even if, like me, you haven&amp;rsquo;t).  This lets you do
+things like iterate over all the entries in a menu and print them out in a ul/li
+block, or iterate over all the posts in your blog and display them on the main
+page.&lt;/p&gt;
+
+&lt;p&gt;You can learn more about Hugo by going to &lt;a href=&#34;http://hugo.spf13.com&#34;&gt;its site&lt;/a&gt;,
+which, of course, is built using Hugo.&lt;/p&gt;
+
+&lt;p&gt;The static content for this site is hosted on github pages at
+&lt;a href=&#34;https://github.com/natefinch/natefinch.github.io&#34;&gt;https://github.com/natefinch/natefinch.github.io&lt;/a&gt;. But the static content is
+relatively boring&amp;hellip; that&amp;rsquo;s what you&amp;rsquo;re looking at in your browser right now.
+What&amp;rsquo;s interesting is the code behind it.  That lives in a separate repo on
+github at &lt;a href=&#34;https://github.com/natefinch/npf&#34;&gt;https://github.com/natefinch/npf&lt;/a&gt;.  This is where the markdown content
+and templates live.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s how I have things set up locally&amp;hellip; all open source code on my machine
+lives in my GOPATH (which is set to my HOME).  So, it&amp;rsquo;s easy to find anything I
+have ever downloaded. Thus, the static site lives at
+$GOPATH/src/github.com/natefinch/natefinch.github.io and the markdown +
+templates lives in $GOPATH/src/github.com/natefinch/npf.  I created a symbolic
+link under npf called public that points to the natefinch.github.io directory.
+This is the directory that hugo outputs the static site to by default&amp;hellip; that
+way Hugo dumps the static content right into the correct directory for me to
+commit and push to github.  I just had to add public to my .gitignore so
+everyone wouldn&amp;rsquo;t get confused.&lt;/p&gt;
+
+&lt;p&gt;Then, all I do is got to the npf directory, and run&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;hugo new post/urlofpost.md
+hugo server --buildDrafts --watch -t hyde
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That generates a new content item that&amp;rsquo;ll show up on my site under
+/post/urlofpost.  Then it runs the local webserver so I can watch the content by
+pointing a browser at localhost:1313 on a second monitor as I edit the post in a
+text editor. hyde is the name of the theme I&amp;rsquo;m using, though I have modified
+it.  Note that hugo will mark the content as a draft by default, so you need
+&amp;ndash;buildDrafts for it to get rendered locally, and remember to delete the draft =
+true line in the page&amp;rsquo;s metadata when you&amp;rsquo;re ready to publish, or it won&amp;rsquo;t show
+up on your site.&lt;/p&gt;
+
+&lt;p&gt;When I&amp;rsquo;m satisfied, kill the server, and run&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;hugo -t hyde
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to generate the final site output, switch into the public directory, and&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git commit -am &amp;quot;some new post&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s it.  Super easy, super fast, and no muss.  Coming from Blogger, this is
+an amazingly better workflow with no wrestling with the WYSIWYG editor to make
+it display stuff in a reasonable fashion.  Plus I can write posts 100% offline
+and publish them when I get back to civilization.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;s a lot more to Hugo, and a lot more I want to do with the site, but that
+will come in time and with more posts :)&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Lumberjack</title>
@@ -157,21 +523,6 @@ go func() {
 than MaxSize, the file is closed, renamed to include a timestamp of the
 current time, and a new log file is created using the original log file name.
 If the length of the write is greater than MaxSize, an error is returned.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Something New</title>
-      <link>http://natefinch.github.io/post/first</link>
-      <pubDate>Mon, 28 Jul 2014 11:19:12 UTC</pubDate>
-      
-      <guid>http://natefinch.github.io/post/first</guid>
-      <description>&lt;p&gt;This is the first post of my new blog.  You may see old posts showing up behind
-here, those have been pulled in from my personal blog at blog.natefinch.com.
-I&amp;rsquo;ve decided to split off my programming posts so that people who only want to
-see the coding stuff don&amp;rsquo;t have to see my personal posts, and people that only
-want to see my personal stuff don&amp;rsquo;t have to get inundated with programming
-posts.&lt;/p&gt;
 </description>
     </item>
     

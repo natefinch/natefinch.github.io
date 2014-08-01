@@ -3,18 +3,23 @@
   
   <url>
     <loc>http://natefinch.github.io/</loc>
-    <lastmod>2014-07-28T11:28:15+00:00</lastmod>
+    <lastmod>2014-08-01T10:15:15+00:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://natefinch.github.io/npipe.v2</loc>
+    <lastmod>2014-08-01T10:15:15+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://natefinch.github.io/post/first</loc>
+    <lastmod>2014-08-01T06:30:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>http://natefinch.github.io/lumberjack.v2</loc>
     <lastmod>2014-07-28T11:28:15+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://natefinch.github.io/post/first</loc>
-    <lastmod>2014-07-28T11:19:12+00:00</lastmod>
   </url>
   
   <url>
