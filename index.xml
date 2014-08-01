@@ -3,7 +3,7 @@
   <channel>
       <title>Recent Content on npf.io </title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>http://natefinch.github.io/index.xml</link>
+    <link>http://npf.io/index.xml</link>
     <language>en-us</language>
     
     
@@ -11,10 +11,10 @@
     
     <item>
       <title>npipe</title>
-      <link>http://natefinch.github.io/npipe.v2</link>
+      <link>http://npf.io/npipe.v2</link>
       <pubDate>Fri, 01 Aug 2014 10:15:15 UTC</pubDate>
       
-      <guid>http://natefinch.github.io/npipe.v2</guid>
+      <guid>http://npf.io/npipe.v2</guid>
       <description>
 
 &lt;p&gt;npipe provides a pure Go wrapper around Windows named pipes.&lt;/p&gt;
@@ -276,10 +276,10 @@ Already Accepted connections are not closed.&lt;/p&gt;
     
     <item>
       <title>Hugo Is Friggin&#39; Awesome</title>
-      <link>http://natefinch.github.io/post/hugo-is-awesome</link>
+      <link>http://npf.io/post/hugo-is-awesome</link>
       <pubDate>Fri, 01 Aug 2014 06:45:00 UTC</pubDate>
       
-      <guid>http://natefinch.github.io/post/hugo-is-awesome</guid>
+      <guid>http://npf.io/post/hugo-is-awesome</guid>
       <description>&lt;p&gt;This blog is powered by &lt;a href=&#34;http://hugo.spf13.com&#34;&gt;Hugo&lt;/a&gt;, a static site generator
 written by Steve Francia (aka spf13).  It is, of course, written in Go.  It is
 pretty similar to &lt;a href=&#34;jekyllrb.com&#34;&gt;Jekyll&lt;/a&gt;, in that you write markdown, run a
@@ -370,25 +370,27 @@ will come in time and with more posts :)&lt;/p&gt;
     
     <item>
       <title>First Post</title>
-      <link>http://natefinch.github.io/post/first</link>
+      <link>http://npf.io/post/first</link>
       <pubDate>Fri, 01 Aug 2014 06:30:00 UTC</pubDate>
       
-      <guid>http://natefinch.github.io/post/first</guid>
+      <guid>http://npf.io/post/first</guid>
       <description>&lt;p&gt;This is the first post of my new blog.  You may (eventually) see old posts
 showing up behind here, those have been pulled in from my personal blog at
 &lt;a href=&#34;http://blog.natefinch.com&#34;&gt;blog.natefinch.com&lt;/a&gt;. I&amp;rsquo;ve decided to split off my
 programming posts so that people who only want to see the coding stuff don&amp;rsquo;t
 have to see my personal posts, and people that only want to see my personal
 stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
+
+&lt;p&gt;Right now the site is pretty basic, but I will add more features to it, such as post history etc.&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>Lumberjack</title>
-      <link>http://natefinch.github.io/lumberjack.v2</link>
+      <link>http://npf.io/lumberjack.v2</link>
       <pubDate>Mon, 28 Jul 2014 11:28:15 UTC</pubDate>
       
-      <guid>http://natefinch.github.io/lumberjack.v2</guid>
+      <guid>http://npf.io/lumberjack.v2</guid>
       <description>
 
 &lt;h4 id=&#34;toc_0&#34;&gt;Lumberjack is a Go package for writing logs to rolling files.&lt;/h4&gt;
@@ -536,10 +538,10 @@ If the length of the write is greater than MaxSize, an error is returned.&lt;/p&
     
     <item>
       <title>About</title>
-      <link>http://natefinch.github.io/about</link>
+      <link>http://npf.io/about</link>
       <pubDate>Mon, 28 Jul 2014 11:14:25 UTC</pubDate>
       
-      <guid>http://natefinch.github.io/about</guid>
+      <guid>http://npf.io/about</guid>
       <description>&lt;p&gt;I am a developer at Canonical, working on Juju, a service orchestration tool.  I love coding in Go both at work and in my spare time.  When I&amp;rsquo;m not coding, I&amp;rsquo;m spending time with my family in semi-rural Massachusetts.  I love tabletop gaming and have been playing D&amp;amp;D since the 80&amp;rsquo;s.&lt;/p&gt;
 </description>
     </item>
