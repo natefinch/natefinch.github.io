@@ -11,10 +11,10 @@
     
     <item>
       <title>Hugo Is Friggin&#39; Awesome</title>
-      <link>http://npf.io/post/hugo-is-awesome</link>
+      <link>http://npf.io/2014/08/hugo-is-awesome/</link>
       <pubDate>Fri, 01 Aug 2014 06:45:00 UTC</pubDate>
       
-      <guid>http://npf.io/post/hugo-is-awesome</guid>
+      <guid>http://npf.io/2014/08/hugo-is-awesome/</guid>
       <description>&lt;p&gt;This blog is powered by &lt;a href=&#34;http://hugo.spf13.com&#34;&gt;Hugo&lt;/a&gt;, a static site generator
 written by Steve Francia (aka spf13).  It is, of course, written in Go.  It is
 pretty similar to &lt;a href=&#34;jekyllrb.com&#34;&gt;Jekyll&lt;/a&gt;, in that you write markdown, run a
@@ -105,10 +105,10 @@ will come in time and with more posts :)&lt;/p&gt;
     
     <item>
       <title>First Post</title>
-      <link>http://npf.io/post/first</link>
+      <link>http://npf.io/2014/08/first/</link>
       <pubDate>Fri, 01 Aug 2014 06:30:00 UTC</pubDate>
       
-      <guid>http://npf.io/post/first</guid>
+      <guid>http://npf.io/2014/08/first/</guid>
       <description>&lt;p&gt;This is the first post of my new blog.  You may (eventually) see old posts
 showing up behind here, those have been pulled in from my personal blog at
 &lt;a href=&#34;http://blog.natefinch.com&#34;&gt;blog.natefinch.com&lt;/a&gt;. I&amp;rsquo;ve decided to split off my
