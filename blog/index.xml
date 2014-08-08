@@ -3,7 +3,7 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>http://npf.io/index.xml</link>
+    <link>http://npf.io/blog/index.xml</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2014 Nate Finch</copyright>
@@ -190,8 +190,6 @@ post, as the next post in the series! :)&lt;/p&gt;
     
     
     
-    
-    
     <item>
       <title>Hugo Is Friggin&#39; Awesome</title>
       <link>http://npf.io/2014/08/hugo-is-awesome/</link>
@@ -304,10 +302,6 @@ stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
 &lt;p&gt;Right now the site is pretty basic, but I will add more features to it, such as post history etc.&lt;/p&gt;
 </description>
     </item>
-    
-    
-    
-    
     
     
   </channel>
