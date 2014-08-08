@@ -122,7 +122,7 @@ regardless of the name, will get the nice list of posts at the bottom for that s
       <author>Nate Finch</author>
       <guid>http://npf.io/2014/08/hugo-beyond-the-defaults/</guid>
       <description>&lt;p&gt;In my last post, I had deployed what is almost the most basic Hugo site
-possible.  The only reason it took more then 10 minutes is because I wanted to
+possible.  The only reason it took more than 10 minutes is because I wanted to
 tweak the theme.  However, there were a few things that immediately annoyed me.&lt;/p&gt;
 
 &lt;p&gt;I didn&amp;rsquo;t like having to type &lt;code&gt;hugo -t hyde&lt;/code&gt; all the time.  Well, turns out
