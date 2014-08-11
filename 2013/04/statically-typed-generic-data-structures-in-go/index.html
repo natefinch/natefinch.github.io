@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+
+
+  <title> Statically typed generic data structures in Go  &middot; npf.io </title>
+
+  
+  <link rel="stylesheet" href="http://npf.io/css/poole.css">
+  <link rel="stylesheet" href="http://npf.io/css/syntax.css">
+  <link rel="stylesheet" href="http://npf.io/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="npf.io" />
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
+
+  <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Raleway']
+      }
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1 class="brand"><a href="/">npf.io</a></h1>
+      <p class="lead">
+       code by Nate Finch 
+      </p>
+    </div>
+
+
+
+    <ul class="sidebar-nav">
+      <li><a href="/blog">Posts</a></li>
+      
+        <li><a href="http://npf.io/about">About </a></li>
+      
+      <br/>
+      
+      <li>Code:</li>
+        
+          <li><a href="http://npf.io/lumberjack.v2/">Lumberjack </a></li>
+        
+          <li><a href="http://npf.io/npipe.v2/">npipe </a></li>
+        
+      
+    </ul>
+      <a href="https://twitter.com/natethefinch"><i class="fa fa-twitter-square"></i></a>&nbsp;&nbsp;
+      
+      
+      <a href="https://github.com/natefinch"><i class="fa fa-github-square"></i></a>&nbsp;&nbsp;
+      <a href="https://plus.google.com/&#43;NateFinch"><i class="fa fa-google-plus"></i></a>
+
+    <p class="footnote">powered by <a href="http://hugo.spf13.com">Hugo</a> <br/>
+    &copy; 2014 Nate Finch. All rights reserved.</p>
+    
+  </div>
+</div>
+
+
+  <div class="content container">
+    <div class="post">
+    <h1 class="post-title">Statically typed generic data structures in Go</h1>
+    <span class="post-date">Apr 17, 2013</span>
+    
+    <p><br />I gave a talk at the <a href="https://plus.google.com/u/0/communities/103337146295481792015" target="_blank">Go Boston</a> meetup last night and figured I should write it up and put it here.<br /><div><br /></div><br />The second thing everyone says when they read up on Go is &ldquo;There are no generics!&rdquo;. <br /><div><br /></div><div>(The first thing people say is &ldquo;There are no exceptions!&rdquo;)<br /><div><br /></div><div>Both are only mostly true, &nbsp;but we&rsquo;re only going to talk about generics today.</div><div><br /></div><div>Go has generic built-in data structures - arrays, slices, maps, and channels. You just can&rsquo;t create your own new type, and you can&rsquo;t create generic functions. So, what&rsquo;s a programmer to do? Find another language?</div><div><br /></div><div>No. Many, possibly even most, problems can be solved with the built-in data structures. You can write pretty huge applications just using maps and slices and the occasional channel. There may be a tiny bit of code duplication, but probably not much, and certainly not any tricky code.</div><div><br /></div><div>However, there definitely are times when you need more complicated data structures. Most people writing Go solve this problem by using Interface{}, the empty interface, which is basically like Object in C# or Java or void * in C/C++. &nbsp;It&rsquo;s a thing that can hold any type&hellip; but then you need to type cast it to get at the actual type. This breaks static typing, since the compiler can&rsquo;t tell if you make a mistake and pass the wrong type into something that takes an Interface{}, and it can&rsquo;t tell until runtime if a cast will succeed or not.</div><div><br /></div><div>So, is there any solution? Yes. The inspiration comes from the standard library&rsquo;s<a href="http://golang.org/pkg/sort/#Interface" target="_blank"> sort package</a>. Package sort can sort a slice of any type, it can even sort things that aren&rsquo;t slices, if you&rsquo;ve made your own custom data structure. How does it do that? To sort something, it must support the methods on sort.Interface. Most interesting is Less(i, j int). Less returns true if the item at index i in your data structure is Less than the object at index j in your data structure. Your code has to implement what &ldquo;Less&rdquo; means&hellip; and by only using indices, sort doesn&rsquo;t need to know the types of objects held in your data structure.&nbsp;</div><div><br /></div><div>This use of indices to blindly access data in a separate data structure is how we&rsquo;ll implement our strongly typed tree. The tree structure will hold an index as its data value in each node, and the indices will index into a data structure that holds the actual objects. To make a tree of a new type, you simply implement a Compare function that the tree can use to compare the values at two indices in your data structure. You can use whatever data structure you like, probably a slice or a map, as long as you can use integers to reference values in the data structure.</div><div><br /></div><div>In this way we separate the organization of the data from the storage of the data. The tree structure holds the organization, a slice or map (or something custom) stores the data. The indices are the generic pointers into the storage that holds the actual strongly typed values.</div><div><br /></div><div>This does require a little code for each new tree type, just as using package sort requires a little code for each type. However, it&rsquo;s only a few lines for a few functions, wrapping a tree and your data.&nbsp;</div><div><br /></div><div>You can check out an example binary search tree I wrote that uses this technique in my github account<br /><br /><a href="https://github.com/natefinch/tree">https://github.com/natefinch/tree</a><br /><br />or go get the runnable sample tree:<br /><br />go get github.com/natefinch/treesample</div><div><br /></div><div>This required only 36 lines of code to make the actual tree structure (including empty lines and comments).</div><div><br /></div><div>In some simple benchmarks, this implementation of a tree is about 25% faster than using the same code with Interface{} as the values and casting at runtime&hellip;. plus it&rsquo;s strongly typed.</div></div></p>
+
+    
+     
+	
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") 
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'npfio';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by <a href="http://disqus.com/?ref_noscript">Disqus.</a></noscript>
+</div>
+</div> 
+
+</body>w
+</html>

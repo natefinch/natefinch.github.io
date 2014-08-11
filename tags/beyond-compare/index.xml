@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+      <title>npf.io</title>
+      <generator uri="https://hugo.spf13.com">Hugo</generator>
+    <link>http://npf.io/tags/beyond-compare/index.xml</link>
+    <language>en-us</language>
+    <author>Nate Finch</author>
+    <copyright>2014 Nate Finch</copyright>
+    <updated>Wed, 14 May 2014 13:09:00 UTC</updated>
+    
+    
+    <item>
+      <title>Diffing Go with Beyond Compare</title>
+      <link>http://npf.io/2014/05/diffing-go-with-beyond-compare/</link>
+      <pubDate>Wed, 14 May 2014 13:09:00 UTC</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2014/05/diffing-go-with-beyond-compare/</guid>
+      <description>&lt;p&gt;I love Beyond Compare, it&amp;rsquo;s an awesome visual diff/merge tool. &amp;nbsp;It&amp;rsquo;s not free, but I don&amp;rsquo;t care, because it&amp;rsquo;s awesome. &amp;nbsp;However, there&amp;rsquo;s no built-in configuration for Go code, so I made one. &amp;nbsp;Not sure what the venn diagram of Beyond Compare users and Go users looks like, it might be that I&amp;rsquo;m the one point of crossover, but just in case I&amp;rsquo;m not, here&amp;rsquo;s the configuration file for Beyond Compare 3 for the Go programming language:&amp;nbsp;&lt;a href=&#34;http://play.golang.org/p/G6NWE0z1GC&#34;&gt;http://play.golang.org/p/G6NWE0z1GC&lt;/a&gt; &amp;nbsp;(please forgive the abuse of the Go playground)&lt;br /&gt;&lt;br /&gt;Just copy the text into a file and in Beyond Compare, go to Tools-&amp;gt;Import Settings&amp;hellip; and choose the file. &amp;nbsp;Please let me know if you have any troubles or suggested improvements.&lt;/p&gt;
+</description>
+    </item>
+    
+    
+  </channel>
+</rss>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+
+
+  <title> Unused Variables in Go  &middot; npf.io </title>
+
+  
+  <link rel="stylesheet" href="http://npf.io/css/poole.css">
+  <link rel="stylesheet" href="http://npf.io/css/syntax.css">
+  <link rel="stylesheet" href="http://npf.io/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="npf.io" />
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
+
+  <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Raleway']
+      }
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1 class="brand"><a href="/">npf.io</a></h1>
+      <p class="lead">
+       code by Nate Finch 
+      </p>
+    </div>
+
+
+
+    <ul class="sidebar-nav">
+      <li><a href="/blog">Posts</a></li>
+      
+        <li><a href="http://npf.io/about">About </a></li>
+      
+      <br/>
+      
+      <li>Code:</li>
+        
+          <li><a href="http://npf.io/lumberjack.v2/">Lumberjack </a></li>
+        
+          <li><a href="http://npf.io/npipe.v2/">npipe </a></li>
+        
+      
+    </ul>
+      <a href="https://twitter.com/natethefinch"><i class="fa fa-twitter-square"></i></a>&nbsp;&nbsp;
+      
+      
+      <a href="https://github.com/natefinch"><i class="fa fa-github-square"></i></a>&nbsp;&nbsp;
+      <a href="https://plus.google.com/&#43;NateFinch"><i class="fa fa-google-plus"></i></a>
+
+    <p class="footnote">powered by <a href="http://hugo.spf13.com">Hugo</a> <br/>
+    &copy; 2014 Nate Finch. All rights reserved.</p>
+    
+  </div>
+</div>
+
+
+  <div class="content container">
+    <div class="post">
+    <h1 class="post-title">Unused Variables in Go</h1>
+    <span class="post-date">Mar 28, 2014</span>
+    
+    <p>The Go compiler treats unused variables as a compilation error. This causes much annoyance to some newbie Gophers, especially those used to writing languages that aren&rsquo;t compiled, and want to be able to be fast and loose with their code while doing exploratory hacking.<br /><br />The thing is, an unused variable is often a bug in your code, so pointing it out early can save you a lot of heartache.<br /><br />Here&rsquo;s an example:<br /><br /><blockquote class="tr_bq"><span style="font-family: Courier New, Courier, monospace; font-size: x-small;">50 func Connect(name, port string) error {</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />51 &nbsp; &nbsp;hostport := &ldquo;&rdquo;</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />52 &nbsp; &nbsp;if port == &ldquo;&rdquo; {</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />53 &nbsp; &nbsp; &nbsp; &nbsp;hostport := makeHost(name)</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />54 &nbsp; &nbsp; &nbsp; &nbsp;logger.Infof(&ldquo;No port specified, connecting on port 8080.&rdquo;)</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />55 &nbsp; &nbsp;} else {</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />56 &nbsp; &nbsp; &nbsp; &nbsp;hostport := makeHostPort(name, port)</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />57 &nbsp; &nbsp; &nbsp; &nbsp;logger.Infof(&ldquo;Connecting on port %s.&rdquo;, port)</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />58 &nbsp; &nbsp;}</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"></span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />59 &nbsp; &nbsp;// &hellip; use hostport down here</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />60 }</span></blockquote><br />Where&rsquo;s the bug in the above? &nbsp;Without the compiler error, you&rsquo;d run the code and have to figure out why hostport was always an empty string. &nbsp;Did we pass in empty strings by accident? &nbsp;Is there a bug in makeHost and makeHostPort?<br /><br />With the compiler error, it will say &ldquo;53, hostport declared and not used&rdquo; and &ldquo;56, hostport declared and not used&rdquo;<br /><br />This makes it a lot more obvious what the problem is&hellip; inside the scope of the if statement, := declares new variables called hostport. &nbsp;These hide the variable from the outer scope, thus, the outer hostport never gets modified, which is what gets used further on in the function.<br /><blockquote class="tr_bq"><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br class="Apple-interchange-newline" />50 func Connect(name, port string) error {</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />51 &nbsp; &nbsp;hostport := &ldquo;&rdquo;</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />52 &nbsp; &nbsp;if port == &ldquo;&rdquo; {</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />53 &nbsp; &nbsp; &nbsp; &nbsp;hostport = makeHost(name)</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />54 &nbsp; &nbsp; &nbsp; &nbsp;logger.Infof(&ldquo;No port specified, connecting on port 8080.&rdquo;)</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />55 &nbsp; &nbsp;} else {</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />56 &nbsp; &nbsp; &nbsp; &nbsp;hostport = makeHostPort(name, port)</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />57 &nbsp; &nbsp; &nbsp; &nbsp;logger.Infof(&ldquo;Connecting on port %s.&rdquo;, port)</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />58 &nbsp; &nbsp;}</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"></span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />59 &nbsp; &nbsp;// &hellip; use hostport down here</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br />60 }</span></blockquote><div><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br /></span></div>The above is the corrected code. It took only a few seconds to fix, thanks to the unused variable error from the compiler. &nbsp;If you&rsquo;d been testing this by running it or even with unit tests&hellip; you&rsquo;d probably end up spending a non-trivial amount of time trying to figure it out. &nbsp;And this is just a very simple example. &nbsp;This kind of problem can be a lot more elaborate and hard to find.<br /><br />And that&rsquo;s why the unused variable declaration error is actually a good thing. &nbsp;If a value is important enough to be assigned to a variable, it&rsquo;s probably a bug if you&rsquo;re not actually using that variable.<br /><br /><b>Bonus tip:</b><br /><br />Note that if you don&rsquo;t care about the variable, you can just assign it to the empty identifier directly:<br /><blockquote class="tr_bq"><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><em>, err := computeMyVar()</span></blockquote>This is the normal way to avoid the compiler error in cases where a function returns more than you need.<br /><br />If you <i>really</i> want to silence the unused variable error and not remove the variable for some reason, this is the way to do it:<br /><blockquote class="tr_bq"><span style="font-family: Courier New, Courier, monospace; font-size: x-small;">v, err := computeMyVar()</span><span style="font-family: Courier New, Courier, monospace; font-size: x-small;"><br /></em> = v &nbsp;// this counts as using the variable</span></blockquote>Just don&rsquo;t forget to clean it up before committing.<br /><br />All of the above also goes for unused packages. &nbsp;And a similar tip for silencing that error:<br /><blockquote class="tr_bq"><span style="font-family: Courier New, Courier, monospace; font-size: x-small;">_ = fmt.Printf // this counts as using the package</span></blockquote></p>
+
+    
+     
+	
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") 
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'npfio';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by <a href="http://disqus.com/?ref_noscript">Disqus.</a></noscript>
+</div>
+</div> 
+
+</body>w
+</html>

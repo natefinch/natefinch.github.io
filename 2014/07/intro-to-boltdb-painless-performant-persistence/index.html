@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+
+
+  <title> Intro to BoltDB: Painless Performant Persistence  &middot; npf.io </title>
+
+  
+  <link rel="stylesheet" href="http://npf.io/css/poole.css">
+  <link rel="stylesheet" href="http://npf.io/css/syntax.css">
+  <link rel="stylesheet" href="http://npf.io/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="npf.io" />
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
+
+  <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Raleway']
+      }
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1 class="brand"><a href="/">npf.io</a></h1>
+      <p class="lead">
+       code by Nate Finch 
+      </p>
+    </div>
+
+
+
+    <ul class="sidebar-nav">
+      <li><a href="/blog">Posts</a></li>
+      
+        <li><a href="http://npf.io/about">About </a></li>
+      
+      <br/>
+      
+      <li>Code:</li>
+        
+          <li><a href="http://npf.io/lumberjack.v2/">Lumberjack </a></li>
+        
+          <li><a href="http://npf.io/npipe.v2/">npipe </a></li>
+        
+      
+    </ul>
+      <a href="https://twitter.com/natethefinch"><i class="fa fa-twitter-square"></i></a>&nbsp;&nbsp;
+      
+      
+      <a href="https://github.com/natefinch"><i class="fa fa-github-square"></i></a>&nbsp;&nbsp;
+      <a href="https://plus.google.com/&#43;NateFinch"><i class="fa fa-google-plus"></i></a>
+
+    <p class="footnote">powered by <a href="http://hugo.spf13.com">Hugo</a> <br/>
+    &copy; 2014 Nate Finch. All rights reserved.</p>
+    
+  </div>
+</div>
+
+
+  <div class="content container">
+    <div class="post">
+    <h1 class="post-title">Intro to BoltDB: Painless Performant Persistence</h1>
+    <span class="post-date">Jul 7, 2014</span>
+    
+    <p><a href="http://github.com/boltdb/bolt" target="_blank">BoltDB</a> is a pure Go persistence solution that saves data to a memory mapped file.  I call it a persistence solution and not a database, because the word database has a lot of baggage associated with it that doesn&rsquo;t apply to bolt. And that lack of baggage is what makes bolt so awesome.<br /><br />Bolt is just a Go package.  There&rsquo;s nothing you need to install on the system, no configuration to figure out before you can start coding, nothing.  You just go get github.com/boltdb/bolt and then import &ldquo;github.com/boltdb/bolt&rdquo;. <br /><br />All you need to fully use bolt as storage is a file name.  This is fantastic from both a developer&rsquo;s point of view, and a user&rsquo;s point of view.  I don&rsquo;t know about you, but I&rsquo;ve spent months of work time over my career configuring and setting up databases and debugging configuration problems, users and permissions and all the other crap you get from more traditional databases like Postgres and Mongo.  There&rsquo;s none of that with bolt.  No users, no setup, just a file name.  This is also a boon for users of your application, because <em>they</em> don&rsquo;t have to futz with all that crap either.<br /><br />Bolt is not a relational database.  It&rsquo;s not even a document store, though you can sort of use it that way.  It&rsquo;s really just a key/value store&hellip; but don&rsquo;t worry if you don&rsquo;t really know what that means or how you&rsquo;d use that for storage.  It&rsquo;s super simple and it&rsquo;s incredibly flexible.  Let&rsquo;s take a look.<br /><br />Storage in bolt is divided into buckets.  A bucket is simply a named collection of key/value pairs, just like Go&rsquo;s map.  The name of the bucket, the keys, and the values are all of type []byte.  Buckets can contain other buckets, also keyed by a []byte name. <br /><br />&hellip; that&rsquo;s it.  No, really, that&rsquo;s it.  Bolt is basically a bunch of nested maps.  And this simplicity is what makes it so easy to use.  There&rsquo;s no tables to set up, no schemas, no complex querying language to struggle with.  Let&rsquo;s look at a bolt hello world:<br /><br /><pre>package main<br /><br />import (<br />    &ldquo;fmt&rdquo;<br />    &ldquo;log&rdquo;<br /><br />    &ldquo;github.com/boltdb/bolt&rdquo;<br />)<br /><br />var world = []byte(&ldquo;world&rdquo;)<br /><br />func main() {<br />    db, err := bolt.Open(&ldquo;/home/nate/foo/bolt.db&rdquo;, 0644, nil)<br />    if err != nil {<br />        log.Fatal(err)<br />    }<br />    defer db.Close()<br /><br />    key := []byte(&ldquo;hello&rdquo;)<br />    value := []byte(&ldquo;Hello World!&rdquo;)<br /><br />    // store some data<br />    err = db.Update(func(tx *bolt.Tx) error {<br />        bucket, err := tx.CreateBucketIfNotExists(world)<br />        if err != nil {<br />            return err<br />        }<br /><br />        err = bucket.Put(key, value)<br />        if err != nil {<br />            return err<br />        }<br />        return nil<br />    })<br /><br />    if err != nil {<br />        log.Fatal(err)<br />    }<br /><br />    // retrieve the data<br />    err = db.View(func(tx *bolt.Tx) error {<br />        bucket := tx.Bucket(world)<br />        if bucket == nil {<br />            return fmt.Errorf(&ldquo;Bucket %q not found!&rdquo;, world)<br />        }<br /><br />        val := bucket.Get(key)<br />        fmt.Println(string(val))<br /><br />        return nil<br />    })<br /><br />    if err != nil {<br />        log.Fatal(err)<br />    }<br />}<br /><br />// output:<br />// Hello World!</pre><div></div>I know what you&rsquo;re thinking - that seems kinda long.  But keep in mind, I fully handled all errors in at least a semi-proper way, and we&rsquo;re doing all this:<br /><br />1.) creating a database <br />2.) creating some structure (the &ldquo;world&rdquo; bucket)<br />3.) storing data to the structure<br />4.) retrieving data from the structure.<br /><br />I think that&rsquo;s not too bad in 54 lines of code.<br /><br />So let&rsquo;s look at what that example is really doing.  First we call bolt.Open to get the database.  This will create the file if necessary, or open it if it exists.<br /><br />All reads from or writes to the bolt database must be done within a transaction. You can have as many Readers in read-only transactions at the same time as you want, but only one Writer in a writable transaction at a time (readers maintain a consistent view of the DB while writers are writing).<br /><br />To begin, we call db.Update, which takes a function to which it&rsquo;ll pass a bolt.Tx - bolt&rsquo;s transaction object.  We then create a Bucket (since all data in bolt lives in buckets), and add our key/value pair to it.  After the write transaction finishes, we start a read- only transaction with DB.View, and get the values back out.<br /><br />What&rsquo;s great about bolt&rsquo;s transaction mechanism is that it&rsquo;s super simple - the scope of the function is the scope of the transaction.  If the function passed to Update returns nil, all updates from the transaction are atomically stored to the database.  If the function passed to Update returns an error, the transaction is rolled back.  This makes bolt&rsquo;s transactions completely intuitive from a Go developer&rsquo;s point of view.  You just exit early out of your function by returning an error as usual, and bolt Does The Right Thing.  No need to worry about manually rolling back updates or anything, just return an error.<br /><br />The only other basic thing you may need is to iterate over key/value pairs in a Bucket, in which case, you just call bucket.Cursor(), which returns a Cursor value, which has functions like Next(), Prev() etc that return a key/value pair and work like you&rsquo;d expect.<br /><br />There&rsquo;s a lot more to the bolt API, but most of the rest of it is more about database statistics and some stuff for more advanced usage scenarios&hellip; but the above is all you really need to know to start storing data in a bolt database.<br /><br />For a more complex application, just storing strings in the database may not be sufficient, but that&rsquo;s ok, Go has your back there, too.  You can easily use encoding/json or encoding/gob to serialize structs into the database, keyed by a unique name or id.  This is what makes it easy for bolt to go from a key/value store to a document store - just have one bucket per document type.  Again, the benefit of bolt is low barrier of entry.  You don&rsquo;t have to figure out a whole database schema or install anything to be able to just start dumping data to disk in a performant and manageable way.<br /><br />The main drawback of bolt is that there are no queries.  You can&rsquo;t say &ldquo;give me all foo objects with a name that starts with bar&rdquo;.  You <i>could</i> make your own index in the database and keep it up to date manually.  This could be as easy as a slice of IDs serialized into an &ldquo;indices&rdquo; bucket for a particular query. Obviously, this is where you start getting into the realm of developing your own relational database, but if you don&rsquo;t go overboard, it can be nice that all this code is just that - code.  It&rsquo;s not queries in some external DSL, it&rsquo;s just code like you&rsquo;d write for an in-memory data store.<br /><br />Bolt is not for every application.  You must understand your application&rsquo;s needs and if bolt&rsquo;s key/value style will be sufficient to fulfill those needs.  If it is, I think you&rsquo;ll be very happy to use such a simple data store with so little mental overhead.<br /><br />[edited to clarify reader/writer relationship]   Bonus Gob vs. Json benchmark for storing structs in Bolt: <pre><br />BenchmarkGobEncode  1000000       2191 ns/op<br />BenchmarkJsonEncode   500000       4738 ns/op<br />BenchmarkGobDecode  1000000       2019 ns/op<br />BenchmarkJsonDecode   200000      12993 ns/op<br /></pre>Code: <a href="http://play.golang.org/p/IvfDUGBpJ6">http://play.golang.org/p/IvfDUGBpJ6</a></p>
+
+    
+     
+	
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") 
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'npfio';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by <a href="http://disqus.com/?ref_noscript">Disqus.</a></noscript>
+</div>
+</div> 
+
+</body>w
+</html>

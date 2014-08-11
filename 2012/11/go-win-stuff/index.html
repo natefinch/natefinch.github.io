@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+
+
+  <title> Go Win Stuff  &middot; npf.io </title>
+
+  
+  <link rel="stylesheet" href="http://npf.io/css/poole.css">
+  <link rel="stylesheet" href="http://npf.io/css/syntax.css">
+  <link rel="stylesheet" href="http://npf.io/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="npf.io" />
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
+
+  <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Raleway']
+      }
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1 class="brand"><a href="/">npf.io</a></h1>
+      <p class="lead">
+       code by Nate Finch 
+      </p>
+    </div>
+
+
+
+    <ul class="sidebar-nav">
+      <li><a href="/blog">Posts</a></li>
+      
+        <li><a href="http://npf.io/about">About </a></li>
+      
+      <br/>
+      
+      <li>Code:</li>
+        
+          <li><a href="http://npf.io/lumberjack.v2/">Lumberjack </a></li>
+        
+          <li><a href="http://npf.io/npipe.v2/">npipe </a></li>
+        
+      
+    </ul>
+      <a href="https://twitter.com/natethefinch"><i class="fa fa-twitter-square"></i></a>&nbsp;&nbsp;
+      
+      
+      <a href="https://github.com/natefinch"><i class="fa fa-github-square"></i></a>&nbsp;&nbsp;
+      <a href="https://plus.google.com/&#43;NateFinch"><i class="fa fa-google-plus"></i></a>
+
+    <p class="footnote">powered by <a href="http://hugo.spf13.com">Hugo</a> <br/>
+    &copy; 2014 Nate Finch. All rights reserved.</p>
+    
+  </div>
+</div>
+
+
+  <div class="content container">
+    <div class="post">
+    <h1 class="post-title">Go Win Stuff</h1>
+    <span class="post-date">Nov 16, 2012</span>
+    
+    <p>No, not contests, <a href="http://golang.org/" target="_blank">golang</a> (the programming language), and Win as in Windows.<br /><div><br /></div><div>Quick background - Recently I started writing a <a href="http://en.wikipedia.org/wiki/MUD" target="_blank">MUD</a> in Go for the purposes of learning Go, and writing something that is non-trivial to code. &nbsp;MUDs are particularly suited to Go, since they are entirely server based, are text-based, and are highly concurrent and parallel problems (which is to say, you have a whole bunch of people doing stuff all at the same time on the server).&nbsp;</div><div><br /></div><div>Anyway, after getting a pretty good prototype of the MUD up and running (which was quite fun), I started thinking about using Go for some scripty things that I want to do at work. There&rsquo;s a bit of a hitch, though&hellip; the docs on working in Windows are not very good. &nbsp;In fact, if you look at golang.org, they&rsquo;re actually non-existent. &nbsp;This is because the syscall package changes based on what OS you&rsquo;re running on, and (not surprisingly) Google&rsquo;s public golang site is not running on Windows.</div><div><br /></div><div>So, anyway, a couple notes here on Windowy things that you (I) might want to do with Go:</div><div><br /></div><div>Open the default browser with a given URL:</div><br /><pre class="brush: go; gutter: false;tab-size: 4;">import (<br />    &ldquo;syscall/exec&rdquo;<br />) <br /><br />func OpenBrowser(url string) {<br />    exec.Command(&ldquo;rundll32&rdquo;, &ldquo;url.dll&rdquo;, &ldquo;FileProtocolHandler&rdquo;, url)<br />}<br /></pre>Example of a wrapper for syscall&rsquo;s Windows Registry functions:<br /><br /><pre class="brush: go; gutter: false;tab-size: 4;">import (<br />    &ldquo;syscall&rdquo;<br />)<br /><br />func ReadRegString(hive syscall.Handle, subKeyPath, valueName string) (value string, err error) {<br />    var h syscall.Handle<br />    err = syscall.RegOpenKeyEx(hive, syscall.StringToUTF16Ptr(subKeyPath), 0, syscall.KEY_READ, &amp;h)<br />    if err != nil {<br />        return<br />     }<br />     defer syscall.RegCloseKey(h)<br /><br />    var typ uint32<br />    var bufSize uint32<br /><br />    err = syscall.RegQueryValueEx(<br />              hKey,<br />              syscall.StringToUTF16Ptr(valueName),<br />              nil,<br />              &amp;typ,<br />              nil,<br />              &amp;bufSize)<br />    if err != nil {<br />        return<br />    }<br /><br />    data := make([]uint16, bufSize/2+1)<br /><br />    err = syscall.RegQueryValueEx(<br />              hKey,<br />              syscall.StringToUTF16Ptr(valueName),<br />              nil,<br />              &amp;typ,<br />              (*byte)(unsafe.Pointer(&amp;data[0])),<br />              &amp;bufSize)<br />    if err != nil {<br />        return<br />    }<br /><br />    return syscall.UTF16ToString(data), nil<br />}<br /></pre></p>
+
+    
+     
+	
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") 
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'npfio';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by <a href="http://disqus.com/?ref_noscript">Disqus.</a></noscript>
+</div>
+</div> 
+
+</body>w
+</html>

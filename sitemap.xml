@@ -42,4 +42,89 @@
     <lastmod>2014-07-28T11:14:25+00:00</lastmod>
   </url>
   
+  <url>
+    <loc>http://npf.io/2014/07/ci-for-windows-go-packages-with-appveyor/</loc>
+    <lastmod>2014-07-09T17:43:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2014/07/intro-to-boltdb-painless-performant-persistence/</loc>
+    <lastmod>2014-07-07T08:25:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2014/06/autogenerate-docs-with-this-one-dumb-trick/</loc>
+    <lastmod>2014-06-17T05:59:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2014/05/diffing-go-with-beyond-compare/</loc>
+    <lastmod>2014-05-14T13:09:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2014/05/intro-to-go-interfaces/</loc>
+    <lastmod>2014-05-13T07:08:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2014/04/mocking-functions-in-go/</loc>
+    <lastmod>2014-04-10T11:35:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2014/04/effective-godoc/</loc>
+    <lastmod>2014-04-01T06:43:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2014/03/unused-variables-in-go/</loc>
+    <lastmod>2014-03-28T16:13:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2014/03/go-and-github/</loc>
+    <lastmod>2014-03-21T06:29:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2014/03/go-tips-for-newbie-gophers/</loc>
+    <lastmod>2014-03-15T09:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2013/11/working-at-canonical/</loc>
+    <lastmod>2013-11-10T16:14:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2013/09/60-days-with-ubuntu/</loc>
+    <lastmod>2013-09-28T08:03:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2013/04/statically-typed-generic-data-structures-in-go/</loc>
+    <lastmod>2013-04-17T08:01:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2013/01/go-is-for-open-source/</loc>
+    <lastmod>2013-01-29T07:45:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2013/01/what-i-love-about-go/</loc>
+    <lastmod>2013-01-25T08:49:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2013/01/gocog/</loc>
+    <lastmod>2013-01-25T08:33:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://npf.io/2012/11/go-win-stuff/</loc>
+    <lastmod>2012-11-16T11:01:00+00:00</lastmod>
+  </url>
+  
 </urlset>

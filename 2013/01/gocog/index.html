@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+
+
+  <title> gocog  &middot; npf.io </title>
+
+  
+  <link rel="stylesheet" href="http://npf.io/css/poole.css">
+  <link rel="stylesheet" href="http://npf.io/css/syntax.css">
+  <link rel="stylesheet" href="http://npf.io/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="npf.io" />
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
+
+  <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Raleway']
+      }
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1 class="brand"><a href="/">npf.io</a></h1>
+      <p class="lead">
+       code by Nate Finch 
+      </p>
+    </div>
+
+
+
+    <ul class="sidebar-nav">
+      <li><a href="/blog">Posts</a></li>
+      
+        <li><a href="http://npf.io/about">About </a></li>
+      
+      <br/>
+      
+      <li>Code:</li>
+        
+          <li><a href="http://npf.io/lumberjack.v2/">Lumberjack </a></li>
+        
+          <li><a href="http://npf.io/npipe.v2/">npipe </a></li>
+        
+      
+    </ul>
+      <a href="https://twitter.com/natethefinch"><i class="fa fa-twitter-square"></i></a>&nbsp;&nbsp;
+      
+      
+      <a href="https://github.com/natefinch"><i class="fa fa-github-square"></i></a>&nbsp;&nbsp;
+      <a href="https://plus.google.com/&#43;NateFinch"><i class="fa fa-google-plus"></i></a>
+
+    <p class="footnote">powered by <a href="http://hugo.spf13.com">Hugo</a> <br/>
+    &copy; 2014 Nate Finch. All rights reserved.</p>
+    
+  </div>
+</div>
+
+
+  <div class="content container">
+    <div class="post">
+    <h1 class="post-title">gocog</h1>
+    <span class="post-date">Jan 25, 2013</span>
+    
+    <p>I recently got very enamored with <a href="http://golang.org/" target="_blank">Go</a>, and decided that I needed to write a real program with it to properly get up to speed. One thing came to mind after reading a lot on the <a href="https://groups.google.com/forum/#!forum/golang-nuts" target="_blank">Go mailing list</a>: a code generator.<br /><br />I had worked with <a href="http://nedbatchelder.com/" target="_blank">Ned Batchelder</a>&nbsp;at a now-defunct startup, where he developed <a href="http://nedbatchelder.com/code/cog/">cog.py</a>. I figured I could do something pretty similar with Go, except, I could do one better - Go generates native executables, which means you can run it without needing any specific programming framework installed, and you can run it on any major operating system. Also, I could construct it so that gocog supports any programming language embedded in the file, so long as it can be run via command line.<br /><br />Thus was born gocog -&nbsp;<a href="https://github.com/natefinch/gocog">https://github.com/natefinch/gocog</a><br /><br />Gocog runs very similarly to cog.py - you give it files to look at, and it reads the files looking for specially tagged embedded code (generally in comments of the actual text). Gocog extracts the code, runs it, and rewrites the file with the output of the code embedded.<br /><br />Thus you can do something like this in a file called test.html:<br /><pre class="brush: xml; gutter: false;">&lt;html&gt;<br />&lt;body&gt;<br />&lt;!&ndash; [[[gocog<br />print &ldquo;&lt;b&gt;Hello World!&lt;/b&gt;&ldquo;<br />gocog]]] &ndash;&gt;<br />&lt;!&ndash; [[[end]]] &ndash;&gt;<br />&lt;/body&gt;<br />&lt;/html&gt;<br /></pre><br />if you run gocog over the file, specifying python as the command to run:<br /><br />gocog test.html -cmd python -args %s -ext .py<br /><br />This tells gocog to extract the code from test.html into a &nbsp;file with the .py extension, and then run python &lt;filename&gt; and pipe the output back into the file.<br /><br />This is what test.html looks like after running gocog:<br /><br /><pre class="brush: xml; gutter: false;">&lt;html&gt;<br />&lt;body&gt;<br />&lt;!&ndash; [[[gocog<br />print &ldquo;&lt;b&gt;Hello World!&lt;/b&gt;&ldquo;<br />gocog]]] &ndash;&gt;<br />&lt;b&gt;Hello World!&lt;/b&gt;<br />&lt;!&ndash; [[[end]]] &ndash;&gt;<br />&lt;/body&gt;<br />&lt;/html&gt;<br /></pre><div><br /></div><div>Note that the generator code still exists in the file, so you can always rerun gocog to update the generated text. &nbsp;</div><div><br /></div><div>By default gocog assumes you&rsquo;re running embedded Go in the file (hey, I wrote it, I&rsquo;m allowed to be biased), but you can specify any command line tool to run the code - python, ruby, perl, even compiled languages if you have a command line tool to compile and run them in a single step (I know of one for C# at least).</div><div><br /></div><div>&ldquo;Ok&rdquo;, you&rsquo;re saying to yourself, &ldquo;but what would I really do with it?&rdquo; &nbsp;Well, it can be really useful for reducing copy and paste or recreating boilerplate. Ned and I used it to keep a schema of properties in sync over several different projects. Someone on Golang-nuts emailed me and is using it to generate boilerplate for CGo enum properties in Go.</div><div><br /></div><div>Gocog&rsquo;s sourcecode actually uses gocog - I embed the usage text into three different spots for documentation purposes - two in regular Go comments and one in a markdown file. &nbsp;I also use gocog to generate a timestamp in the code that gets displayed with the version information.</div><div><br /></div><div>You don&rsquo;t need to know Go to run Gocog, it&rsquo;s just an executable that anyone can run, without any prerequisites. &nbsp;You can download the binaries of the latest build from the gocog wiki here:&nbsp;<a href="https://github.com/natefinch/gocog/wiki">https://github.com/natefinch/gocog/wiki</a></div><div><br /></div><div>Feel &nbsp;free to submit an issue if you find a bug or would like to request a feature.</div></p>
+
+    
+     
+	
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") 
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'npfio';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by <a href="http://disqus.com/?ref_noscript">Disqus.</a></noscript>
+</div>
+</div> 
+
+</body>w
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+
+
+  <title> Go is for Open Source  &middot; npf.io </title>
+
+  
+  <link rel="stylesheet" href="http://npf.io/css/poole.css">
+  <link rel="stylesheet" href="http://npf.io/css/syntax.css">
+  <link rel="stylesheet" href="http://npf.io/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="npf.io" />
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
+
+  <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Raleway']
+      }
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1 class="brand"><a href="/">npf.io</a></h1>
+      <p class="lead">
+       code by Nate Finch 
+      </p>
+    </div>
+
+
+
+    <ul class="sidebar-nav">
+      <li><a href="/blog">Posts</a></li>
+      
+        <li><a href="http://npf.io/about">About </a></li>
+      
+      <br/>
+      
+      <li>Code:</li>
+        
+          <li><a href="http://npf.io/lumberjack.v2/">Lumberjack </a></li>
+        
+          <li><a href="http://npf.io/npipe.v2/">npipe </a></li>
+        
+      
+    </ul>
+      <a href="https://twitter.com/natethefinch"><i class="fa fa-twitter-square"></i></a>&nbsp;&nbsp;
+      
+      
+      <a href="https://github.com/natefinch"><i class="fa fa-github-square"></i></a>&nbsp;&nbsp;
+      <a href="https://plus.google.com/&#43;NateFinch"><i class="fa fa-google-plus"></i></a>
+
+    <p class="footnote">powered by <a href="http://hugo.spf13.com">Hugo</a> <br/>
+    &copy; 2014 Nate Finch. All rights reserved.</p>
+    
+  </div>
+</div>
+
+
+  <div class="content container">
+    <div class="post">
+    <h1 class="post-title">Go is for Open Source</h1>
+    <span class="post-date">Jan 29, 2013</span>
+    
+    <p>The Go programming language is built from the ground up to implicitly encourage Go projects to be open source. If you want your project not only to contribute to open source, but to encourage other people to write open source code, Go is a great language to choose.<br /><br />Let&rsquo;s look at how Go does this. These first two points are overly obvious, but we should get them out of the way.<br /><br /><h3>The language is open source</h3>You can go look at the <a href="https://code.google.com/p/go/source/browse/" target="_blank">source code</a>&nbsp;for the language, the compilers, and the build tools for the language. It&rsquo;s a fully open source project. Even though a lot of the work is being done by Google engineers, there are hundreds of names on the <a href="https://code.google.com/p/go/source/browse/CONTRIBUTORS" target="_blank">list of contributors</a> of people who are not Google employees.<br /><br /><h3>The standard library is open source</h3><div>Want to see high quality example code? Look at the code in the standard library. It has been carefully reviewed to be of the best quality, and in canonical Go style. Reading the standard library is a great way to learn the best ways to use and write Go.</div><div><br /></div><div><br /></div><div><b><span style="color: red;">Ok, that&rsquo;s great, but what about all the code that isn&rsquo;t part of Go itself?</span></b></div><div>The design of Go really shows its embrace of open source in how third party code is used in day to day projects.</div><div><br /></div><h3>Go makes it trivial to use someone&nbsp;else&rsquo;s code in your project</h3><div>Go has distributed version control built-in from the ground up. If you want to use a package from github, for example, you just specify the URL in the imports, as if it were a local package:</div><div><br /></div><pre class="brush: go; gutter: false">import (<br />    &ldquo;bytes&rdquo; // std lib package<br />    &ldquo;github.com/fake/foo&rdquo; // 3rd party package<br />)</pre><div><br /></div><div>You don&rsquo;t have to go find and download fake/foo from github and put it in a special directory or anything. Just run &ldquo;go get github.com/fake/foo&rdquo;. Go will then download, build, and install the code, so that you can reference it&hellip; nicely stored in a directory defined by the URL, in this case $GOPATH/src/github.com/fake/foo. Go will even figure out what source control system is used on the other side so you don&rsquo;t have to (support for git, svn, mercurial, and bazaar).<br /><br />What&rsquo;s even better is that the auto-download happens for anyone who calls &ldquo;go get&rdquo; on&nbsp;<i>your</i>&nbsp;code repository. No more giving long drawn-out installation instructions about getting half a dozen 3rd party libraries first. If someone wants your code, they type &ldquo;go get path.to/your/code&rdquo;, and Go will download your code, and any remote imports you have (like the one for github above), any remote imports <i>that</i> code has, etc, and then builds everything.<br /><br />The fact that this is available from the command line tools that come with the language makes it the de facto standard for how all Go code is written. There&rsquo;s no fragmentation in the community about how packages are stored, accessed, used, etc. This means zero overhead for using third party code, it&rsquo;s as easy to use as if it were built into the Go standard library.<br /><br /><h3>Sharing code is the default</h3></div><div>Like most scripting languages (and unlike many compiled languages), using source code from another project is the default way to use third party code in Go. Go creates a monolithic executable during its build, so there are no DLLs to create and distribute in the way you often see with other compiled languages. In theory you could distribute the compiled .a files from your project for other people to link to in their project, but this is not encouraged by the tooling, and I&rsquo;ve personally never seen anyone do it.</div><div><br /></div><h3>All Go code uses the same style</h3><div>Have you ever gone to read the source for a project you&rsquo;d like to contribute to, and had your eyes cross over at the bizarre formatting the authors used? That almost never happens with Go. Go comes with a code formatting tool called gofmt that automatically formats Go code to the same style. The use of gofmt is strongly encouraged in the Go community, and nearly everyone uses it. Most text editors have an extension to automatically format your code with gofmt on save, so you don&rsquo;t even have to think about it. You never have to worry about having a poorly formatted library to work with&hellip; and in the very rare situation where you do, you can just run it through gofmt and you&rsquo;re good to go.</div><div><br /></div><h3>Easy cross platform support</h3><div>Go makes it easy to support multiple platforms. The tooling <a href="http://dave.cheney.net/2012/09/08/an-introduction-to-cross-compilation-with-go" target="_blank">can create native binaries</a> for any popular operating system from the same source on a single machine. If you need platform-specific code, it&rsquo;s easy to specify code that only gets compiled for a single platform, by simply appending _&lt;os&gt; to a file name <i>.e.g</i>&nbsp;path_windows.go will only be compiled for builds targeting Windows.</div><div><br /></div><h3>Built-in documentation and testing</h3><div>Go comes with a documentation generator that spits generates HTML or plain text from minimally formatted comments in the code. It also comes with a standard testing package that can run unit tests, performance benchmarks, and runnable example code. Because this is all available in the standard library and with the standard tools, nearly everyone uses it&hellip; which means it&rsquo;s easy to look at the documentation for any random Go package, and easy check if the tests pass, without having to go install some third party support tool. Because it&rsquo;s all standardized, several popular websites have popped up to <a href="http://godoc.org/" target="_blank">automate generating</a>&nbsp;(and hosting) the documentation for your project, and you can easily run <a href="http://about.travis-ci.org/docs/user/languages/go/" target="_blank">continuous integration</a> on your package, with only a single line in the setup script - &ldquo;language: go&rdquo;.</div><div><br /></div><h3>Conclusion</h3><div>Everything about Go encourages standardization and openness&hellip; which not only makes it <i>possible </i>to use other people&rsquo;s code, it makes it <b>easy</b><i>&nbsp;</i>to use other people&rsquo;s code. I hope to see Go blossom as a language embraced by the open source community, as they discover the strengths that make it uniquely qualified for open source projects.</div></p>
+
+    
+     
+	
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") 
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'npfio';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by <a href="http://disqus.com/?ref_noscript">Disqus.</a></noscript>
+</div>
+</div> 
+
+</body>w
+</html>
