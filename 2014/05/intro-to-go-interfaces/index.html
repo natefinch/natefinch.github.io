@@ -115,7 +115,7 @@ func LongWalk(w Walker) {
 
 func main() {
     c := Camel{“Bill”}
-    LongWalk\(c)
+    LongWalk(c)
 }
 
 // prints
@@ -178,7 +178,7 @@ approximation):</p>
 <pre><code>data := c
 w := Walker{ 
     type: &amp;InterfaceType{ 
-              valtype: &amp;typeof\(c), 
+              valtype: &amp;typeof(c), 
               func0: &amp;Camel.Walk 
           }
     data: &amp;data
@@ -279,7 +279,7 @@ cannot use c (type Camel) as type Walker in function argument:
 <p>To pass a Camel into LongWalk now, you need to pass in a pointer to a Camel:</p>
 
 <pre><code>c := &amp;Camel{“Bill”}
-LongWalk\(c)
+LongWalk(c)
 
 or
 
@@ -326,7 +326,7 @@ if w != nil {
 }
 
 var c *Camel
-w := MakeWalker\(c)
+w := MakeWalker(c)
 if w != nil {
     // we’ll get in here, but why?
     w.Walk(500)
@@ -341,7 +341,7 @@ instructions that get generated when we assign a value to an interface.</p>
 <pre><code>data := c
 w := Walker{ 
     type: &amp;InterfaceType{ 
-              valtype: &amp;typeof\(c), 
+              valtype: &amp;typeof(c), 
               func0: &amp;Camel.Walk 
           }
     data: &amp;data
@@ -375,7 +375,7 @@ explicitly assign nil to the interface:</p>
 }
 
 var c *Camel
-w := MakeWalker\(c)
+w := MakeWalker(c)
 if w != nil {
     // Yay, we don’t get here!
     w.Walk(500)
