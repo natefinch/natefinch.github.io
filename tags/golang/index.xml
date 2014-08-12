@@ -93,7 +93,7 @@ func LongWalk(w Walker) {
 
 func main() {
     c := Camel{“Bill”}
-    LongWalk©
+    LongWalk\(c)
 }
 
 // prints
@@ -304,7 +304,7 @@ if w != nil {
 }
 
 var c *Camel
-w := MakeWalker©
+w := MakeWalker\(c)
 if w != nil {
     // we’ll get in here, but why?
     w.Walk(500)
@@ -353,7 +353,7 @@ explicitly assign nil to the interface:&lt;/p&gt;
 }
 
 var c *Camel
-w := MakeWalker©
+w := MakeWalker\(c)
 if w != nil {
     // Yay, we don’t get here!
     w.Walk(500)
