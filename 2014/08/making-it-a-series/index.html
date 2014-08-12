@@ -96,7 +96,10 @@ be somewhat of a challenge, but doable with some effort&hellip; hopefully someon
 else can learn from my work.</p>
 
 <p>This now brings us to <a href="http://hugo.spf13.com/taxonomies/overview">Taxonomies</a>.
-Taxonomies are basically just like tags, except that you can have any number of different types of tags.  So you might have &ldquo;Tags&rdquo; as a taxonomy, and thus you can give a content tags with values of &ldquo;go&rdquo; and &ldquo;programming&rdquo;.  Buy you can have a taxonomy of &ldquo;series&rdquo; and give content a series of &ldquo;Hugo 101&rdquo;.</p>
+Taxonomies are basically just like tags, except that you can have any number of
+different types of tags.  So you might have &ldquo;Tags&rdquo; as a taxonomy, and thus you
+can give a content tags with values of &ldquo;go&rdquo; and &ldquo;programming&rdquo;.  You can also
+have a taxonomy of &ldquo;series&rdquo; and give content a series of &ldquo;Hugo 101&rdquo;.</p>
 
 <p>Taxonomy is sort of like relatable metadata to gather multiple pieces of content
 together in a structured way&hellip; it&rsquo;s almost like a minimal relational database.
@@ -109,9 +112,13 @@ cross-referenced against other content.  This is a way to implement tags on
 posts, or series of posts.</p>
 
 <p>So, for my example, we add a Taxonomy to my site config called &ldquo;series&rdquo;.  Then
-in this post, the &ldquo;Hugo: Beyond the Defaults&rdquo; post, and the &ldquo;Hugo is Friggin&rsquo; Awesome&rdquo; post, I just add <code>series =
-[&quot;Hugo 101&quot;]</code>  (note the brackets - the values for the taxonomy are actually a
-list, even if you only have one value).  Now all these posts are magically related together under a taxonomy called &ldquo;series&rdquo;.  And Hugo automatically generates a listing for this taxonomy value at <a href="http://npf.io/series/hugo-101">/series/hugo-101</a> (the taxonomy value gets url-ized).  Any other series I make will be under a similar directory.</p>
+in this post, the &ldquo;Hugo: Beyond the Defaults&rdquo; post, and the &ldquo;Hugo is Friggin&rsquo;
+Awesome&rdquo; post, I just add <code>series = [&quot;Hugo 101&quot;]</code>  (note the brackets - the
+values for the taxonomy are actually a list, even if you only have one value).
+Now all these posts are magically related together under a taxonomy called
+&ldquo;series&rdquo;.  And Hugo automatically generates a listing for this taxonomy value
+at <a href="http://npf.io/series/hugo-101">/series/hugo-101</a> (the taxonomy value gets
+url-ized).  Any other series I make will be under a similar directory.</p>
 
 <p>This is fine and dandy and pretty aweomse out of the box&hellip; but I really want to
 automatically generate a list of posts in the series at the bottom of each post
@@ -127,7 +134,8 @@ will be (like the series on the current post).</p>
 
 <p>This is doable, but it&rsquo;s a little more complicated.</p>
 
-<p>I&rsquo;ll give you a dump of the relevant portion of my post template and then talk about how I got there:</p>
+<p>I&rsquo;ll give you a dump of the relevant portion of my post template and then talk
+about how I got there:</p>
 
 <pre><code>{{ if .Params.series }}
     {{ $name := index .Params.series 0 }}
@@ -182,7 +190,8 @@ bam, list of pages.</p>
 <p>And then it&rsquo;s just a matter of iterating over the pages and displaying them
 nicely. And what&rsquo;s great is that this is now all automatic&hellip; all old posts get
 updated with links to the new posts in the series, and any new series I make,
-regardless of the name, will get the nice list of posts at the bottom for that series.</p>
+regardless of the name, will get the nice list of posts at the bottom for that
+series.</p>
 
     
     

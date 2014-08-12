@@ -23,7 +23,10 @@ be somewhat of a challenge, but doable with some effort&amp;hellip; hopefully so
 else can learn from my work.&lt;/p&gt;
 
 &lt;p&gt;This now brings us to &lt;a href=&#34;http://hugo.spf13.com/taxonomies/overview&#34;&gt;Taxonomies&lt;/a&gt;.
-Taxonomies are basically just like tags, except that you can have any number of different types of tags.  So you might have &amp;ldquo;Tags&amp;rdquo; as a taxonomy, and thus you can give a content tags with values of &amp;ldquo;go&amp;rdquo; and &amp;ldquo;programming&amp;rdquo;.  Buy you can have a taxonomy of &amp;ldquo;series&amp;rdquo; and give content a series of &amp;ldquo;Hugo 101&amp;rdquo;.&lt;/p&gt;
+Taxonomies are basically just like tags, except that you can have any number of
+different types of tags.  So you might have &amp;ldquo;Tags&amp;rdquo; as a taxonomy, and thus you
+can give a content tags with values of &amp;ldquo;go&amp;rdquo; and &amp;ldquo;programming&amp;rdquo;.  You can also
+have a taxonomy of &amp;ldquo;series&amp;rdquo; and give content a series of &amp;ldquo;Hugo 101&amp;rdquo;.&lt;/p&gt;
 
 &lt;p&gt;Taxonomy is sort of like relatable metadata to gather multiple pieces of content
 together in a structured way&amp;hellip; it&amp;rsquo;s almost like a minimal relational database.
@@ -36,9 +39,13 @@ cross-referenced against other content.  This is a way to implement tags on
 posts, or series of posts.&lt;/p&gt;
 
 &lt;p&gt;So, for my example, we add a Taxonomy to my site config called &amp;ldquo;series&amp;rdquo;.  Then
-in this post, the &amp;ldquo;Hugo: Beyond the Defaults&amp;rdquo; post, and the &amp;ldquo;Hugo is Friggin&amp;rsquo; Awesome&amp;rdquo; post, I just add &lt;code&gt;series =
-[&amp;quot;Hugo 101&amp;quot;]&lt;/code&gt;  (note the brackets - the values for the taxonomy are actually a
-list, even if you only have one value).  Now all these posts are magically related together under a taxonomy called &amp;ldquo;series&amp;rdquo;.  And Hugo automatically generates a listing for this taxonomy value at &lt;a href=&#34;http://npf.io/series/hugo-101&#34;&gt;/series/hugo-101&lt;/a&gt; (the taxonomy value gets url-ized).  Any other series I make will be under a similar directory.&lt;/p&gt;
+in this post, the &amp;ldquo;Hugo: Beyond the Defaults&amp;rdquo; post, and the &amp;ldquo;Hugo is Friggin&amp;rsquo;
+Awesome&amp;rdquo; post, I just add &lt;code&gt;series = [&amp;quot;Hugo 101&amp;quot;]&lt;/code&gt;  (note the brackets - the
+values for the taxonomy are actually a list, even if you only have one value).
+Now all these posts are magically related together under a taxonomy called
+&amp;ldquo;series&amp;rdquo;.  And Hugo automatically generates a listing for this taxonomy value
+at &lt;a href=&#34;http://npf.io/series/hugo-101&#34;&gt;/series/hugo-101&lt;/a&gt; (the taxonomy value gets
+url-ized).  Any other series I make will be under a similar directory.&lt;/p&gt;
 
 &lt;p&gt;This is fine and dandy and pretty aweomse out of the box&amp;hellip; but I really want to
 automatically generate a list of posts in the series at the bottom of each post
@@ -54,7 +61,8 @@ will be (like the series on the current post).&lt;/p&gt;
 
 &lt;p&gt;This is doable, but it&amp;rsquo;s a little more complicated.&lt;/p&gt;
 
-&lt;p&gt;I&amp;rsquo;ll give you a dump of the relevant portion of my post template and then talk about how I got there:&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;ll give you a dump of the relevant portion of my post template and then talk
+about how I got there:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;{{ if .Params.series }}
     {{ $name := index .Params.series 0 }}
@@ -109,7 +117,8 @@ bam, list of pages.&lt;/p&gt;
 &lt;p&gt;And then it&amp;rsquo;s just a matter of iterating over the pages and displaying them
 nicely. And what&amp;rsquo;s great is that this is now all automatic&amp;hellip; all old posts get
 updated with links to the new posts in the series, and any new series I make,
-regardless of the name, will get the nice list of posts at the bottom for that series.&lt;/p&gt;
+regardless of the name, will get the nice list of posts at the bottom for that
+series.&lt;/p&gt;
 </description>
     </item>
     
