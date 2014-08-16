@@ -7,7 +7,298 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2014 Nate Finch</copyright>
-    <updated>Fri, 08 Aug 2014 11:12:44 UTC</updated>
+    <updated>Wed, 13 Aug 2014 14:09:51 UTC</updated>
+    
+    
+    <item>
+      <title>Intro to TOML</title>
+      <link>http://npf.io/2014/08/intro-to-toml/</link>
+      <pubDate>Wed, 13 Aug 2014 14:09:51 UTC</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2014/08/intro-to-toml/</guid>
+      <description>
+
+&lt;p&gt;TOML stands for Tom&amp;rsquo;s Own Minimal Language.  It is a configuration language
+vaguely similar to YAML or property lists, but far, far better.  But before we
+get into it in detail, let&amp;rsquo;s look back at what came before.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_0&#34;&gt;Long Ago, In A Galaxy Far, Far Away&lt;/h3&gt;
+
+&lt;p&gt;Since the beginning of computing, people have needed a way to configure
+their software.  On Linux, this generally is done in text files.  For simple
+configurations, good old foo = bar works pretty well.  One setting per line,
+name on the left, value on the right, separated by an equals.  Great.  But when
+your configuration gets more complicated, this quickly breaks down.  What if you
+need a value that is more than one line?  How do you indicate a value should be
+parsed as a number instead of a string?  How do you namespace related
+configuration values so you don&amp;rsquo;t need ridiculously long names to prevent
+collisions?&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_1&#34;&gt;The Dark Ages&lt;/h3&gt;
+
+&lt;p&gt;In the 90&amp;rsquo;s, we used XML.  And it sucked.  XML is verbose, it&amp;rsquo;s hard for humans
+to read and write, and it still doesn&amp;rsquo;t solve a lot of the problems above (like
+how to specify the type of a value).  In addition, the XML spec is huge,
+processing is very complicated, and all the extra features invite abuse and
+overcomplication.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_2&#34;&gt;Enlightenment&lt;/h3&gt;
+
+&lt;p&gt;In the mid 2000&amp;rsquo;s, JSON came to popularity as a data exchange format, and it was
+so much better than XML.  It had real types, it was easy for programs to
+process, and you didn&amp;rsquo;t have to write a spec on what values should get processed
+in what way (well, mostly).  It was sigificantly less verbose than XML.  But it
+is a format intended for computers to read and write, not humans.  It is a pain
+to write by hand, and even pretty-printed, it can be hard to read and the
+compact data format turns into a nested mess of curly braces.  Also, JSON is not
+without its problems&amp;hellip; for example, there&amp;rsquo;s no date type, there&amp;rsquo;s no support
+for comments, and all numbers are floats.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_3&#34;&gt;A False Start&lt;/h3&gt;
+
+&lt;p&gt;YAML came to popularity some time after JSON as a more human-readable format,
+and its &lt;code&gt;key: value&lt;/code&gt; syntax and pretty indentation is definitely a lot easier on
+the eyes than JSON&amp;rsquo;s nested curly-braces.  However, YAML trades ease of reading
+for difficulty in writing.  Indentation as delimiters is fraught with error&amp;hellip;
+figuring out how to get multiple lines of data into any random value is an
+exercise in googling and trial &amp;amp; error.&lt;/p&gt;
+
+&lt;p&gt;The YAML spec is also ridiculously long.  100% compatible parsers are very
+difficult to write.  Writing YAML by hand is a ridden with landmines of corner
+cases where your choice of names or values happens to hit a reserved word or
+special marker.  It does support comments, though.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_4&#34;&gt;The Savior&lt;/h3&gt;
+
+&lt;p&gt;On February 23, 2013, Tom Preston-Werner (former CEO of GitHub) made his first
+commit to &lt;a href=&#34;https://github.com/toml-lang/toml&#34;&gt;https://github.com/toml-lang/toml&lt;/a&gt;.  TOML stands for Tom&amp;rsquo;s Obvious,
+Minimal Language.  It is a language designed for configuring software.  Finally.&lt;/p&gt;
+
+&lt;p&gt;TOML takes inspiration from all of the above (well, except XML) and even gets
+some of its syntax from Microsoft&amp;rsquo;s INI files.  It is easy to write by hand and
+easy to read.  The spec is short and understandable by mere humans, and it&amp;rsquo;s
+fairly easy for computers to parse.  It supports comments, has first class
+dates, and supports both integers and floats.  It is generally insensitive to
+whitespace, without requiring a ton of delimiters.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s dive in.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_5&#34;&gt;The Basics&lt;/h3&gt;
+
+&lt;p&gt;The basic form is key = value&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Comments start with hash
+foo = &amp;quot;strings are in quotes and are always UTF8 with escape codes: \n \u00E9&amp;quot;
+
+bar = &amp;quot;&amp;quot;&amp;quot;multi-line strings
+use three quotes&amp;quot;&amp;quot;&amp;quot;
+
+baz = &#39;literal\strings\use\single\quotes&#39;
+
+bat = &#39;&#39;&#39;multiline\literals\use
+three\quotes&#39;&#39;&#39;
+
+int = 5 # integers are just numbers
+float = 5.0 # floats have a decimal point with numbers on both sides
+
+date = 2006-05-27T07:32:00Z # dates are ISO 8601 full zulu form
+
+bool = true # good old true and falss
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;One cool point:  If the first line of a multiline string (either literal or not)
+is a line return, it will be trimmed.  So you can make your big blocks of text
+start on the line after the name of the value and not need to worry about the
+extraneous newline at the beginning of your text:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;preabmle = &amp;quot;&amp;quot;&amp;quot;
+We the people of the United States, in order to form a more perfect union,
+establish justice, insure domestic tranquility, provide for the common defense,
+promote the general welfare, and secure the blessings of liberty to ourselves
+and our posterity, do ordain and establish this Constitution for the United
+States of America.&amp;quot;&amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;toc_6&#34;&gt;Lists&lt;/h3&gt;
+
+&lt;p&gt;Lists (arrays) are signified with brackets and delimited with commas.  Only
+primitives are allowed in this form, though you may have nested lists.  The
+format is forgiving, ignoring whitespace and newlines, and yes, the last comma
+is optional (thank you!):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;foo = [ &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot;
+        &amp;quot;bat&amp;quot;
+]
+
+nums = [ 1, 2, ]
+
+nested = [[ &amp;quot;a&amp;quot;, &amp;quot;b&amp;quot;], [1, 2]]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I love that the format is forgiving of whitespace and that last comma.  I like
+that the arrays are all of a single type, but allowing mixed types of sub-arrays
+bugs the heck out of me.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_7&#34;&gt;Now we get crazy&lt;/h3&gt;
+
+&lt;p&gt;What&amp;rsquo;s left?  In JSON there are objects, in YAML there are associative arrays&amp;hellip;
+in common parlance they are maps or dictionaries or hash tables.  Named
+collections of key/value pairs.&lt;/p&gt;
+
+&lt;p&gt;In TOML they are called tables and look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# some config above
+[table_name]
+foo = 1
+bar = 2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Foo and bar are keys in the table called table_name.  Tables have to be at the
+end of the config file. Why?  because there&amp;rsquo;s no end delimiter.  All keys under
+a table declaration are associated with that table, until a new table is
+declared or the end of the file.  So declaring two tables looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# some config above
+[table1]
+foo = 1
+bar = 2
+
+[table2]
+	foo = 1
+	baz = 2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The declaration of table2 defines where table1 ends.  Note that you can indent
+the values if you want, or not.  TOML doesn&amp;rsquo;t care.&lt;/p&gt;
+
+&lt;p&gt;If you want nested tables, you can do that, too.  It looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[table1]
+	foo = &amp;quot;bar&amp;quot;
+
+[table1.nested_table]
+	baz = &amp;quot;bat&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;nested_table&lt;/code&gt; is defined as a value in &lt;code&gt;table1&lt;/code&gt; because its name starts with
+&lt;code&gt;table1.&lt;/code&gt;.  Again, the table goes until the next table definition, so &lt;code&gt;baz=&amp;quot;bat&amp;quot;&lt;/code&gt;
+is a value in &lt;code&gt;table1.nested_table&lt;/code&gt;.  You can indent the nested table to make it
+more obvious, but again, all whitespace is optional:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[table1]
+	foo = &amp;quot;bar&amp;quot;
+
+	[table1.nested_table]
+		baz = &amp;quot;bat&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is equivalent to the JSON:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{ 
+	&amp;quot;table1&amp;quot; : {
+		&amp;quot;foo&amp;quot; : &amp;quot;bar&amp;quot;,
+		&amp;quot;nested_table&amp;quot; : {
+			&amp;quot;baz&amp;quot; : &amp;quot;bat&amp;quot;
+		}
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Having to retype the parent table name for each sub-table is kind of annoying,
+but I do like that it is very explicit.  It also means that ordering and
+indenting and delimiters don&amp;rsquo;t matter.  You don&amp;rsquo;t have to declare parent tables
+if they&amp;rsquo;re empty, so you can do something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[foo.bar.baz]
+bat = &amp;quot;hi&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Which is the equivalent to this JSON:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+	&amp;quot;foo&amp;quot; : {
+		&amp;quot;bar&amp;quot; : {
+			&amp;quot;baz&amp;quot; : {
+				&amp;quot;bat&amp;quot; : &amp;quot;hi&amp;quot;
+			}
+		}
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;toc_8&#34;&gt;Last but not least&lt;/h3&gt;
+
+&lt;p&gt;The last thing is arrays of tables, which are declared with double brackets
+thusly:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[[comments]]
+author = &amp;quot;Nate&amp;quot;
+text = &amp;quot;Great Article!&amp;quot;
+
+[[comments]]
+author = &amp;quot;Anonymous&amp;quot;
+text = &amp;quot;Love it!&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is equivalent to the JSON:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+	&amp;quot;comments&amp;quot; : [
+		{
+			&amp;quot;author&amp;quot; : &amp;quot;Nate&amp;quot;,
+			&amp;quot;text&amp;quot; : Great Article!&amp;quot;
+		},
+		{
+			&amp;quot;author&amp;quot; : &amp;quot;Anonymous&amp;quot;,
+			&amp;quot;text&amp;quot; : Love It!&amp;quot;
+		}
+	]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Arrays of tables inside another table get combined in the way you&amp;rsquo;d expect, like
+[[table1.array]].&lt;/p&gt;
+
+&lt;p&gt;TOML is very permissive here. Because all tables have very explicitly defined
+parentage, the order they&amp;rsquo;re defined in doesn&amp;rsquo;t matter. You can have tables (and
+entries in an array of tables) in whatever order you want.  This is totally
+acceptable:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[[comments]]
+author = &amp;quot;Anonymous&amp;quot;
+text = &amp;quot;Love it!&amp;quot;
+
+[foo.bar.baz]
+bat = &amp;quot;hi&amp;quot;
+
+[foo.bar]
+howdy = &amp;quot;neighbor&amp;quot;
+
+[[comments]]
+author = &amp;quot;Anonymous&amp;quot;
+text = &amp;quot;Love it!&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Of course, it generally makes sense to actually order things in a more organized
+fashion, but it&amp;rsquo;s nice that you can&amp;rsquo;t shoot yourself in the foot if you reorder
+things &amp;ldquo;incorrectly&amp;rdquo;.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_9&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;That&amp;rsquo;s TOML.  It&amp;rsquo;s pretty awesome.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;s a &lt;a href=&#34;https://github.com/toml-lang/toml#implementations&#34;&gt;list of parsers&lt;/a&gt;
+on the TOML page on github for pretty much whatever language you want.  I
+recommend &lt;a href=&#34;http://github.com/BurntSushi/toml&#34;&gt;BurntSushi&lt;/a&gt;&amp;rsquo;s for Go, since it
+works just like the built-in parsers.&lt;/p&gt;
+
+&lt;p&gt;It is now my default configuration language for all the applications I write.&lt;/p&gt;
+
+&lt;p&gt;The next time you write an application that needs some configuration, take a
+look at TOML.  I think your users will thank you.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -767,18 +1058,6 @@ on Go interfaces, I highly recommend it.&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>http://npf.io/2014/03/go-tips-for-newbie-gophers/</guid>
       <description>&lt;p&gt;This is just a collection of tips that would have saved me a lot of time if I had known about them when I was a newbie:&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Build or test everything under the current directory and subdirectories:&lt;/b&gt;&lt;br /&gt;&lt;b&gt;&lt;br /&gt;&lt;/b&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;go build ./&amp;hellip;&lt;br /&gt;go test ./&amp;hellip;&lt;/pre&gt;&lt;span style=&#34;font-family: inherit;&#34;&gt;Technically, both commands take a pattern to match the name of one or more packages, and the &amp;hellip; specifier is a wildcard, so you could do &amp;hellip;/foo/&amp;hellip; to match all packages under GOPATH with foo in their path.&amp;nbsp;&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Have an io.Writer that writes to an in-memory data structure:&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;&lt;div&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;b := &amp;amp;bytes.Buffer{}&lt;br /&gt;thing.WriteTo(b)&lt;/pre&gt;&lt;b&gt;Have an io.Reader read from a string (useful when you want to use a string as the input data for something):&lt;/b&gt;&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;r := strings.NewReader(myString)&lt;br /&gt;thing.ReadFrom(r)&lt;/pre&gt;&lt;b&gt;Copy data from a reader to a writer:&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;io.Copy(toWriter, fromReader)&lt;/pre&gt;&lt;b&gt;Timeout waiting on a channel:&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;select {&lt;br/&gt;&amp;nbsp; &amp;nbsp;case val := &amp;lt;- ch&lt;br/&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;// use val&lt;br/&gt;&amp;nbsp; &amp;nbsp;case &amp;lt;-time.After(time.Second*5)&lt;br /&gt;}&lt;/pre&gt;&lt;b&gt;Convert a slice of bytes to a string:&lt;/b&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;var b []byte = getData()&lt;br/&gt;s := string(b)&lt;/pre&gt;&lt;b&gt;Passing a nil pointer into an interface does not result in a nil interface:&lt;/b&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;func isNil(i interface{}) bool {&lt;br/&gt;&amp;nbsp; &amp;nbsp; return i == nil&lt;br/&gt;}&lt;br/&gt;var f *foo = nil&lt;br /&gt;fmt.Println(isNil(f)) &amp;nbsp;// prints false&lt;/pre&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;The only way to get a nil interface is to pass the keyword nil:&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;var f *foo = nil&lt;br/&gt;if f == nil {&lt;br /&gt;&amp;nbsp; &amp;nbsp; fmt.Println(isNil(nil)) &amp;nbsp;// prints true&lt;br/&gt;}&lt;/pre&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;How to remember where the arrow goes for channels:&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;The arrow points in the direction of data flow, either into or out of the channel, and always points left.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;The above is generalizable to anything where you have a source and destination, or reading and writing, or assigning.&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;br /&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;Data is taken from the right and assigned to the left, just as it is with a := b. &amp;nbsp;So, like io.Copy, you know that the reader (source) is on the right, the writer (destination) is on the left: &amp;nbsp;io.Copy(dest, src).&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;If you ever think &amp;ldquo;man, someone should have made a helper function to do this!&amp;rdquo;, chances are they have, and it&amp;rsquo;s in the std lib somewhere.&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Working at Canonical</title>
-      <link>http://npf.io/2013/11/working-at-canonical/</link>
-      <pubDate>Sun, 10 Nov 2013 16:14:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2013/11/working-at-canonical/</guid>
-      <description>&lt;p&gt;&lt;div class=&#34;separator&#34; style=&#34;clear: both; text-align: left;&#34;&gt;I&amp;rsquo;ve been a developer at Canonical (working on &lt;a href=&#34;http://juju.ubuntu.com/&#34; target=&#34;_blank&#34;&gt;Juju&lt;/a&gt;) for a little over 3 months, and I have to say, this is the best job I have ever had, bar none.&lt;/div&gt;&lt;br /&gt;Let me tell you why.&lt;br /&gt;&lt;br /&gt;1.) 100% work from home (minus ~2 one week trips per year)&lt;br /&gt;2.) Get paid to write cool open source software.&lt;br /&gt;3.) Work with smart people from all over the globe.&lt;br /&gt;&lt;br /&gt;#1 can&amp;rsquo;t be overstated. This isn&amp;rsquo;t just &amp;ldquo;flex time&amp;rdquo; or &amp;ldquo;work from home when you want to&amp;rdquo;. &amp;nbsp;There is literally no office to go to for most people at Canonical. &amp;nbsp;Working at home is the default. &amp;nbsp;The difference is huge. &amp;nbsp;My last company let us work from home as much as we wanted, but most of the company worked from San Francisco&amp;hellip; which means when there were meetings, 90% of the people were in the room, and the rest of us were on a crappy speakerphone straining to hear and having our questions ignored. &amp;nbsp;At Canonical, everyone is remote, so everyone works to make meetings and interactions work well online&amp;hellip; and these days it&amp;rsquo;s easy with stuff like Google Hangouts and IRC and email and online bug tracking etc.&lt;br /&gt;&lt;br /&gt;Canonical&amp;rsquo;s benefits don&amp;rsquo;t match Google&amp;rsquo;s or Facebook&amp;rsquo;s (you get the standard stuff, health insurance, 401k etc, just not the crazy stuff like caviar at lunch&amp;hellip; unless of course you have caviar in the fridge at home). &amp;nbsp;However, I&amp;rsquo;m pretty sure the salaries are pretty comparable&amp;hellip; and Google and Facebook don&amp;rsquo;t let you work 100% from home. &amp;nbsp;I&amp;rsquo;m pretty sure they barely let you work from home at all. &amp;nbsp;And that is a huge quality of life issue for me. &amp;nbsp;I don&amp;rsquo;t have to slog through traffic and public transportation to get to work. &amp;nbsp;I just roll out of bed, make some coffee, and sit down at my desk. &amp;nbsp;I get to see my family more, and I save money on transportation.&lt;br /&gt;&lt;br /&gt;#2 makes a bigger difference than I expected. &amp;nbsp;Working on open source is like entering a whole different world. &amp;nbsp;I&amp;rsquo;d only worked on closed source before, and the difference is awesome. &amp;nbsp;There&amp;rsquo;s purposeful openness and inclusion of the community in our development. &amp;nbsp;Bug lists are public, and anyone can file one. &amp;nbsp;Mailing lists are public (for the most part) and anyone can get on them. &amp;nbsp;IRC channels are public, and anyone can ask questions directly to the developers. &amp;nbsp;It&amp;rsquo;s a really great feeling, and puts us so much closer to the community - the people that have perhaps an even bigger stake in the products we make than we do. &amp;nbsp;Not only that, but we write software for people like us. &amp;nbsp;Developers. &amp;nbsp;I &lt;b&gt;am&lt;/b&gt; the target market, in most cases. &amp;nbsp;And that makes it easy to get excited about the work and easy to be proud of and show off what I do.&lt;br /&gt;&lt;br /&gt;#3 The people. &amp;nbsp;I have people on my team from Germany, the UK, Malta, the UAE, Australia, and New Zealand. &amp;nbsp;It&amp;rsquo;s amazing working with people of such different backgrounds. &amp;nbsp;And when you don&amp;rsquo;t have to tie yourself down to hiring people within a 30 mile radius, you can afford to be more picky. &amp;nbsp;Canonical doesn&amp;rsquo;t skimp on the people, either. &amp;nbsp;I was surprised that nearly everyone on my team was 30+ (possibly all of them, I don&amp;rsquo;t actually know how old everyone is ;) &amp;nbsp;That&amp;rsquo;s a lot of experience to have on one team, and it&amp;rsquo;s so refreshing not to have to try to train the scrappy 20-somethings to value the things that come with experience (no offense to my old colleagues, you guys were great).&lt;br /&gt;&lt;br /&gt;Put it all together, and it&amp;rsquo;s an amazing opportunity that I am exceedingly pleased to have been given.&lt;/p&gt;
 </description>
     </item>
     

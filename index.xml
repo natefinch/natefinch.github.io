@@ -7,7 +7,298 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2014 Nate Finch</copyright>
-    <updated>Tue, 12 Aug 2014 11:09:35 UTC</updated>
+    <updated>Wed, 13 Aug 2014 14:09:51 UTC</updated>
+    
+    
+    <item>
+      <title>Intro to TOML</title>
+      <link>http://npf.io/2014/08/intro-to-toml/</link>
+      <pubDate>Wed, 13 Aug 2014 14:09:51 UTC</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2014/08/intro-to-toml/</guid>
+      <description>
+
+&lt;p&gt;TOML stands for Tom&amp;rsquo;s Own Minimal Language.  It is a configuration language
+vaguely similar to YAML or property lists, but far, far better.  But before we
+get into it in detail, let&amp;rsquo;s look back at what came before.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_0&#34;&gt;Long Ago, In A Galaxy Far, Far Away&lt;/h3&gt;
+
+&lt;p&gt;Since the beginning of computing, people have needed a way to configure
+their software.  On Linux, this generally is done in text files.  For simple
+configurations, good old foo = bar works pretty well.  One setting per line,
+name on the left, value on the right, separated by an equals.  Great.  But when
+your configuration gets more complicated, this quickly breaks down.  What if you
+need a value that is more than one line?  How do you indicate a value should be
+parsed as a number instead of a string?  How do you namespace related
+configuration values so you don&amp;rsquo;t need ridiculously long names to prevent
+collisions?&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_1&#34;&gt;The Dark Ages&lt;/h3&gt;
+
+&lt;p&gt;In the 90&amp;rsquo;s, we used XML.  And it sucked.  XML is verbose, it&amp;rsquo;s hard for humans
+to read and write, and it still doesn&amp;rsquo;t solve a lot of the problems above (like
+how to specify the type of a value).  In addition, the XML spec is huge,
+processing is very complicated, and all the extra features invite abuse and
+overcomplication.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_2&#34;&gt;Enlightenment&lt;/h3&gt;
+
+&lt;p&gt;In the mid 2000&amp;rsquo;s, JSON came to popularity as a data exchange format, and it was
+so much better than XML.  It had real types, it was easy for programs to
+process, and you didn&amp;rsquo;t have to write a spec on what values should get processed
+in what way (well, mostly).  It was sigificantly less verbose than XML.  But it
+is a format intended for computers to read and write, not humans.  It is a pain
+to write by hand, and even pretty-printed, it can be hard to read and the
+compact data format turns into a nested mess of curly braces.  Also, JSON is not
+without its problems&amp;hellip; for example, there&amp;rsquo;s no date type, there&amp;rsquo;s no support
+for comments, and all numbers are floats.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_3&#34;&gt;A False Start&lt;/h3&gt;
+
+&lt;p&gt;YAML came to popularity some time after JSON as a more human-readable format,
+and its &lt;code&gt;key: value&lt;/code&gt; syntax and pretty indentation is definitely a lot easier on
+the eyes than JSON&amp;rsquo;s nested curly-braces.  However, YAML trades ease of reading
+for difficulty in writing.  Indentation as delimiters is fraught with error&amp;hellip;
+figuring out how to get multiple lines of data into any random value is an
+exercise in googling and trial &amp;amp; error.&lt;/p&gt;
+
+&lt;p&gt;The YAML spec is also ridiculously long.  100% compatible parsers are very
+difficult to write.  Writing YAML by hand is a ridden with landmines of corner
+cases where your choice of names or values happens to hit a reserved word or
+special marker.  It does support comments, though.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_4&#34;&gt;The Savior&lt;/h3&gt;
+
+&lt;p&gt;On February 23, 2013, Tom Preston-Werner (former CEO of GitHub) made his first
+commit to &lt;a href=&#34;https://github.com/toml-lang/toml&#34;&gt;https://github.com/toml-lang/toml&lt;/a&gt;.  TOML stands for Tom&amp;rsquo;s Obvious,
+Minimal Language.  It is a language designed for configuring software.  Finally.&lt;/p&gt;
+
+&lt;p&gt;TOML takes inspiration from all of the above (well, except XML) and even gets
+some of its syntax from Microsoft&amp;rsquo;s INI files.  It is easy to write by hand and
+easy to read.  The spec is short and understandable by mere humans, and it&amp;rsquo;s
+fairly easy for computers to parse.  It supports comments, has first class
+dates, and supports both integers and floats.  It is generally insensitive to
+whitespace, without requiring a ton of delimiters.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s dive in.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_5&#34;&gt;The Basics&lt;/h3&gt;
+
+&lt;p&gt;The basic form is key = value&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Comments start with hash
+foo = &amp;quot;strings are in quotes and are always UTF8 with escape codes: \n \u00E9&amp;quot;
+
+bar = &amp;quot;&amp;quot;&amp;quot;multi-line strings
+use three quotes&amp;quot;&amp;quot;&amp;quot;
+
+baz = &#39;literal\strings\use\single\quotes&#39;
+
+bat = &#39;&#39;&#39;multiline\literals\use
+three\quotes&#39;&#39;&#39;
+
+int = 5 # integers are just numbers
+float = 5.0 # floats have a decimal point with numbers on both sides
+
+date = 2006-05-27T07:32:00Z # dates are ISO 8601 full zulu form
+
+bool = true # good old true and falss
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;One cool point:  If the first line of a multiline string (either literal or not)
+is a line return, it will be trimmed.  So you can make your big blocks of text
+start on the line after the name of the value and not need to worry about the
+extraneous newline at the beginning of your text:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;preabmle = &amp;quot;&amp;quot;&amp;quot;
+We the people of the United States, in order to form a more perfect union,
+establish justice, insure domestic tranquility, provide for the common defense,
+promote the general welfare, and secure the blessings of liberty to ourselves
+and our posterity, do ordain and establish this Constitution for the United
+States of America.&amp;quot;&amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;toc_6&#34;&gt;Lists&lt;/h3&gt;
+
+&lt;p&gt;Lists (arrays) are signified with brackets and delimited with commas.  Only
+primitives are allowed in this form, though you may have nested lists.  The
+format is forgiving, ignoring whitespace and newlines, and yes, the last comma
+is optional (thank you!):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;foo = [ &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot;
+        &amp;quot;bat&amp;quot;
+]
+
+nums = [ 1, 2, ]
+
+nested = [[ &amp;quot;a&amp;quot;, &amp;quot;b&amp;quot;], [1, 2]]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I love that the format is forgiving of whitespace and that last comma.  I like
+that the arrays are all of a single type, but allowing mixed types of sub-arrays
+bugs the heck out of me.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_7&#34;&gt;Now we get crazy&lt;/h3&gt;
+
+&lt;p&gt;What&amp;rsquo;s left?  In JSON there are objects, in YAML there are associative arrays&amp;hellip;
+in common parlance they are maps or dictionaries or hash tables.  Named
+collections of key/value pairs.&lt;/p&gt;
+
+&lt;p&gt;In TOML they are called tables and look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# some config above
+[table_name]
+foo = 1
+bar = 2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Foo and bar are keys in the table called table_name.  Tables have to be at the
+end of the config file. Why?  because there&amp;rsquo;s no end delimiter.  All keys under
+a table declaration are associated with that table, until a new table is
+declared or the end of the file.  So declaring two tables looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# some config above
+[table1]
+foo = 1
+bar = 2
+
+[table2]
+	foo = 1
+	baz = 2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The declaration of table2 defines where table1 ends.  Note that you can indent
+the values if you want, or not.  TOML doesn&amp;rsquo;t care.&lt;/p&gt;
+
+&lt;p&gt;If you want nested tables, you can do that, too.  It looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[table1]
+	foo = &amp;quot;bar&amp;quot;
+
+[table1.nested_table]
+	baz = &amp;quot;bat&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;nested_table&lt;/code&gt; is defined as a value in &lt;code&gt;table1&lt;/code&gt; because its name starts with
+&lt;code&gt;table1.&lt;/code&gt;.  Again, the table goes until the next table definition, so &lt;code&gt;baz=&amp;quot;bat&amp;quot;&lt;/code&gt;
+is a value in &lt;code&gt;table1.nested_table&lt;/code&gt;.  You can indent the nested table to make it
+more obvious, but again, all whitespace is optional:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[table1]
+	foo = &amp;quot;bar&amp;quot;
+
+	[table1.nested_table]
+		baz = &amp;quot;bat&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is equivalent to the JSON:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{ 
+	&amp;quot;table1&amp;quot; : {
+		&amp;quot;foo&amp;quot; : &amp;quot;bar&amp;quot;,
+		&amp;quot;nested_table&amp;quot; : {
+			&amp;quot;baz&amp;quot; : &amp;quot;bat&amp;quot;
+		}
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Having to retype the parent table name for each sub-table is kind of annoying,
+but I do like that it is very explicit.  It also means that ordering and
+indenting and delimiters don&amp;rsquo;t matter.  You don&amp;rsquo;t have to declare parent tables
+if they&amp;rsquo;re empty, so you can do something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[foo.bar.baz]
+bat = &amp;quot;hi&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Which is the equivalent to this JSON:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+	&amp;quot;foo&amp;quot; : {
+		&amp;quot;bar&amp;quot; : {
+			&amp;quot;baz&amp;quot; : {
+				&amp;quot;bat&amp;quot; : &amp;quot;hi&amp;quot;
+			}
+		}
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;toc_8&#34;&gt;Last but not least&lt;/h3&gt;
+
+&lt;p&gt;The last thing is arrays of tables, which are declared with double brackets
+thusly:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[[comments]]
+author = &amp;quot;Nate&amp;quot;
+text = &amp;quot;Great Article!&amp;quot;
+
+[[comments]]
+author = &amp;quot;Anonymous&amp;quot;
+text = &amp;quot;Love it!&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is equivalent to the JSON:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+	&amp;quot;comments&amp;quot; : [
+		{
+			&amp;quot;author&amp;quot; : &amp;quot;Nate&amp;quot;,
+			&amp;quot;text&amp;quot; : Great Article!&amp;quot;
+		},
+		{
+			&amp;quot;author&amp;quot; : &amp;quot;Anonymous&amp;quot;,
+			&amp;quot;text&amp;quot; : Love It!&amp;quot;
+		}
+	]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Arrays of tables inside another table get combined in the way you&amp;rsquo;d expect, like
+[[table1.array]].&lt;/p&gt;
+
+&lt;p&gt;TOML is very permissive here. Because all tables have very explicitly defined
+parentage, the order they&amp;rsquo;re defined in doesn&amp;rsquo;t matter. You can have tables (and
+entries in an array of tables) in whatever order you want.  This is totally
+acceptable:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[[comments]]
+author = &amp;quot;Anonymous&amp;quot;
+text = &amp;quot;Love it!&amp;quot;
+
+[foo.bar.baz]
+bat = &amp;quot;hi&amp;quot;
+
+[foo.bar]
+howdy = &amp;quot;neighbor&amp;quot;
+
+[[comments]]
+author = &amp;quot;Anonymous&amp;quot;
+text = &amp;quot;Love it!&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Of course, it generally makes sense to actually order things in a more organized
+fashion, but it&amp;rsquo;s nice that you can&amp;rsquo;t shoot yourself in the foot if you reorder
+things &amp;ldquo;incorrectly&amp;rdquo;.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_9&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;That&amp;rsquo;s TOML.  It&amp;rsquo;s pretty awesome.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;s a &lt;a href=&#34;https://github.com/toml-lang/toml#implementations&#34;&gt;list of parsers&lt;/a&gt;
+on the TOML page on github for pretty much whatever language you want.  I
+recommend &lt;a href=&#34;http://github.com/BurntSushi/toml&#34;&gt;BurntSushi&lt;/a&gt;&amp;rsquo;s for Go, since it
+works just like the built-in parsers.&lt;/p&gt;
+
+&lt;p&gt;It is now my default configuration language for all the applications I write.&lt;/p&gt;
+
+&lt;p&gt;The next time you write an application that needs some configuration, take a
+look at TOML.  I think your users will thank you.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     
@@ -727,18 +1018,6 @@ on Go interfaces, I highly recommend it.&lt;/p&gt;
       <guid>http://npf.io/2014/04/mocking-functions-in-go/</guid>
       <description>&lt;p&gt;Functions in Go are first class citizens, that means you can have a variable that contains a function value, and call it like a regular function.&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;printf := fmt.Printf&lt;br /&gt;printf(&amp;ldquo;This will output %d line.\n&amp;rdquo;, 1)&lt;/pre&gt;This ability can come in very handy for testing code that calls a function which is hard to properly test while testing the surrounding code. &amp;nbsp;In &lt;a href=&#34;http://juju.ubuntu.com/&#34; target=&#34;_blank&#34;&gt;Juju&lt;/a&gt;, we occasionally use function variables to allow us to stub out a difficult function during tests, in order to more easily test the code that calls it. &amp;nbsp;Here&amp;rsquo;s a simplified example:&lt;br /&gt;
 &lt;pre style=&#34;tab-size: 4;&#34;&gt;// in install/mongodb.go&lt;br /&gt;package install&lt;br /&gt;&lt;br /&gt;func SetupMongodb(path string) error {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;// suppose the code in this method modifies files in root&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;// directories, mucks with the environment, etc&amp;hellip; &lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;// Actions you actively don&amp;rsquo;t want to do during most tests.&lt;br /&gt;}&lt;/pre&gt;&lt;/span&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;&lt;br /&gt;// in startup/bootstrap.go&lt;br /&gt;package startup&lt;br /&gt;&lt;br /&gt;func Bootstrap() error {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;hellip;&lt;br /&gt;&amp;nbsp; &amp;nbsp; path := getPath()&lt;br /&gt;&amp;nbsp; &amp;nbsp; if err := install.SetupMongodb(path); err != nil {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;return err&lt;br /&gt;&amp;nbsp; &amp;nbsp; }&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;hellip;&lt;br /&gt;}&lt;/pre&gt;&lt;/span&gt;So, suppose you want to write a test for Bootstrap, but you know SetupMongodb won&amp;rsquo;t work, because the tests don&amp;rsquo;t run with root privileges (and you don&amp;rsquo;t want to setup mongodb on the dev&amp;rsquo;s machine anyway). &amp;nbsp;What can you do? &amp;nbsp;This is where mocking comes in.&lt;br /&gt;&lt;br /&gt;We just make a little tweak to Bootstrap:&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;package startup&lt;br /&gt;&lt;br /&gt;var setupMongo = install.SetupMongodb&lt;br /&gt;&lt;br /&gt;func Bootstrap() error {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;hellip;&lt;br /&gt;&amp;nbsp; &amp;nbsp; path := getRootDirPath()&lt;br /&gt;&amp;nbsp; &amp;nbsp; if err := setupMongo(path); err != nil {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;return err&lt;br /&gt;&amp;nbsp; &amp;nbsp; }&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;hellip;&lt;br /&gt;}&lt;/pre&gt;&lt;/span&gt;Now if we want to test Bootstrap, we can mock out the setupMongo function thusly:&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;&lt;span style=&#34;TRACE&#34;&gt;// in startup/bootstrap_test.go&lt;br /&gt;package startup&lt;br /&gt;&lt;br /&gt;type fakeSetup struct {&lt;br /&gt;&amp;nbsp; &amp;nbsp; path string&lt;br /&gt;&amp;nbsp; &amp;nbsp; err error&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;func (f *fakeSetup) setup(path string) error {&lt;br /&gt;&amp;nbsp; &amp;nbsp; f.path = path&lt;br /&gt;&amp;nbsp; &amp;nbsp; return f.err&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;TestBootstrap(t *testing.T) {&lt;br /&gt;&amp;nbsp; &amp;nbsp; f := &amp;amp;fakeSetup{ err: errors.New(&amp;ldquo;Failed!&amp;rdquo;) }&lt;br /&gt;&amp;nbsp; &amp;nbsp; // this mocks out the function that Bootstrap() calls&lt;br /&gt;&amp;nbsp; &amp;nbsp; setupMongo = f.setup&lt;br /&gt;&amp;nbsp; &amp;nbsp; err := Bootstrap()&lt;br /&gt;&amp;nbsp; &amp;nbsp; if err != f.err {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; t.Fail(&amp;ldquo;Error from setupMongo not returned.  Expected %v, got %v&amp;rdquo;, f.err, err)&lt;br /&gt;&amp;nbsp; &amp;nbsp; }&lt;br /&gt;&amp;nbsp; &amp;nbsp; expPath := getPath()&lt;br /&gt;&amp;nbsp; &amp;nbsp; if f.path != expPath {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; t.Fail(&amp;ldquo;Path not correctly passed into setupMongo. Expected %q, got %q&amp;rdquo;, expPath, f.path)&lt;br /&gt;&amp;nbsp; &amp;nbsp; }&lt;br /&gt;&lt;br /&gt;&amp;nbsp; &amp;nbsp; // and then try again with f.err == nil, you get the idea&lt;br /&gt;}&lt;/pre&gt;&lt;/span&gt;Now we have full control over what happens in the setupMongo function, we can record the parameters that are passed into it, what it returns, and test that Bootstrap is at least using the API of the function correctly.&lt;br /&gt;&lt;br /&gt;Obviously, we need tests elsewhere for install.SetupMongodb to make sure it does the right thing, but those can be tests internal to the install package, which can use non-exported fields and functions to effectively test the logic that would be impossible from an external package (like the setup package).  Using this mocking means that we don&amp;rsquo;t have to worry about setting up an environment that allows us to test SetupMongodb when we really only want to test Bootstrap. &amp;nbsp;We can just stub out the function and test that Bootstrap does everything correctly, and trust that SetupMongodb works because it&amp;rsquo;s tested in its own package.&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Effective Godoc</title>
-      <link>http://npf.io/2014/04/effective-godoc/</link>
-      <pubDate>Tue, 01 Apr 2014 06:43:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2014/04/effective-godoc/</guid>
-      <description>&lt;p&gt;I started to write a blog post about how to get the most out of godoc, with examples in a repo, and then realized I could just write the whole post as godoc on the repo, so that&amp;rsquo;s what I did. &amp;nbsp;Feel free to send pull requests if there&amp;rsquo;s anything you see that could be improved.&lt;br /&gt;&lt;br /&gt;I actually learned quite a lot writing this article, by exploring all the nooks and crannies of Go&amp;rsquo;s documentation generation. &amp;nbsp;Hopefully you&amp;rsquo;ll learn something too.&lt;br /&gt;&lt;br /&gt;Either view the documentation on godoc.org:&lt;br /&gt;&lt;br /&gt;&lt;a href=&#34;https://godoc.org/github.com/natefinch/godocgo&#34;&gt;https://godoc.org/github.com/natefinch/godocgo&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;or view it locally using the godoc tool:&lt;br /&gt;&lt;br /&gt;&lt;pre style=&#34;background-color: whitesmoke; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; border: 1px solid rgb(204, 204, 204); box-sizing: border-box; color: #333333; font-family: Monaco, Menlo, Consolas, &#39;Courier New&#39;, monospace; font-size: 13px; line-height: 1.428571429; margin-bottom: 10px; overflow: auto; padding: 9.5px; word-break: normal; word-wrap: normal;&#34;&gt;go get code.google.com/p/go.tools/cmd/godoc&lt;br /&gt;go get github.com/natefinch/godocgo&lt;br /&gt;godoc -http=:8080&lt;/pre&gt;&lt;br /&gt;Then open a browser to &lt;a href=&#34;http://localhost:8080/pkg/github.com/natefinch/godocgo&#34;&gt;http://localhost:8080/pkg/github.com/natefinch/godocgo&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;Enjoy!&lt;/p&gt;
 </description>
     </item>
     
