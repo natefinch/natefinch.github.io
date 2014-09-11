@@ -3,7 +3,7 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>http://npf.io/series/hugo-101/index.xml</link>
+    <link>http://npf.io/series/hugo-101/index.xml/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2014 Nate Finch</copyright>
