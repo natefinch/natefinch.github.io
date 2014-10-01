@@ -149,7 +149,7 @@ for {
 
 <h2 id="toc_2">Variables</h2>
 
-<pre><code class="go">var ErrClosed = PipeError{&quot;Pipe has been closed.&quot;, false}
+<pre><code class="language-go">var ErrClosed = PipeError{&quot;Pipe has been closed.&quot;, false}
 </code></pre>
 
 <p>ErrClosed is the error returned by PipeListener.Accept when Close is called
@@ -157,28 +157,28 @@ on the PipeListener.</p>
 
 <h2 id="toc_3">type PipeAddr</h2>
 
-<pre><code class="go">type PipeAddr string
+<pre><code class="language-go">type PipeAddr string
 </code></pre>
 
 <p>PipeAddr represents the address of a named pipe.</p>
 
 <h3 id="toc_4">func (PipeAddr) Network</h3>
 
-<pre><code class="go">func (a PipeAddr) Network() string
+<pre><code class="language-go">func (a PipeAddr) Network() string
 </code></pre>
 
 <p>Network returns the address&rsquo;s network name, &ldquo;pipe&rdquo;.</p>
 
 <h3 id="toc_5">func (PipeAddr) String</h3>
 
-<pre><code class="go">func (a PipeAddr) String() string
+<pre><code class="language-go">func (a PipeAddr) String() string
 </code></pre>
 
 <p>String returns the address of the pipe</p>
 
 <h2 id="toc_6">type PipeConn</h2>
 
-<pre><code class="go">type PipeConn struct {
+<pre><code class="language-go">type PipeConn struct {
     // contains filtered or unexported fields
 }
 </code></pre>
@@ -187,7 +187,7 @@ on the PipeListener.</p>
 
 <h3 id="toc_7">func Dial</h3>
 
-<pre><code class="go">func Dial(address string) (*PipeConn, error)
+<pre><code class="language-go">func Dial(address string) (*PipeConn, error)
 </code></pre>
 
 <p>Dial connects to a named pipe with the given address. If the specified pipe is not available,
@@ -209,42 +209,42 @@ conn, err := Dial(`\\othercomp\pipe\mypipename`)
 
 <h3 id="toc_8">func DialTimeout</h3>
 
-<pre><code class="go">func DialTimeout(address string, timeout time.Duration) (*PipeConn, error)
+<pre><code class="language-go">func DialTimeout(address string, timeout time.Duration) (*PipeConn, error)
 </code></pre>
 
 <p>DialTimeout acts like Dial, but will time out after the duration of timeout</p>
 
 <h3 id="toc_9">func (*PipeConn) Close</h3>
 
-<pre><code class="go">func (c *PipeConn) Close() error
+<pre><code class="language-go">func (c *PipeConn) Close() error
 </code></pre>
 
 <p>Close closes the connection.</p>
 
 <h3 id="toc_10">func (*PipeConn) LocalAddr</h3>
 
-<pre><code class="go">func (c *PipeConn) LocalAddr() net.Addr
+<pre><code class="language-go">func (c *PipeConn) LocalAddr() net.Addr
 </code></pre>
 
 <p>LocalAddr returns the local network address.</p>
 
 <h3 id="toc_11">func (*PipeConn) Read</h3>
 
-<pre><code class="go">func (c *PipeConn) Read(b []byte) (int, error)
+<pre><code class="language-go">func (c *PipeConn) Read(b []byte) (int, error)
 </code></pre>
 
 <p>Read implements the net.Conn Read method.</p>
 
 <h3 id="toc_12">func (*PipeConn) RemoteAddr</h3>
 
-<pre><code class="go">func (c *PipeConn) RemoteAddr() net.Addr
+<pre><code class="language-go">func (c *PipeConn) RemoteAddr() net.Addr
 </code></pre>
 
 <p>RemoteAddr returns the remote network address.</p>
 
 <h3 id="toc_13">func (*PipeConn) SetDeadline</h3>
 
-<pre><code class="go">func (c *PipeConn) SetDeadline(t time.Time) error
+<pre><code class="language-go">func (c *PipeConn) SetDeadline(t time.Time) error
 </code></pre>
 
 <p>SetDeadline implements the net.Conn SetDeadline method.
@@ -252,7 +252,7 @@ Note that timeouts are only supported on Windows Vista/Server 2008 and above</p>
 
 <h3 id="toc_14">func (*PipeConn) SetReadDeadline</h3>
 
-<pre><code class="go">func (c *PipeConn) SetReadDeadline(t time.Time) error
+<pre><code class="language-go">func (c *PipeConn) SetReadDeadline(t time.Time) error
 </code></pre>
 
 <p>SetReadDeadline implements the net.Conn SetReadDeadline method.
@@ -260,7 +260,7 @@ Note that timeouts are only supported on Windows Vista/Server 2008 and above</p>
 
 <h3 id="toc_15">func (*PipeConn) SetWriteDeadline</h3>
 
-<pre><code class="go">func (c *PipeConn) SetWriteDeadline(t time.Time) error
+<pre><code class="language-go">func (c *PipeConn) SetWriteDeadline(t time.Time) error
 </code></pre>
 
 <p>SetWriteDeadline implements the net.Conn SetWriteDeadline method.
@@ -268,14 +268,14 @@ Note that timeouts are only supported on Windows Vista/Server 2008 and above</p>
 
 <h3 id="toc_16">func (*PipeConn) Write</h3>
 
-<pre><code class="go">func (c *PipeConn) Write(b []byte) (int, error)
+<pre><code class="language-go">func (c *PipeConn) Write(b []byte) (int, error)
 </code></pre>
 
 <p>Write implements the net.Conn Write method.</p>
 
 <h2 id="toc_17">type PipeError</h2>
 
-<pre><code class="go">type PipeError struct {
+<pre><code class="language-go">type PipeError struct {
     // contains filtered or unexported fields
 }
 </code></pre>
@@ -284,28 +284,28 @@ Note that timeouts are only supported on Windows Vista/Server 2008 and above</p>
 
 <h3 id="toc_18">func (PipeError) Error</h3>
 
-<pre><code class="go">func (e PipeError) Error() string
+<pre><code class="language-go">func (e PipeError) Error() string
 </code></pre>
 
 <p>Error implements the error interface</p>
 
 <h3 id="toc_19">func (PipeError) Temporary</h3>
 
-<pre><code class="go">func (e PipeError) Temporary() bool
+<pre><code class="language-go">func (e PipeError) Temporary() bool
 </code></pre>
 
 <p>Temporary implements net.AddrError.Temporary()</p>
 
 <h3 id="toc_20">func (PipeError) Timeout</h3>
 
-<pre><code class="go">func (e PipeError) Timeout() bool
+<pre><code class="language-go">func (e PipeError) Timeout() bool
 </code></pre>
 
 <p>Timeout implements net.AddrError.Timeout()</p>
 
 <h2 id="toc_21">type PipeListener</h2>
 
-<pre><code class="go">type PipeListener struct {
+<pre><code class="language-go">type PipeListener struct {
     // contains filtered or unexported fields
 }
 </code></pre>
@@ -315,7 +315,7 @@ use variables of type net.Listener instead of assuming named pipe.</p>
 
 <h3 id="toc_22">func Listen</h3>
 
-<pre><code class="go">func Listen(address string) (*PipeListener, error)
+<pre><code class="language-go">func Listen(address string) (*PipeListener, error)
 </code></pre>
 
 <p>Listen returns a new PipeListener that will listen on a pipe with the given
@@ -325,7 +325,7 @@ address. The address must be of the form \.\pipe&lt;name&gt;</p>
 
 <h3 id="toc_23">func (*PipeListener) Accept</h3>
 
-<pre><code class="go">func (l *PipeListener) Accept() (net.Conn, error)
+<pre><code class="language-go">func (l *PipeListener) Accept() (net.Conn, error)
 </code></pre>
 
 <p>Accept implements the Accept method in the net.Listener interface; it
@@ -333,21 +333,21 @@ waits for the next call and returns a generic net.Conn.</p>
 
 <h3 id="toc_24">func (*PipeListener) AcceptPipe</h3>
 
-<pre><code class="go">func (l *PipeListener) AcceptPipe() (*PipeConn, error)
+<pre><code class="language-go">func (l *PipeListener) AcceptPipe() (*PipeConn, error)
 </code></pre>
 
 <p>AcceptPipe accepts the next incoming call and returns the new connection.</p>
 
 <h3 id="toc_25">func (*PipeListener) Addr</h3>
 
-<pre><code class="go">func (l *PipeListener) Addr() net.Addr
+<pre><code class="language-go">func (l *PipeListener) Addr() net.Addr
 </code></pre>
 
 <p>Addr returns the listener&rsquo;s network address, a PipeAddr.</p>
 
 <h3 id="toc_26">func (*PipeListener) Close</h3>
 
-<pre><code class="go">func (l *PipeListener) Close() error
+<pre><code class="language-go">func (l *PipeListener) Close() error
 </code></pre>
 
 <p>Close stops listening on the address.

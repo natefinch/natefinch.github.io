@@ -129,7 +129,7 @@ machine will result in improper behavior.</p>
 
 <p>Code:</p>
 
-<pre><code class="go">log.SetOutput(&amp;lumberjack.Logger{
+<pre><code class="language-go">log.SetOutput(&amp;lumberjack.Logger{
     Filename:   &quot;/var/log/myapp/foo.log&quot;,
     MaxSize:    500, // megabytes
     MaxBackups: 3,
@@ -139,7 +139,7 @@ machine will result in improper behavior.</p>
 
 <h2 id="toc_1">type Logger</h2>
 
-<pre><code class="go">type Logger struct {
+<pre><code class="language-go">type Logger struct {
     // Filename is the file to write logs to.  Backup log files will be retained
     // in the same directory.  It uses &lt;processname&gt;-lumberjack.log in
     // os.TempDir() if empty.
@@ -196,14 +196,14 @@ time, which may differ from the last time that file was written to.</p>
 
 <h3 id="toc_3">func (*Logger) Close</h3>
 
-<pre><code class="go">func (l *Logger) Close() error
+<pre><code class="language-go">func (l *Logger) Close() error
 </code></pre>
 
 <p>Close implements io.Closer, and closes the current logfile.</p>
 
 <h3 id="toc_4">func (*Logger) Rotate</h3>
 
-<pre><code class="go">func (l *Logger) Rotate() error
+<pre><code class="language-go">func (l *Logger) Rotate() error
 </code></pre>
 
 <p>Rotate causes Logger to close the existing log file and immediately create a
@@ -218,7 +218,7 @@ to the normal rules.</p>
 
 <p>Code:</p>
 
-<pre><code class="go">l := &amp;lumberjack.Logger{}
+<pre><code class="language-go">l := &amp;lumberjack.Logger{}
 log.SetOutput(l)
 c := make(chan os.Signal, 1)
 signal.Notify(c, syscall.SIGHUP)
@@ -233,7 +233,7 @@ go func() {
 
 <h3 id="toc_5">func (*Logger) Write</h3>
 
-<pre><code class="go">func (l *Logger) Write(p []byte) (n int, err error)
+<pre><code class="language-go">func (l *Logger) Write(p []byte) (n int, err error)
 </code></pre>
 
 <p>Write implements io.Writer.  If a write would cause the log file to be larger

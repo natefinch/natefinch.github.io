@@ -88,6 +88,184 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="http://npf.io/2014/09/deploy-discourse-juju/">
+        Deploy Discourse with Juju in 8 minutes
+      </a>
+    </h1>
+
+    <span class="post-date">Mon, Sep 29, 2014</span>
+
+    
+
+
+    <p><a href="http://stevefrancia.com/">Steve Francia</a> asked me to help him get
+<a href="https://discourse.org">Discourse</a> deployed as a place for people to discuss
+<a href="http://gohugo.io">Hugo</a>, his static site generator (which is what I use to
+build this blog).  If you don&rsquo;t know Discourse, it&rsquo;s pretty amazing forum
+software with community-driven moderation, all the modern features you expect
+(@mentions, SSO integration, deep email integration, realtime async updates, and
+a whole lot more).  What I ended up deploying is now at
+<a href="http://discuss.gohugo.io">discuss.gohugo.io</a>.</p>
+
+<p>I&rsquo;d already played around with deploying Discourse about six months ago, so I
+already had an idea of what was involved.  Given that I work on
+<a href="http://juju.ubuntu.com">Juju</a> as my day job, of course I decided to use Juju to
+deploy Discourse for Steve.  This involved writing a Juju <em>charm</em> which is sort
+of like an install script, but with hooks for updating configuration and hooks
+for interacting with other services. I&rsquo;ll talk about the process of writing the
+charm in a later post, but for now, all you need to know is that it follows the
+official <a href="https://github.com/discourse/discourse/blob/master/docs
+/INSTALL-digital- ocean.md">install guide</a> for installing Discourse.</p>
+
+<p>The install guide says that you can install Discourse in 30 minutes.  Following
+it took me a <strong>lot</strong> longer than that, due to some confusion about what the
+install guide really wanted you to do, and what the install really required.
+But you don&rsquo;t need to know any of that to use Juju to install Discourse, and you
+can get it done in 8 minutes, not 30.  Here&rsquo;s how:</p>
+
+<p>First, install Juju:</p>
+
+<pre><code>sudo add-apt-repository -y ppa:juju/stable
+sudo apt-get update &amp;&amp; sudo apt-get install -y juju-core
+</code></pre>
+
+<p>Now, Juju does not yet have a provider for Digital Ocean, so we have to use a
+plugin to get the machine created.  We&rsquo;re in the process of writing a provider
+for Digital Ocean, so soon the plugin won&rsquo;t be necessary.  If you use another
+cloud provider, such as AWS, Azure, HP Cloud, Joyent, or run your own Openstack
+or MAAS, you can easily <a href="https://juju.ubuntu.com/docs/getting-a
+started.html#configuring">configure Juju</a> to use that service, and a couple of these steps will
+not be necessary.  I&rsquo;ll post separate steps for that later.  But for now, let&rsquo;s
+assume you&rsquo;re using Digital Ocean.</p>
+
+<p>Install the juju <a href="https://github.com/kapilt/juju-digitalocean">Digital Ocean plugin</a>:</p>
+
+<pre><code>sudo apt-get install -y python-pip
+pip install -U juju-docean
+</code></pre>
+
+<p>Get your Digital Ocean <a href="https://cloud.digitalocean.com/api_access">access info</a>
+and set the client id in an environment variable called DO_CLIENT_ID and the API
+key in an environment variable called DO_API_KEY.</p>
+
+<p>Juju requires access with an SSH key to the machines, so make sure you have one
+set up in your Digital Ocean account.</p>
+
+<p>Now, let&rsquo;s create a simple configuration so juju knows where you want to deploy
+your new environment.</p>
+
+<pre><code>juju init
+</code></pre>
+
+<p>Running juju init will create a boilerplate configuration file at
+~/.juju/environments.yaml.  We&rsquo;ll append our digital ocean config at the bottom:</p>
+
+<pre><code>echo &quot;    digitalocean:
+        type: manual
+        bootstrap-host: null
+        bootstrap-user: root
+&quot; &gt;&gt; ~/.juju/environments.yaml
+</code></pre>
+
+<p>Note that this is yaml, so the spaces at the beginning of each line are
+important.  Copy and paste should do the right thing, though.</p>
+
+<p>Now we can start the real fun, let&rsquo;s switch to the digitalocean environment we
+just configured, and create the first Juju machine in Digital Ocean:</p>
+
+<pre><code>juju switch digitalocean
+juju docean bootstrap --constraints=&quot;mem=2g, region=nyc2&quot;
+</code></pre>
+
+<p>(obviously replace the region with whatever one you want)</p>
+
+<p>Now, it&rsquo;ll take about a minute for the machine to come up.</p>
+
+<p>Discourse <em>requires</em> email to function, so you need an account at
+<a href="http://maindrill.com">mandrill</a>, <a href="mailgun.com">mailgun</a>, etc.  They&rsquo;re free, so
+don&rsquo;t worry.  From that account you need to get some information to properly set
+up Discourse.  You can do this after installing discourse, but it&rsquo;s faster if
+you do it before and give the configuration at deploy time. (changing settings
+later will take a couple minutes while discourse reconfigures itself)</p>
+
+<p>When you deploy discourse, you&rsquo;re going to give it a configuration file, which
+will look something like this:</p>
+
+<pre><code>discourse:
+  DISCOURSE_HOSTNAME: discuss.example.com
+  DISCOURSE_DEVELOPER_EMAILS: foo@example.com,bar@example.com
+  DISCOURSE_SMTP_ADDRESS: smtp.mailservice.com
+  DISCOURSE_SMTP_PORT: 587
+  DISCOURSE_SMTP_USER_NAME: postmaster@example.com
+  DISCOURSE_SMTP_PASSWORD: supersecretpassword
+  UNICORN_WORKERS: 3
+</code></pre>
+
+<p>The first line must be the same as the name of the service you&rsquo;re deploying.  By
+default it&rsquo;s &ldquo;discourse&rdquo;, so you don&rsquo;t need to change it unless you&rsquo;re deploying
+multiple copies of discourse to the same Juju environment.  And remember, this
+is yaml, so those spaces at the beginning of the rest of the lines are
+important.</p>
+
+<p>The rest should be pretty obvious.  Hostname is the domain name where your site
+will be hosted.  This is important, because discourse will send account
+activation emails, and the links will use that hostname.  Developer emails are
+the email addresses of accounts that should get automatically promoted to admin
+when created.  The rest is email-related stuff from your mail service account.
+Finally, unicorn workers should just stay 3 unless you&rsquo;re deploying to a machine
+with less than 2GB of RAM, in which case set it to 2.</p>
+
+<p>Ok, so now that you have this file somewhere on disk, we can deploy discourse.
+Don&rsquo;t worry, it&rsquo;s really easy.  Just do this:</p>
+
+<pre><code>juju deploy cs:~natefinch/trusty/discourse --config path/to/configfile --to 0
+juju expose discourse
+</code></pre>
+
+<p>That&rsquo;s it. If you&rsquo;re deploying to a 2GB Digital Ocean droplet, it&rsquo;ll take about
+7 minutes.</p>
+
+<p>To check on the status of the charm deployment, you can do <code>juju status</code>, which
+will show, among other things &ldquo;agent-state: pending&rdquo; while the charm is being
+deployed.  Or, if you want to watch the logs roll by, you can do <code>juju debug-
+log</code>.</p>
+
+<p>Eventually juju status will show <code>agent-state: started</code>.  Now grab the ip
+address listed at <code>public address:</code> in the same output and drop that into your
+browser.  Bam!  Welcome to Discourse.</p>
+
+<p>If you ever need to change the configuration you set in the config file above,
+you can do that by editing the file and doing</p>
+
+<pre><code>juju set discourse --config=/path/to/config
+</code></pre>
+
+<p>Or, if you just want to tweak a few values, you can do</p>
+
+<pre><code>juju set discourse foo=bar baz=bat ...
+</code></pre>
+
+<p>Note that every time you call juju set, it&rsquo;ll take a couple minutes for
+Discourse to reconfigure itself, so you don&rsquo;t want to be doing this over and
+over if you can hep it.</p>
+
+<p>Now you&rsquo;re on your own, and will have to consult the gurus at
+<a href="discourse.org">discourse.org</a> if you have any problems.  But don&rsquo;t worry, since
+you deployed using Juju, which uses their official install instructions, your
+discourse install is just like the ones people deploy manually (albeit with a
+lot less time and trouble).</p>
+
+<p>Good Luck!</p>
+
+<p>Please let me know if you find any errors in this page, and I will fix them
+immediately.</p>
+
+  </div>
+  
+  
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="http://npf.io/2014/08/intro-to-toml/">
         Intro to TOML
       </a>
