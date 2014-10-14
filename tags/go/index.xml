@@ -23,14 +23,12 @@ about why everyone critizes Go so much. (sorry, I don&amp;rsquo;t normally post 
 Quora, but it was the motivator for this post) Even before I saw the answers to
 the question, I knew what they&amp;rsquo;d consist of:&lt;/p&gt;
 
-&lt;blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;Go is a language stuck in the 70&amp;rsquo;s.&lt;/li&gt;
 &lt;li&gt;Go ignores 40 years of programming language research.&lt;/li&gt;
 &lt;li&gt;Go is a language for blue collar (mediocre) developers.&lt;/li&gt;
 &lt;li&gt;Gophers are ok with working in Java 1.0.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/blockquote&gt;
 
 &lt;p&gt;Unfortunately, the answers to the questions were more concerned with explaining
 why Go is &amp;ldquo;bad&amp;rdquo;, rather than why this gets so many people&amp;rsquo;s panties in a bunch.&lt;/p&gt;
@@ -48,12 +46,23 @@ happen to women online with the pedantry of flamewars about programming
 languages, but the Koolaid Point is such a valid metaphor that I wanted to link
 to the article.&lt;/p&gt;
 
-&lt;p&gt;Paul&amp;rsquo;s post says, in a nutshell &amp;ldquo;people can never have a fruitful argument about
-something that&amp;rsquo;s part of their identity&amp;rdquo;. The subject hits too close to home,
+&lt;p&gt;Paul says&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;people can never have a fruitful argument about
+something that&amp;rsquo;s part of their identity&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;em&gt;i.e.&lt;/em&gt; the subject hits too close to home,
 and their response becomes emotional rather than logical.&lt;/p&gt;
 
-&lt;p&gt;Kathy&amp;rsquo;s post says basically &amp;ldquo;the hate wasn’t so much about the product/brand but
-that &lt;em&gt;other people were falling for it&lt;/em&gt;&amp;rdquo;. They&amp;rsquo;d drunk the kool-aid.&lt;/p&gt;
+&lt;p&gt;Kathy says&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;the hate wasn’t so much about the product/brand but that &lt;em&gt;other people were falling for it&lt;/em&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;em&gt;i.e.&lt;/em&gt; they&amp;rsquo;d drunk the kool-aid.&lt;/p&gt;
 
 &lt;p&gt;Go is the only recent language that takes the aforementioned 40 years of
 programming language research and tosses it out the window. Other new languages
