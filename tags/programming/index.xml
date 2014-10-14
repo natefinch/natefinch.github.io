@@ -19,7 +19,7 @@
       <description>&lt;p&gt;Obviously, not &lt;em&gt;everyone&lt;/em&gt; hates Go.  But there was a &lt;a href=&#34;https://www.quora.com/Why-does-Go-seem-to-be-the- most-heavily-
 criticised-among-the-newer-programming-languages?srid=uCiY&amp;amp;share=1&#34;&gt;quora
 question&lt;/a&gt; recently
-about why everyone critizes Go so much. (sorry, I don&amp;rsquo;t normally post links to
+about why everyone criticizes Go so much. (sorry, I don&amp;rsquo;t normally post links to
 Quora, but it was the motivator for this post) Even before I saw the answers to
 the question, I knew what they&amp;rsquo;d consist of:&lt;/p&gt;
 
@@ -82,7 +82,7 @@ language. And this is where the scorn turns into derision and attacks on the
 character of the people using it.&lt;/p&gt;
 
 &lt;p&gt;The most vocal Go detractors are those developers who write in ML-derived
-languages (Haskel, Rust, Scala, &lt;em&gt;et al&lt;/em&gt;) who have tied their preferred
+languages (Haskell, Rust, Scala, &lt;em&gt;et al&lt;/em&gt;) who have tied their preferred
 programming language into their identity. The mere existence of Go says
 &amp;ldquo;your views on what makes a good programming language are wrong&amp;rdquo;. And the more
 people that use and like Go, the more strongly they feel that they&amp;rsquo;re being told
