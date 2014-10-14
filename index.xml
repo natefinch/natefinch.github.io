@@ -7,13 +7,102 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2014 Nate Finch</copyright>
-    <updated>Wed, 01 Oct 2014 06:31:49 -0400</updated>
+    <updated>Tue, 14 Oct 2014 10:46:28 EDT</updated>
+    
+    
+    <item>
+      <title>Why Everyone Hates Go</title>
+      <link>http://npf.io/2014/10/why-everyone-hates-go/</link>
+      <pubDate>Tue, 14 Oct 2014 10:46:28 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2014/10/why-everyone-hates-go/</guid>
+      <description>&lt;p&gt;Obviously, not &lt;em&gt;everyone&lt;/em&gt; hates Go.  But there was a &lt;a href=&#34;https://www.quora.com/Why-does-Go-seem-to-be-the- most-heavily-
+criticised-among-the-newer-programming-languages?srid=uCiY&amp;amp;share=1&#34;&gt;quora
+question&lt;/a&gt; recently
+about why everyone critizes Go so much. (sorry, I don&amp;rsquo;t normally post links to
+Quora, but it was the motivator for this post) Even before I saw the answers to
+the question, I knew what they&amp;rsquo;d consist of:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Go is a language stuck in the 70&amp;rsquo;s.&lt;/li&gt;
+&lt;li&gt;Go ignores 40 years of programming language research.&lt;/li&gt;
+&lt;li&gt;Go is a language for blue collar (mediocre) developers.&lt;/li&gt;
+&lt;li&gt;Gophers are ok with working in Java 1.0.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Unfortunately, the answers to the questions were more concerned with explaining
+why Go is &amp;ldquo;bad&amp;rdquo;, rather than why this gets so many people&amp;rsquo;s panties in a bunch.&lt;/p&gt;
+
+&lt;p&gt;When reading the answers I had a eureka moment, and I realized why it is. So
+here&amp;rsquo;s my answer to the same question. This is why Go is so heavily criticized,
+not why Go is &amp;ldquo;bad&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;s two awesome posts that inform my answer: Paul Graham&amp;rsquo;s
+&lt;a href=&#34;http://www.paulgraham.com/identity.html&#34;&gt;post&lt;/a&gt; about keeping your identity
+small, and Kathy Sierra&amp;rsquo;s &lt;a href=&#34;http://seriouspony.com/trouble-at-the-koolaid-
+point&#34;&gt;post&lt;/a&gt; about the Koolaid point. I encourage you to read those two posts, as
+they&amp;rsquo;re both very informative.  I hesitate to compare the horrific things that
+happen to women online with the pedantry of flamewars about programming
+languages, but the Koolaid Point is such a valid metaphor that I wanted to link
+to the article.&lt;/p&gt;
+
+&lt;p&gt;Paul&amp;rsquo;s post says, in a nutshell &amp;ldquo;people can never have a fruitful argument about
+something that&amp;rsquo;s part of their identity&amp;rdquo;. The subject hits too close to home,
+and their response becomes emotional rather than logical.&lt;/p&gt;
+
+&lt;p&gt;Kathy&amp;rsquo;s post says basically &amp;ldquo;the hate wasn’t so much about the product/brand but
+that other &lt;em&gt;people were falling for it&lt;/em&gt;&amp;rdquo;. They&amp;rsquo;d drunk the kool-aid.&lt;/p&gt;
+
+&lt;p&gt;Go is the only recent language that takes the aforementioned 40 years of
+programming language research and tosses it out the window. Other new languages
+at least try to keep up with the Jones - Clojure, Scala, Rust - all try to
+incorporate &amp;ldquo;modern programming theory&amp;rdquo; into their design. Go actively tries
+not to. There is no pattern matching, there&amp;rsquo;s no borrowing, there&amp;rsquo;s no pure
+functional programming, there&amp;rsquo;s no immutable variables, there&amp;rsquo;s no option types,
+there&amp;rsquo;s no exceptions, there&amp;rsquo;s no classes, there&amp;rsquo;s no generics&amp;hellip;. there&amp;rsquo;s a lot
+Go doesn&amp;rsquo;t have. And in the beginning this was enough to merely earn it scorn.
+Even I am guilty of this. When I first heard about Go, I thought &amp;ldquo;What? No
+exceptions? Pass.&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;But then something happened - people started &lt;em&gt;using&lt;/em&gt; it. And liking it. And
+building big projects with it. This is the Koolaid-point - where people have
+started to drink the Koolaid and get fooled into thinking Go is a good
+language. And this is where the scorn turns into derision and attacks on the
+character of the people using it.&lt;/p&gt;
+
+&lt;p&gt;The most vocal Go detractors are those developers who write in ML-derived
+languages (Haskel, Rust, Scala, &lt;em&gt;et al&lt;/em&gt;) who have tied their preferred
+programming language into their identity. The mere existence of Go says
+&amp;ldquo;your views on what makes a good programming language are wrong&amp;rdquo;. And the more
+people that use and like Go, the more strongly they feel that they&amp;rsquo;re being told
+their choice of programming language - and therefore their identity - is wrong.&lt;/p&gt;
+
+&lt;p&gt;Note that basically no one in the Go community actually says this. But the Go
+philosophy of simplicity and pragmatism above all else is the polar opposite of
+what those languages espouse (in which complexity in the language is ok because
+it enforces correctness in the code). This is insulting to the people who tie
+their identity to that language. Whenever a post on Go makes it to the front
+page of Hacker News, it is an affront to everything they hold dear, and so you
+get comments like Go developers are stuck in the 70&amp;rsquo;s, or is only for blue-collar devs.&lt;/p&gt;
+
+&lt;p&gt;So, this is why I think people are so much more vocal about their dislike of Go:
+because it challenges their identity, and other people are falling for it. This
+is also why these posts so often mention Google and how the language would have
+died without them. Google is now the koolaid dispenser. The fact that they
+are otherwise generally thought of as a very talented pool of developers means
+that it is simultaneously more outrageous that they are fooling people and more
+insulting that their language flies in the face of ML-derived languages.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
       <title>Deploy Discourse with Juju in 8 minutes</title>
       <link>http://npf.io/2014/10/deploy-discourse-juju/</link>
-      <pubDate>Wed, 01 Oct 2014 06:31:49 -0400</pubDate>
+      <pubDate>Wed, 01 Oct 2014 06:31:49 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>http://npf.io/2014/10/deploy-discourse-juju/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://stevefrancia.com/&#34;&gt;Steve Francia&lt;/a&gt; asked me to help him get
@@ -828,355 +917,6 @@ stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>http://npf.io/2014/05/diffing-go-with-beyond-compare/</guid>
       <description>&lt;p&gt;I love Beyond Compare, it&amp;rsquo;s an awesome visual diff/merge tool. &amp;nbsp;It&amp;rsquo;s not free, but I don&amp;rsquo;t care, because it&amp;rsquo;s awesome. &amp;nbsp;However, there&amp;rsquo;s no built-in configuration for Go code, so I made one. &amp;nbsp;Not sure what the venn diagram of Beyond Compare users and Go users looks like, it might be that I&amp;rsquo;m the one point of crossover, but just in case I&amp;rsquo;m not, here&amp;rsquo;s the configuration file for Beyond Compare 3 for the Go programming language:&amp;nbsp;&lt;a href=&#34;http://play.golang.org/p/G6NWE0z1GC&#34;&gt;http://play.golang.org/p/G6NWE0z1GC&lt;/a&gt; &amp;nbsp;(please forgive the abuse of the Go playground)&lt;br /&gt;&lt;br /&gt;Just copy the text into a file and in Beyond Compare, go to Tools-&amp;gt;Import Settings&amp;hellip; and choose the file. &amp;nbsp;Please let me know if you have any troubles or suggested improvements.&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Intro&#43;&#43; to Go Interfaces</title>
-      <link>http://npf.io/2014/05/intro-to-go-interfaces/</link>
-      <pubDate>Tue, 13 May 2014 07:08:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2014/05/intro-to-go-interfaces/</guid>
-      <description>
-
-&lt;h3 id=&#34;toc_0&#34;&gt;Standard Interface Intro&lt;/h3&gt;
-
-&lt;p&gt;Go’s interfaces are one of it’s best features, but they’re also one of the most confusing for newbies.  This post will try to give you the understanding you need to use Go’s interfaces and not get frustrated when things don’t work the way you expect.  It’s a little long, but a bunch of that is just code examples.&lt;/p&gt;
-
-&lt;p&gt;Go’s interfaces are different than interfaces in other languages, they are implicitly fulfilled.  This means that you never need to mark your type as explicitly implementing the interface (like class CFoo implements IFoo).  Instead, your type just needs to have the methods defined in the interface, and the compiler does the rest.&lt;/p&gt;
-
-&lt;p&gt;For example:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type Walker interface {
-    Walk(miles int)
-}
-
-type Camel struct {
-    Name string
-}
-
-func (c Camel) Walk(miles int) {
-     fmt.Printf(“%s is walking %v miles\n”, c.Name, miles)
-}
-
-func LongWalk(w Walker) {
-     w.Walk(500)
-     w.Walk(500)
-}
-
-func main() {
-    c := Camel{“Bill”}
-    LongWalk(c)
-}
-
-// prints
-// Bill is walking 500 miles.
-// Bill is walking 500 miles.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://play.golang.org/p/erodX-JplO&#34;&gt;http://play.golang.org/p/erodX-JplO&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Camel implements the Walker interface, because it has a method named Walk that
-takes an int and doesn’t return anything.  This means you can pass it into the
-LongWalk function, even though you never specified that your Camel is a Walker.
-In fact, Camel and Walker can live in totally different packages and never know
-about one another, and this will still work if a third package decides to make a
-Camel and pass it into LongWalk.&lt;/p&gt;
-
-&lt;h3 id=&#34;toc_1&#34;&gt;Non-Standard Continuation&lt;/h3&gt;
-
-&lt;p&gt;This is where most tutorials stop, and where most questions and problems begin.
-The problem is that you still don’t know how the interfaces actually work, and
-since it’s not actually that complicated, let’s talk about that.&lt;/p&gt;
-
-&lt;p&gt;What actually happens when you pass Camel into LongWalk?&lt;/p&gt;
-
-&lt;p&gt;So, first off, you’re not passing Camel into LongWalk.  You’re actually
-assigning c, a value of type Camel to a value w of type Walker, and w is what
-you operate on in LongWalk.&lt;/p&gt;
-
-&lt;p&gt;Under the covers, the Walker interface (like all interfaces), would look more or
-less like this if it were in Go (the actual code is in C, so this is just a
-really rough approximation that is easier to read).&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type Walker struct {
-    type InterfaceType
-    data *void
-}
-
-type InterfaceType struct {
-    valtype *gotype
-    func0 *func
-    func1 *func
-    ...
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;All interfaces values are just two pointers - one pointer to information about
-the interface type, and one pointer to the data from the value you passed into
-the interface (a void in C-like languages… this should probably be Go’s
-unsafe.Pointer, but I liked the explicitness of two actual *’s in the struct to
-show it’s just two pointers).&lt;/p&gt;
-
-&lt;p&gt;The InterfaceType contains a pointer to information about the type of the value
-that you passed into the interface (valtype).  It also contains pointers to the
-methods that are available on the interface.&lt;/p&gt;
-
-&lt;p&gt;When you assign c to w, the compiler generates instructions that looks more or
-less like this (it’s not actually generating Go, this is just an easier-to-read
-approximation):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;data := c
-w := Walker{ 
-    type: &amp;amp;InterfaceType{ 
-              valtype: &amp;amp;typeof(c), 
-              func0: &amp;amp;Camel.Walk 
-          }
-    data: &amp;amp;data
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;When you assign your Camel value c to the Walker value w, the Camel type is
-copied into the interface value’s Type.valtype field.  The actual data in the
-value of c is copied into a new place in memory, and w’s Data field points at
-that memory location.&lt;/p&gt;
-
-&lt;h3 id=&#34;toc_2&#34;&gt;Implications of the Implementation&lt;/h3&gt;
-
-&lt;p&gt;Now, let’s look at the implications of this code.  First, interface values are
-very small - just two pointers.  When you assign a value to an interface, that
-value gets copied once, into the interface, but after that, it’s held in a
-pointer, so it doesn’t get copied again if you pass the interface around.&lt;/p&gt;
-
-&lt;p&gt;So now you know why you don’t need to pass around pointers to interfaces -
-they’re small anyway, so you don’t have to worry about copying the memory, plus
-they hold your data in a pointer, so changes to the data will travel with the
-interface.&lt;/p&gt;
-
-&lt;h3 id=&#34;toc_3&#34;&gt;Interfaces Are Types&lt;/h3&gt;
-
-&lt;p&gt;Let’s look at Walker again, this is important:&lt;/p&gt;
-
-&lt;p&gt;type Walker interface&lt;/p&gt;
-
-&lt;p&gt;Note that first word there: type.  Interfaces are types, just like string is a
-type or Camel is a type.  They aren’t aliases, they’re not magic hand-waving,
-they’re real types and real values which are distinct from the type and value
-that gets assigned to them.&lt;/p&gt;
-
-&lt;p&gt;Now, let’s assume you have this function:&lt;/p&gt;
-
-&lt;p&gt;func LongWalkAll(walkers []Walker) {
-    for _, w := range walkers {
-        LongWalk(w)
-    }
-}&lt;/p&gt;
-
-&lt;p&gt;And let’s say you have a caravan of Camels that you want to send on a long walk:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;caravan := []Camel{ Camel{“Bill”}, Camel{“Bob”}, Camel{“Steve”}}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You want to pass caravan into LongWalkAll, will the compiler let you?  Nope.
-Why is that?  Well, []Walker is a specific type, it’s a slice of values of type
-Walker.  It’s not shorthand for “a slice of anything that matches the Walker
-interface”.  It’s an actual distinct type, the way []string is different from
-[]int.  The Go compiler will output code to assign a single value of Camel to a
-single value of Walker.  That’s the only place it’ll help you out.  So, with
-slices, you have to do it yourself:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;walkers := make([]Walker, len(caravan))
-for n, c := range caravan {
-    walkers[n] = c
-}
-LongWalkAll(walkers)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;However, there’s a better way if you know you’ll just need the caravan for
-passing into LongWalkAll:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;caravan := []Walker{ Camel{“Bill”}, Camel{“Bob”}, Camel{“Steve”}}
-LongWalkAll(caravan)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Note that this goes for any type which includes an interface as part of its
-definition: there’s no automatic conversion of your func(Camel) into
-func(Walker) or map[string]Camel into map[string]Walker.  Again, they’re totally
-different types, they’re not shorthand, and they’re not aliases, and they’re not
-just a pattern for the compiler to match.&lt;/p&gt;
-
-&lt;p&gt;Interfaces and the Pointers That Satisfy Them&lt;/p&gt;
-
-&lt;p&gt;What if Camel’s Walk method had this signature instead?&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func (c *Camel) Walk(miles int)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This line says that the type *Camel has a function called Walk.  This is
-important: *Camel is a type.  It’s the “pointer to a Camel” type.  It’s a
-distinct type from (non-pointer) Camel.  The part about it being a pointer is
-part of its type.  The Walk method is on the type *Camel.  The Walk method (in
-this new incarnation) is not on the type Camel. This becomes important when you
-try to assign it to an interface.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;c := Camel{“Bill”}
-LongWalk(c)
-
-// compiler output:
-cannot use c (type Camel) as type Walker in function argument:
- Camel does not implement Walker (Walk method has pointer receiver)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;To pass a Camel into LongWalk now, you need to pass in a pointer to a Camel:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;c := &amp;amp;Camel{“Bill”}
-LongWalk(c)
-
-or
-
-c := Camel{“Bill”}
-LongWalk(&amp;amp;c)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Note that this true even though you can still call Walk directly on Camel:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;c := Camel{“Bill”}
-c.Walk(500) // this works
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The reason you can do that is that the Go compiler automatically converts this
-line to (&amp;amp;c).Walk(500) for you.  However, that doesn’t work for passing the
-value into an interface.  The reason is that the value in an interface is in a
-hidden memory location, and so the compiler can’t automatically get a pointer to
-that memory for you (in Go parlance, this is known as being “not addressable”).&lt;/p&gt;
-
-&lt;h3 id=&#34;toc_4&#34;&gt;Nil Pointers and Nil Interfaces&lt;/h3&gt;
-
-&lt;p&gt;The interaction between nil interfaces and nil pointers is where nearly everyone
-gets tripped up when they first start with Go.&lt;/p&gt;
-
-&lt;p&gt;Let’s say we have our Camel type with the Walk method defined on *Camel as
-above, and we want to make a function that returns a Walker that is actually a
-Camel (note that you don’t need a function to do this, you can just assign a
-*Camel to a Walker, but the function is a good illustrative example):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func MakeWalker() Walker {
-    return &amp;amp;Camel{“Bill”}
-}
-
-w := MakeWalker()
-if w != nil {
-    w.Walk(500)  // we will hit this
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This works fine.  But now, what if we do something a little different:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func MakeWalker(c *Camel) Walker {
-    return c
-}
-
-var c *Camel
-w := MakeWalker(c)
-if w != nil {
-    // we’ll get in here, but why?
-    w.Walk(500)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This code will also get inside the if statement (and then panic, which we’ll
-talk about in a bit) because the returned Walker value is not nil.  How is that
-possible, if we returned a nil pointer?  Well, let’s go look back to the
-instructions that get generated when we assign a value to an interface.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;data := c
-w := Walker{ 
-    type: &amp;amp;InterfaceType{ 
-              valtype: &amp;amp;typeof(c), 
-              func0: &amp;amp;Camel.Walk 
-          }
-    data: &amp;amp;data
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;In this case, c is a nil pointer. However, that’s a perfectly valid value to
-assign to the Walker’s Data value, so it works just fine.  What you return is a
-non-nil Walker value, that has a pointer to a nil *Camel as its data.  So, of
-course, if you check w == nil, the answer is false, w is not nil… but then
-inside the if statement, we try to call Camel’s walk:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func (c *Camel) Walk(miles int) {
-     fmt.Printf(“%s is walking %v miles\n”, c.Name, miles)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And when we try to do c.Name, Go automatically turns that into (*c).Name, and
-the code panics with a nil pointer dereference error.&lt;/p&gt;
-
-&lt;p&gt;Hopefully this makes sense, given our new understanding of how interfaces wrap
-values, but then how do you account for nil pointers?  Assume you want
-MakeWalker to return a nil interface if it gets passed a nil Camel.  You have to
-explicitly assign nil to the interface:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func MakeWalker(c *Camel) Walker {
-    if c == nil {
-        return nil
-    }
-    return c
-}
-
-var c *Camel
-w := MakeWalker(c)
-if w != nil {
-    // Yay, we don’t get here!
-    w.Walk(500)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And now, finally, the code is doing what we expect.  When you pass in a nil
-*Camel, we return a nil interface.  Here’s an alternate way to write the
-function:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func MakeWalker(c *Camel) Walker {
-    var w Walker
-    if c != nil {
-        w = c
-    }
-    return w
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This is slightly less optimal, but it shows the other way to get a nil
-interface, which is to use the zero value for the interface, which is nil.&lt;/p&gt;
-
-&lt;p&gt;Note that you can have a nil pointer value that satisfies an interface.  You
-just need to be careful not to dereference the pointer in your methods.  For
-example, if *Camel’s Walk method looked like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func (c *Camel) Walk(miles int) {
-    fmt.Printf(“I’m walking %d miles!”, miles)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Note that this method does not dereference c, and therefore you can call it even
-if c is nil:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;var c *Camel
-c.Walk(500)
-// prints “I’m walking 500 miles!”
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://play.golang.org/p/4EfyV21at9&#34;&gt;http://play.golang.org/p/4EfyV21at9&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;toc_5&#34;&gt;Outro&lt;/h3&gt;
-
-&lt;p&gt;I hope this article helps you better understand how interfaces works, and helps
-you avoid some of the common pitfalls and misconceptions newbies have about how
-interfaces work.  If you want more information about the internals of interfaces
-and some of the optimizations that I didn’t cover here, read Russ Cox’s article
-on Go interfaces, I highly recommend it.&lt;/p&gt;
 </description>
     </item>
     

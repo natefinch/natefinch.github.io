@@ -7,7 +7,96 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2014 Nate Finch</copyright>
-    <updated>Wed, 09 Jul 2014 17:43:00 UTC</updated>
+    <updated>Tue, 14 Oct 2014 10:46:28 EDT</updated>
+    
+    
+    <item>
+      <title>Why Everyone Hates Go</title>
+      <link>http://npf.io/2014/10/why-everyone-hates-go/</link>
+      <pubDate>Tue, 14 Oct 2014 10:46:28 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2014/10/why-everyone-hates-go/</guid>
+      <description>&lt;p&gt;Obviously, not &lt;em&gt;everyone&lt;/em&gt; hates Go.  But there was a &lt;a href=&#34;https://www.quora.com/Why-does-Go-seem-to-be-the- most-heavily-
+criticised-among-the-newer-programming-languages?srid=uCiY&amp;amp;share=1&#34;&gt;quora
+question&lt;/a&gt; recently
+about why everyone critizes Go so much. (sorry, I don&amp;rsquo;t normally post links to
+Quora, but it was the motivator for this post) Even before I saw the answers to
+the question, I knew what they&amp;rsquo;d consist of:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Go is a language stuck in the 70&amp;rsquo;s.&lt;/li&gt;
+&lt;li&gt;Go ignores 40 years of programming language research.&lt;/li&gt;
+&lt;li&gt;Go is a language for blue collar (mediocre) developers.&lt;/li&gt;
+&lt;li&gt;Gophers are ok with working in Java 1.0.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Unfortunately, the answers to the questions were more concerned with explaining
+why Go is &amp;ldquo;bad&amp;rdquo;, rather than why this gets so many people&amp;rsquo;s panties in a bunch.&lt;/p&gt;
+
+&lt;p&gt;When reading the answers I had a eureka moment, and I realized why it is. So
+here&amp;rsquo;s my answer to the same question. This is why Go is so heavily criticized,
+not why Go is &amp;ldquo;bad&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;s two awesome posts that inform my answer: Paul Graham&amp;rsquo;s
+&lt;a href=&#34;http://www.paulgraham.com/identity.html&#34;&gt;post&lt;/a&gt; about keeping your identity
+small, and Kathy Sierra&amp;rsquo;s &lt;a href=&#34;http://seriouspony.com/trouble-at-the-koolaid-
+point&#34;&gt;post&lt;/a&gt; about the Koolaid point. I encourage you to read those two posts, as
+they&amp;rsquo;re both very informative.  I hesitate to compare the horrific things that
+happen to women online with the pedantry of flamewars about programming
+languages, but the Koolaid Point is such a valid metaphor that I wanted to link
+to the article.&lt;/p&gt;
+
+&lt;p&gt;Paul&amp;rsquo;s post says, in a nutshell &amp;ldquo;people can never have a fruitful argument about
+something that&amp;rsquo;s part of their identity&amp;rdquo;. The subject hits too close to home,
+and their response becomes emotional rather than logical.&lt;/p&gt;
+
+&lt;p&gt;Kathy&amp;rsquo;s post says basically &amp;ldquo;the hate wasn’t so much about the product/brand but
+that other &lt;em&gt;people were falling for it&lt;/em&gt;&amp;rdquo;. They&amp;rsquo;d drunk the kool-aid.&lt;/p&gt;
+
+&lt;p&gt;Go is the only recent language that takes the aforementioned 40 years of
+programming language research and tosses it out the window. Other new languages
+at least try to keep up with the Jones - Clojure, Scala, Rust - all try to
+incorporate &amp;ldquo;modern programming theory&amp;rdquo; into their design. Go actively tries
+not to. There is no pattern matching, there&amp;rsquo;s no borrowing, there&amp;rsquo;s no pure
+functional programming, there&amp;rsquo;s no immutable variables, there&amp;rsquo;s no option types,
+there&amp;rsquo;s no exceptions, there&amp;rsquo;s no classes, there&amp;rsquo;s no generics&amp;hellip;. there&amp;rsquo;s a lot
+Go doesn&amp;rsquo;t have. And in the beginning this was enough to merely earn it scorn.
+Even I am guilty of this. When I first heard about Go, I thought &amp;ldquo;What? No
+exceptions? Pass.&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;But then something happened - people started &lt;em&gt;using&lt;/em&gt; it. And liking it. And
+building big projects with it. This is the Koolaid-point - where people have
+started to drink the Koolaid and get fooled into thinking Go is a good
+language. And this is where the scorn turns into derision and attacks on the
+character of the people using it.&lt;/p&gt;
+
+&lt;p&gt;The most vocal Go detractors are those developers who write in ML-derived
+languages (Haskel, Rust, Scala, &lt;em&gt;et al&lt;/em&gt;) who have tied their preferred
+programming language into their identity. The mere existence of Go says
+&amp;ldquo;your views on what makes a good programming language are wrong&amp;rdquo;. And the more
+people that use and like Go, the more strongly they feel that they&amp;rsquo;re being told
+their choice of programming language - and therefore their identity - is wrong.&lt;/p&gt;
+
+&lt;p&gt;Note that basically no one in the Go community actually says this. But the Go
+philosophy of simplicity and pragmatism above all else is the polar opposite of
+what those languages espouse (in which complexity in the language is ok because
+it enforces correctness in the code). This is insulting to the people who tie
+their identity to that language. Whenever a post on Go makes it to the front
+page of Hacker News, it is an affront to everything they hold dear, and so you
+get comments like Go developers are stuck in the 70&amp;rsquo;s, or is only for blue-collar devs.&lt;/p&gt;
+
+&lt;p&gt;So, this is why I think people are so much more vocal about their dislike of Go:
+because it challenges their identity, and other people are falling for it. This
+is also why these posts so often mention Google and how the language would have
+died without them. Google is now the koolaid dispenser. The fact that they
+are otherwise generally thought of as a very talented pool of developers means
+that it is simultaneously more outrageous that they are fooling people and more
+insulting that their language flies in the face of ML-derived languages.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -593,18 +682,6 @@ that error:&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>http://npf.io/2013/01/gocog/</guid>
       <description>&lt;p&gt;I recently got very enamored with &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt;, and decided that I needed to write a real program with it to properly get up to speed. One thing came to mind after reading a lot on the &lt;a href=&#34;https://groups.google.com/forum/#!forum/golang-nuts&#34; target=&#34;_blank&#34;&gt;Go mailing list&lt;/a&gt;: a code generator.&lt;br /&gt;&lt;br /&gt;I had worked with &lt;a href=&#34;http://nedbatchelder.com/&#34; target=&#34;_blank&#34;&gt;Ned Batchelder&lt;/a&gt;&amp;nbsp;at a now-defunct startup, where he developed &lt;a href=&#34;http://nedbatchelder.com/code/cog/&#34;&gt;cog.py&lt;/a&gt;. I figured I could do something pretty similar with Go, except, I could do one better - Go generates native executables, which means you can run it without needing any specific programming framework installed, and you can run it on any major operating system. Also, I could construct it so that gocog supports any programming language embedded in the file, so long as it can be run via command line.&lt;br /&gt;&lt;br /&gt;Thus was born gocog -&amp;nbsp;&lt;a href=&#34;https://github.com/natefinch/gocog&#34;&gt;https://github.com/natefinch/gocog&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;Gocog runs very similarly to cog.py - you give it files to look at, and it reads the files looking for specially tagged embedded code (generally in comments of the actual text). Gocog extracts the code, runs it, and rewrites the file with the output of the code embedded.&lt;br /&gt;&lt;br /&gt;Thus you can do something like this in a file called test.html:&lt;br /&gt;&lt;pre class=&#34;brush: xml; gutter: false;&#34;&gt;&amp;lt;html&amp;gt;&lt;br /&gt;&amp;lt;body&amp;gt;&lt;br /&gt;&amp;lt;!&amp;ndash; [[[gocog&lt;br /&gt;print &amp;ldquo;&amp;lt;b&amp;gt;Hello World!&amp;lt;/b&amp;gt;&amp;ldquo;&lt;br /&gt;gocog]]] &amp;ndash;&amp;gt;&lt;br /&gt;&amp;lt;!&amp;ndash; [[[end]]] &amp;ndash;&amp;gt;&lt;br /&gt;&amp;lt;/body&amp;gt;&lt;br /&gt;&amp;lt;/html&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;br /&gt;if you run gocog over the file, specifying python as the command to run:&lt;br /&gt;&lt;br /&gt;gocog test.html -cmd python -args %s -ext .py&lt;br /&gt;&lt;br /&gt;This tells gocog to extract the code from test.html into a &amp;nbsp;file with the .py extension, and then run python &amp;lt;filename&amp;gt; and pipe the output back into the file.&lt;br /&gt;&lt;br /&gt;This is what test.html looks like after running gocog:&lt;br /&gt;&lt;br /&gt;&lt;pre class=&#34;brush: xml; gutter: false;&#34;&gt;&amp;lt;html&amp;gt;&lt;br /&gt;&amp;lt;body&amp;gt;&lt;br /&gt;&amp;lt;!&amp;ndash; [[[gocog&lt;br /&gt;print &amp;ldquo;&amp;lt;b&amp;gt;Hello World!&amp;lt;/b&amp;gt;&amp;ldquo;&lt;br /&gt;gocog]]] &amp;ndash;&amp;gt;&lt;br /&gt;&amp;lt;b&amp;gt;Hello World!&amp;lt;/b&amp;gt;&lt;br /&gt;&amp;lt;!&amp;ndash; [[[end]]] &amp;ndash;&amp;gt;&lt;br /&gt;&amp;lt;/body&amp;gt;&lt;br /&gt;&amp;lt;/html&amp;gt;&lt;br /&gt;&lt;/pre&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Note that the generator code still exists in the file, so you can always rerun gocog to update the generated text. &amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;By default gocog assumes you&amp;rsquo;re running embedded Go in the file (hey, I wrote it, I&amp;rsquo;m allowed to be biased), but you can specify any command line tool to run the code - python, ruby, perl, even compiled languages if you have a command line tool to compile and run them in a single step (I know of one for C# at least).&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&amp;ldquo;Ok&amp;rdquo;, you&amp;rsquo;re saying to yourself, &amp;ldquo;but what would I really do with it?&amp;rdquo; &amp;nbsp;Well, it can be really useful for reducing copy and paste or recreating boilerplate. Ned and I used it to keep a schema of properties in sync over several different projects. Someone on Golang-nuts emailed me and is using it to generate boilerplate for CGo enum properties in Go.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Gocog&amp;rsquo;s sourcecode actually uses gocog - I embed the usage text into three different spots for documentation purposes - two in regular Go comments and one in a markdown file. &amp;nbsp;I also use gocog to generate a timestamp in the code that gets displayed with the version information.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;You don&amp;rsquo;t need to know Go to run Gocog, it&amp;rsquo;s just an executable that anyone can run, without any prerequisites. &amp;nbsp;You can download the binaries of the latest build from the gocog wiki here:&amp;nbsp;&lt;a href=&#34;https://github.com/natefinch/gocog/wiki&#34;&gt;https://github.com/natefinch/gocog/wiki&lt;/a&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Feel &amp;nbsp;free to submit an issue if you find a bug or would like to request a feature.&lt;/div&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Go Win Stuff</title>
-      <link>http://npf.io/2012/11/go-win-stuff/</link>
-      <pubDate>Fri, 16 Nov 2012 11:01:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2012/11/go-win-stuff/</guid>
-      <description>&lt;p&gt;No, not contests, &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;golang&lt;/a&gt; (the programming language), and Win as in Windows.&lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Quick background - Recently I started writing a &lt;a href=&#34;http://en.wikipedia.org/wiki/MUD&#34; target=&#34;_blank&#34;&gt;MUD&lt;/a&gt; in Go for the purposes of learning Go, and writing something that is non-trivial to code. &amp;nbsp;MUDs are particularly suited to Go, since they are entirely server based, are text-based, and are highly concurrent and parallel problems (which is to say, you have a whole bunch of people doing stuff all at the same time on the server).&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Anyway, after getting a pretty good prototype of the MUD up and running (which was quite fun), I started thinking about using Go for some scripty things that I want to do at work. There&amp;rsquo;s a bit of a hitch, though&amp;hellip; the docs on working in Windows are not very good. &amp;nbsp;In fact, if you look at golang.org, they&amp;rsquo;re actually non-existent. &amp;nbsp;This is because the syscall package changes based on what OS you&amp;rsquo;re running on, and (not surprisingly) Google&amp;rsquo;s public golang site is not running on Windows.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;So, anyway, a couple notes here on Windowy things that you (I) might want to do with Go:&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Open the default browser with a given URL:&lt;/div&gt;&lt;br /&gt;&lt;pre class=&#34;brush: go; gutter: false;tab-size: 4;&#34;&gt;import (&lt;br /&gt;    &amp;ldquo;syscall/exec&amp;rdquo;&lt;br /&gt;) &lt;br /&gt;&lt;br /&gt;func OpenBrowser(url string) {&lt;br /&gt;    exec.Command(&amp;ldquo;rundll32&amp;rdquo;, &amp;ldquo;url.dll&amp;rdquo;, &amp;ldquo;FileProtocolHandler&amp;rdquo;, url)&lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;Example of a wrapper for syscall&amp;rsquo;s Windows Registry functions:&lt;br /&gt;&lt;br /&gt;&lt;pre class=&#34;brush: go; gutter: false;tab-size: 4;&#34;&gt;import (&lt;br /&gt;    &amp;ldquo;syscall&amp;rdquo;&lt;br /&gt;)&lt;br /&gt;&lt;br /&gt;func ReadRegString(hive syscall.Handle, subKeyPath, valueName string) (value string, err error) {&lt;br /&gt;    var h syscall.Handle&lt;br /&gt;    err = syscall.RegOpenKeyEx(hive, syscall.StringToUTF16Ptr(subKeyPath), 0, syscall.KEY_READ, &amp;amp;h)&lt;br /&gt;    if err != nil {&lt;br /&gt;        return&lt;br /&gt;     }&lt;br /&gt;     defer syscall.RegCloseKey(h)&lt;br /&gt;&lt;br /&gt;    var typ uint32&lt;br /&gt;    var bufSize uint32&lt;br /&gt;&lt;br /&gt;    err = syscall.RegQueryValueEx(&lt;br /&gt;              hKey,&lt;br /&gt;              syscall.StringToUTF16Ptr(valueName),&lt;br /&gt;              nil,&lt;br /&gt;              &amp;amp;typ,&lt;br /&gt;              nil,&lt;br /&gt;              &amp;amp;bufSize)&lt;br /&gt;    if err != nil {&lt;br /&gt;        return&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;    data := make([]uint16, bufSize/2+1)&lt;br /&gt;&lt;br /&gt;    err = syscall.RegQueryValueEx(&lt;br /&gt;              hKey,&lt;br /&gt;              syscall.StringToUTF16Ptr(valueName),&lt;br /&gt;              nil,&lt;br /&gt;              &amp;amp;typ,&lt;br /&gt;              (*byte)(unsafe.Pointer(&amp;amp;data[0])),&lt;br /&gt;              &amp;amp;bufSize)&lt;br /&gt;    if err != nil {&lt;br /&gt;        return&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;    return syscall.UTF16ToString(data), nil&lt;br /&gt;}&lt;br /&gt;&lt;/pre&gt;&lt;/p&gt;
 </description>
     </item>
     
