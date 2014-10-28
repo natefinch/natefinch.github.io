@@ -42,7 +42,7 @@
 &lt;pre&gt;&lt;code&gt;a := new(MyStruct)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;New means &amp;ldquo;Create a zero value of the given type and return a pointer to it&amp;rdquo;.  It&amp;rsquo;s sorta like the C &lt;code&gt;new&lt;/code&gt;, which is probably why it exists.  The problem is that it&amp;rsquo;s nearly useless.  It&amp;rsquo;s mostly redundant with simply returning the address of a value thusly:&lt;/p&gt;
+&lt;p&gt;New means &amp;ldquo;Create a zero value of the given type and return a pointer to it&amp;rdquo;.  It&amp;rsquo;s sorta like the C++ &lt;code&gt;new&lt;/code&gt;, which is probably why it exists.  The problem is that it&amp;rsquo;s nearly useless.  It&amp;rsquo;s mostly redundant with simply returning the address of a value thusly:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;a := &amp;amp;MyStruct{}
 &lt;/code&gt;&lt;/pre&gt;
