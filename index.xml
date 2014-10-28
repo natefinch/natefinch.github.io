@@ -7,7 +7,84 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2014 Nate Finch</copyright>
-    <updated>Tue, 14 Oct 2014 10:46:28 EDT</updated>
+    <updated>Tue, 28 Oct 2014 06:17:21 EDT</updated>
+    
+    
+    <item>
+      <title>Go Nitpicks</title>
+      <link>http://npf.io/2014/10/go-nitpicks/</link>
+      <pubDate>Tue, 28 Oct 2014 06:17:21 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2014/10/go-nitpicks/</guid>
+      <description>
+
+&lt;p&gt;I saw this tweet last night:&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; lang=&#34;en&#34;&gt;&lt;p&gt;A code interview I like to ask:&amp;#10;&amp;#10;&amp;quot;What would you change about &amp;lt;your favourite language&amp;gt;?&amp;quot;&amp;#10;&amp;#10;Having nothing to say to that is a big strike.&lt;/p&gt;&amp;mdash; karlseguin (@karlseguin) &lt;a href=&#34;https://twitter.com/karlseguin/status/526860386704695296&#34;&gt;October 27, 2014&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I figured I&amp;rsquo;d answer it here about Go.  Luckily, Go is a very small language, so there&amp;rsquo;s not a lot of surface area to dislike. However, there&amp;rsquo;s definitely some things I wish were different. Most of these are nitpicks, thus the title.&lt;/p&gt;
+
+&lt;h4 id=&#34;toc_0&#34;&gt;#1 Bare Returns&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;func foo() (i int, err error) {
+    i, err = strconv.ParseInt(&amp;quot;5&amp;quot;) 
+    return // wha??
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For all that Go promotes readable and immediately understandable code, this seems like a ridiculous outlier. The way it works is that if you don&amp;rsquo;t declare what the function is returning, it&amp;rsquo;ll return the values stored in the named return variables.  Which seems logical and handy, until you see a 100 line function with multiple branches and a single bare return at the bottom, with no idea what is actually getting returned.&lt;/p&gt;
+
+&lt;p&gt;To all gophers out there: don&amp;rsquo;t use bare returns.  Ever.&lt;/p&gt;
+
+&lt;h4 id=&#34;toc_1&#34;&gt;#2 New&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;a := new(MyStruct)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;New means &amp;ldquo;Create a zero value of the given type and return a pointer to it&amp;rdquo;.  It&amp;rsquo;s sorta like the C &lt;code&gt;new&lt;/code&gt;, which is probably why it exists.  The problem is that it&amp;rsquo;s nearly useless.  It&amp;rsquo;s mostly redundant with simply returning the address of a value thusly:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;a := &amp;amp;MyStruct{}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The above is a lot easier to read, it also gives you the ability to populate the value you&amp;rsquo;re constructing (if you wish).  The only time new is &amp;ldquo;useful&amp;rdquo; is if you want to initialize a pointer to a builtin (like a string or an int), because you can&amp;rsquo;t do this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;a := &amp;amp;int
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;but you can do this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;a := new(int)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Of course, you could always just do it in (&lt;em&gt;gasp&lt;/em&gt;) two lines:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;a := 0
+b := &amp;amp;a
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To all the gophers out there: don&amp;rsquo;t use new. Always use &amp;amp;Foo{} with structs, maps, and slices. Use the two line version for numbers and strings.&lt;/p&gt;
+
+&lt;h4 id=&#34;toc_2&#34;&gt;#3 Close&lt;/h4&gt;
+
+&lt;p&gt;The close built-in function closes a channel. If the channel is already closed, close will panic.  This pisses me off, because most of the time when I call close, I don&amp;rsquo;t actually care if it&amp;rsquo;s already closed.  I just want to ensure that it&amp;rsquo;s closed.  I&amp;rsquo;d much prefer if close returned a boolean that said whether or not it did anything, and then if &lt;strong&gt;I&lt;/strong&gt; choose to panic, I can.  Or, you know, not.&lt;/p&gt;
+
+&lt;h4 id=&#34;toc_3&#34;&gt;#4 There is no 4&lt;/h4&gt;
+
+&lt;p&gt;That&amp;rsquo;s basically it.  There&amp;rsquo;s some things I think are necessary evils, like &lt;code&gt;goto&lt;/code&gt; and &lt;code&gt;panic&lt;/code&gt;.  There&amp;rsquo;s some things that are necessary ugliness, like the built-in functions &lt;code&gt;append&lt;/code&gt;, &lt;code&gt;make&lt;/code&gt;, &lt;code&gt;delete&lt;/code&gt;, etc.  I sorta wish &lt;code&gt;x := range foo&lt;/code&gt; returned the value in x and not the index, but I get that it&amp;rsquo;s to be consistent between maps and slices, and returning the value in maps would be odd, I think.&lt;/p&gt;
+
+&lt;p&gt;All these are even below the level of nitpicks, though.  They don&amp;rsquo;t bug me, really.  I understand that everything in programming is a tradeoff, and I think the decisions made for Go were the right ones in these cases.  Sometimes you need goto.  Sometimes you need to panic.  Making those functions built-ins rather than methods on the types means you don&amp;rsquo;t need any methods on the types, which keeps them simpler, and means they&amp;rsquo;re &amp;ldquo;just data&amp;rdquo;.  It also means you don&amp;rsquo;t lose any functionality if you make new named types based on them.&lt;/p&gt;
+
+&lt;p&gt;So that&amp;rsquo;s my list for Go.&lt;/p&gt;
+
+&lt;h4 id=&#34;toc_4&#34;&gt;Postscript&lt;/h4&gt;
+
+&lt;p&gt;Someone on the twitter discussion mentioned he couldn&amp;rsquo;t think of anything he disliked about C#, which just about made me spit my coffee across the room.  I programmed in C# for ~9 years, starting out porting some 1.1 code to 2.0, and leaving as 5.0 came out.  The list of features in C# as of 5.0 is gigantic.  Even being a developer writing in it 40+ hours a week for 9 years, there was still stuff I had to look up to remember how it worked.&lt;/p&gt;
+
+&lt;p&gt;I feel like my mastery of Go after a year of side projects was about equivalent to my mastery of C# after 9 years of full time development.  If we assume 1:1 correlation between time to master and size of the language, an order of magnitude sounds about right.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -917,18 +994,6 @@ stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>http://npf.io/2014/06/autogenerate-docs-with-this-one-dumb-trick/</guid>
       <description>&lt;p&gt;Yesterday, I was trying to think of a way of automating some doc generation for my go packages.  The specific task I wanted to automate was updating a badge in my package&amp;rsquo;s README to show the test coverage.  What I wanted was a way to run go test -cover, parse the results, and put the result in the correct spot of my README.  My first thought was to write an application that would do that for me &amp;hellip; but then I&amp;rsquo;d have to run that &lt;i&gt;instead&lt;/i&gt; of go test.  What I realized I wanted was something that was &amp;ldquo;compatible with go test&amp;rdquo; - i.e. I want to run go test and not have to remember to run some special other command.&lt;br /&gt;&lt;br /&gt;And that&amp;rsquo;s when it hit me:  What is a test in Go?  A test is a Go function that gets run when you run &amp;ldquo;go test&amp;rdquo;. &amp;nbsp;Nothing says your test has to actually test anything. &amp;nbsp;And nothing prevents your test from doing something permanent on your machine (in fact we usually have to bend over backwards to make sure our tests &lt;i&gt;don&amp;rsquo;t&lt;/i&gt;&amp;nbsp;do anything permanent. &amp;nbsp;You can just write a test function that updates the docs for you.&lt;br /&gt;&lt;br /&gt;I actually quite like this technique. &amp;nbsp;I often have some manual tasks after updating my code - usually updating the docs in the README with changes to the API, or changing the docs to show new CLI flags, etc. &amp;nbsp;And there&amp;rsquo;s one thing I always do after I update my code - and that&amp;rsquo;s run &amp;ldquo;go test&amp;rdquo;. &amp;nbsp;If that also updates my docs, all the better.&lt;br /&gt;&lt;br /&gt;This is how covergen was born. &amp;nbsp;&lt;a href=&#34;https://github.com/natefinch/covergen&#34;&gt;https://github.com/natefinch/covergen&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;Covergen is a particularly heinous example of a test that updates your docs. &amp;nbsp;The heinous part is that it actually doubles the time it takes to run your tests&amp;hellip; this is because that one test re-runs all the tests with -cover to get the coverage percent. &amp;nbsp;I&amp;rsquo;m not sure I&amp;rsquo;d actually release real code that used such a thing - doubling the time it takes to run your tests just to save a few seconds of copy and paste is pretty terrible.&lt;br /&gt;&lt;br /&gt;However, it&amp;rsquo;s a valid example of what you can do when you throw away testing convention and decide you want to write some code in a test that doesn&amp;rsquo;t actually test anything, and instead just runs some automated tasks that you want run whenever anyone runs go test. &amp;nbsp;Just make sure the result is idempotent so you&amp;rsquo;re not continually causing things to look modified to version control.&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Diffing Go with Beyond Compare</title>
-      <link>http://npf.io/2014/05/diffing-go-with-beyond-compare/</link>
-      <pubDate>Wed, 14 May 2014 13:09:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2014/05/diffing-go-with-beyond-compare/</guid>
-      <description>&lt;p&gt;I love Beyond Compare, it&amp;rsquo;s an awesome visual diff/merge tool. &amp;nbsp;It&amp;rsquo;s not free, but I don&amp;rsquo;t care, because it&amp;rsquo;s awesome. &amp;nbsp;However, there&amp;rsquo;s no built-in configuration for Go code, so I made one. &amp;nbsp;Not sure what the venn diagram of Beyond Compare users and Go users looks like, it might be that I&amp;rsquo;m the one point of crossover, but just in case I&amp;rsquo;m not, here&amp;rsquo;s the configuration file for Beyond Compare 3 for the Go programming language:&amp;nbsp;&lt;a href=&#34;http://play.golang.org/p/G6NWE0z1GC&#34;&gt;http://play.golang.org/p/G6NWE0z1GC&lt;/a&gt; &amp;nbsp;(please forgive the abuse of the Go playground)&lt;br /&gt;&lt;br /&gt;Just copy the text into a file and in Beyond Compare, go to Tools-&amp;gt;Import Settings&amp;hellip; and choose the file. &amp;nbsp;Please let me know if you have any troubles or suggested improvements.&lt;/p&gt;
 </description>
     </item>
     

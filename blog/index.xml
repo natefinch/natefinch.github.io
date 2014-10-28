@@ -7,7 +7,84 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2014 Nate Finch</copyright>
-    <updated>Tue, 14 Oct 2014 10:46:28 EDT</updated>
+    <updated>Tue, 28 Oct 2014 06:17:21 EDT</updated>
+    
+    
+    <item>
+      <title>Go Nitpicks</title>
+      <link>http://npf.io/2014/10/go-nitpicks/</link>
+      <pubDate>Tue, 28 Oct 2014 06:17:21 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2014/10/go-nitpicks/</guid>
+      <description>
+
+&lt;p&gt;I saw this tweet last night:&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; lang=&#34;en&#34;&gt;&lt;p&gt;A code interview I like to ask:&amp;#10;&amp;#10;&amp;quot;What would you change about &amp;lt;your favourite language&amp;gt;?&amp;quot;&amp;#10;&amp;#10;Having nothing to say to that is a big strike.&lt;/p&gt;&amp;mdash; karlseguin (@karlseguin) &lt;a href=&#34;https://twitter.com/karlseguin/status/526860386704695296&#34;&gt;October 27, 2014&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I figured I&amp;rsquo;d answer it here about Go.  Luckily, Go is a very small language, so there&amp;rsquo;s not a lot of surface area to dislike. However, there&amp;rsquo;s definitely some things I wish were different. Most of these are nitpicks, thus the title.&lt;/p&gt;
+
+&lt;h4 id=&#34;toc_0&#34;&gt;#1 Bare Returns&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;func foo() (i int, err error) {
+    i, err = strconv.ParseInt(&amp;quot;5&amp;quot;) 
+    return // wha??
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For all that Go promotes readable and immediately understandable code, this seems like a ridiculous outlier. The way it works is that if you don&amp;rsquo;t declare what the function is returning, it&amp;rsquo;ll return the values stored in the named return variables.  Which seems logical and handy, until you see a 100 line function with multiple branches and a single bare return at the bottom, with no idea what is actually getting returned.&lt;/p&gt;
+
+&lt;p&gt;To all gophers out there: don&amp;rsquo;t use bare returns.  Ever.&lt;/p&gt;
+
+&lt;h4 id=&#34;toc_1&#34;&gt;#2 New&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;a := new(MyStruct)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;New means &amp;ldquo;Create a zero value of the given type and return a pointer to it&amp;rdquo;.  It&amp;rsquo;s sorta like the C &lt;code&gt;new&lt;/code&gt;, which is probably why it exists.  The problem is that it&amp;rsquo;s nearly useless.  It&amp;rsquo;s mostly redundant with simply returning the address of a value thusly:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;a := &amp;amp;MyStruct{}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The above is a lot easier to read, it also gives you the ability to populate the value you&amp;rsquo;re constructing (if you wish).  The only time new is &amp;ldquo;useful&amp;rdquo; is if you want to initialize a pointer to a builtin (like a string or an int), because you can&amp;rsquo;t do this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;a := &amp;amp;int
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;but you can do this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;a := new(int)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Of course, you could always just do it in (&lt;em&gt;gasp&lt;/em&gt;) two lines:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;a := 0
+b := &amp;amp;a
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To all the gophers out there: don&amp;rsquo;t use new. Always use &amp;amp;Foo{} with structs, maps, and slices. Use the two line version for numbers and strings.&lt;/p&gt;
+
+&lt;h4 id=&#34;toc_2&#34;&gt;#3 Close&lt;/h4&gt;
+
+&lt;p&gt;The close built-in function closes a channel. If the channel is already closed, close will panic.  This pisses me off, because most of the time when I call close, I don&amp;rsquo;t actually care if it&amp;rsquo;s already closed.  I just want to ensure that it&amp;rsquo;s closed.  I&amp;rsquo;d much prefer if close returned a boolean that said whether or not it did anything, and then if &lt;strong&gt;I&lt;/strong&gt; choose to panic, I can.  Or, you know, not.&lt;/p&gt;
+
+&lt;h4 id=&#34;toc_3&#34;&gt;#4 There is no 4&lt;/h4&gt;
+
+&lt;p&gt;That&amp;rsquo;s basically it.  There&amp;rsquo;s some things I think are necessary evils, like &lt;code&gt;goto&lt;/code&gt; and &lt;code&gt;panic&lt;/code&gt;.  There&amp;rsquo;s some things that are necessary ugliness, like the built-in functions &lt;code&gt;append&lt;/code&gt;, &lt;code&gt;make&lt;/code&gt;, &lt;code&gt;delete&lt;/code&gt;, etc.  I sorta wish &lt;code&gt;x := range foo&lt;/code&gt; returned the value in x and not the index, but I get that it&amp;rsquo;s to be consistent between maps and slices, and returning the value in maps would be odd, I think.&lt;/p&gt;
+
+&lt;p&gt;All these are even below the level of nitpicks, though.  They don&amp;rsquo;t bug me, really.  I understand that everything in programming is a tradeoff, and I think the decisions made for Go were the right ones in these cases.  Sometimes you need goto.  Sometimes you need to panic.  Making those functions built-ins rather than methods on the types means you don&amp;rsquo;t need any methods on the types, which keeps them simpler, and means they&amp;rsquo;re &amp;ldquo;just data&amp;rdquo;.  It also means you don&amp;rsquo;t lose any functionality if you make new named types based on them.&lt;/p&gt;
+
+&lt;p&gt;So that&amp;rsquo;s my list for Go.&lt;/p&gt;
+
+&lt;h4 id=&#34;toc_4&#34;&gt;Postscript&lt;/h4&gt;
+
+&lt;p&gt;Someone on the twitter discussion mentioned he couldn&amp;rsquo;t think of anything he disliked about C#, which just about made me spit my coffee across the room.  I programmed in C# for ~9 years, starting out porting some 1.1 code to 2.0, and leaving as 5.0 came out.  The list of features in C# as of 5.0 is gigantic.  Even being a developer writing in it 40+ hours a week for 9 years, there was still stuff I had to look up to remember how it worked.&lt;/p&gt;
+
+&lt;p&gt;I feel like my mastery of Go after a year of side projects was about equivalent to my mastery of C# after 9 years of full time development.  If we assume 1:1 correlation between time to master and size of the language, an order of magnitude sounds about right.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -1295,100 +1372,6 @@ on Go interfaces, I highly recommend it.&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>http://npf.io/2014/04/effective-godoc/</guid>
       <description>&lt;p&gt;I started to write a blog post about how to get the most out of godoc, with examples in a repo, and then realized I could just write the whole post as godoc on the repo, so that&amp;rsquo;s what I did. &amp;nbsp;Feel free to send pull requests if there&amp;rsquo;s anything you see that could be improved.&lt;br /&gt;&lt;br /&gt;I actually learned quite a lot writing this article, by exploring all the nooks and crannies of Go&amp;rsquo;s documentation generation. &amp;nbsp;Hopefully you&amp;rsquo;ll learn something too.&lt;br /&gt;&lt;br /&gt;Either view the documentation on godoc.org:&lt;br /&gt;&lt;br /&gt;&lt;a href=&#34;https://godoc.org/github.com/natefinch/godocgo&#34;&gt;https://godoc.org/github.com/natefinch/godocgo&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;or view it locally using the godoc tool:&lt;br /&gt;&lt;br /&gt;&lt;pre style=&#34;background-color: whitesmoke; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; border: 1px solid rgb(204, 204, 204); box-sizing: border-box; color: #333333; font-family: Monaco, Menlo, Consolas, &#39;Courier New&#39;, monospace; font-size: 13px; line-height: 1.428571429; margin-bottom: 10px; overflow: auto; padding: 9.5px; word-break: normal; word-wrap: normal;&#34;&gt;go get code.google.com/p/go.tools/cmd/godoc&lt;br /&gt;go get github.com/natefinch/godocgo&lt;br /&gt;godoc -http=:8080&lt;/pre&gt;&lt;br /&gt;Then open a browser to &lt;a href=&#34;http://localhost:8080/pkg/github.com/natefinch/godocgo&#34;&gt;http://localhost:8080/pkg/github.com/natefinch/godocgo&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;Enjoy!&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Unused Variables in Go</title>
-      <link>http://npf.io/2014/03/unused-variables-in-go/</link>
-      <pubDate>Fri, 28 Mar 2014 16:13:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2014/03/unused-variables-in-go/</guid>
-      <description>&lt;p&gt;The Go compiler treats unused variables as a compilation error. This causes much
-annoyance to some newbie Gophers, especially those used to writing languages
-that aren&amp;rsquo;t compiled, and want to be able to be fast and loose with their code
-while doing exploratory hacking.&lt;/p&gt;
-
-&lt;p&gt;The thing is, an unused variable is often a bug in your code, so pointing it out
-early can save you a lot of heartache.&lt;/p&gt;
-
-&lt;p&gt;Here&amp;rsquo;s an example:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;50 func Connect(name, port string) error {
-51     hostport := &amp;quot;&amp;quot;
-52    if port == &amp;quot;&amp;quot; {
-53        hostport := makeHost(name)
-54        logger.Infof(&amp;quot;No port specified, connecting on port 8080.&amp;quot;)
-55    } else {
-56        hostport := makeHostPort(name, port)
-57        logger.Infof(&amp;quot;Connecting on port %s.&amp;quot;, port)
-58    }
-59    // ... use hostport down here
-60 }
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Where&amp;rsquo;s the bug in the above?  Without the compiler error, you&amp;rsquo;d run the code
-and have to figure out why hostport was always an empty string.  Did we pass in
-empty strings by accident?  Is there a bug in makeHost and makeHostPort?&lt;/p&gt;
-
-&lt;p&gt;With the compiler error, it will say &amp;ldquo;53, hostport declared and not used&amp;rdquo; and
-&amp;ldquo;56, hostport declared and not used&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;This makes it a lot more obvious what the problem is&amp;hellip; inside the scope of the
-if statement, := declares new variables called hostport.  These hide the
-variable from the outer scope, thus, the outer hostport never gets modified,
-which is what gets used further on in the function.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;50 func Connect(name, port string) error {
-51    hostport := &amp;quot;&amp;quot;
-52    if port == &amp;quot;&amp;quot; {
-53        hostport = makeHost(name)
-54        logger.Infof(&amp;quot;No port specified, connecting on port 8080.&amp;quot;)
-55    } else {
-56        hostport = makeHostPort(name, port)
-57        logger.Infof(&amp;quot;Connecting on port %s.&amp;quot;, port)
-58    }
-59    // ... use hostport down here
-60 }
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The above is the corrected code. It took only a few seconds to fix, thanks to
-the unused variable error from the compiler.  If you&amp;rsquo;d been testing this by
-running it or even with unit tests&amp;hellip; you&amp;rsquo;d probably end up spending a non-
-trivial amount of time trying to figure it out.  And this is just a very simple
-example.  This kind of problem can be a lot more elaborate and hard to find.&lt;/p&gt;
-
-&lt;p&gt;And that&amp;rsquo;s why the unused variable declaration error is actually a good thing.
-If a value is important enough to be assigned to a variable, it&amp;rsquo;s probably a bug
-if you&amp;rsquo;re not actually using that variable.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Bonus tip:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Note that if you don&amp;rsquo;t care about the variable, you can just assign it to the
-empty identifier directly:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;_, err := computeMyVar()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This is the normal way to avoid the compiler error in cases where a function
-returns more than you need.&lt;/p&gt;
-
-&lt;p&gt;If you &lt;em&gt;really&lt;/em&gt; want to silence the unused variable error and not remove the
-variable for some reason, this is the way to do it:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;v, err := computeMyVar() 
-_ = v  // this counts as using the variable 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Just don&amp;rsquo;t forget to clean it up before committing.&lt;/p&gt;
-
-&lt;p&gt;All of the above also goes for unused packages.  And a similar tip for silencing
-that error:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;_ = fmt.Printf // this counts as using the package
-&lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
     
