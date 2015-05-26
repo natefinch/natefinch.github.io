@@ -6,8 +6,76 @@
     <link>http://npf.io/blog/index.xml/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
-    <copyright>2014 Nate Finch</copyright>
-    <updated>Tue, 28 Oct 2014 06:17:21 EDT</updated>
+    <copyright>2015 Nate Finch</copyright>
+    <updated>Mon, 25 May 2015 22:44:32 EDT</updated>
+    
+    
+    <item>
+      <title>Go Plugins are as Easy as Pie</title>
+      <link>http://npf.io/2015/05/pie/</link>
+      <pubDate>Mon, 25 May 2015 22:44:32 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2015/05/pie/</guid>
+      <description>
+
+&lt;p&gt;When people hear that Go only supports static linking, one of the things they
+eventually realize is that they can&amp;rsquo;t have traditional plugins via dlls/libs (in
+compiled languages) or scripts (in interpreted languages).  However, that
+doesn&amp;rsquo;t mean that you can&amp;rsquo;t have plugins.  Some people suggest doing &amp;ldquo;compiled-
+in&amp;rdquo; plugins - but to me, that&amp;rsquo;s not a plugin, that&amp;rsquo;s just code.  Some people
+suggest just running sub processes and sending messages via their CLI, but that
+runs into CLI parsing issues and requires runnnig a new process for every
+request.  The last option people think of is using RPC to an external process,
+which may also seem cumbersome, but it doesn&amp;rsquo;t have to be.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_0&#34;&gt;Serving up some pie&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;d like to introduce you to &lt;a href=&#34;https://github.com/natefinch/pie&#34;&gt;https://github.com/natefinch/pie&lt;/a&gt; - this is a Go
+package which contains a toolkit for writing plugins in Go.  It uses processes
+external to the main program as the plugins, and communicates with them via RPC
+over the plugin&amp;rsquo;s stdin and stout.  Having the plugin as an external process can
+actually has several benefits:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If the plugin crashes, it won&amp;rsquo;t crash your process.&lt;/li&gt;
+&lt;li&gt;The plugin is not in your process&amp;rsquo; memory space, so it can&amp;rsquo;t do anything nasty.&lt;/li&gt;
+&lt;li&gt;The plugin can be written in any language, not just Go.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I think this last point is actually the most valuable.  One of the nicest things
+about Go applications is that they&amp;rsquo;re just copy-and-run.  No one even needs to
+know they were written in Go.  With plugins as external processes, this remains
+true.  People wanting to extend your application can do so in the language of
+their choice, so long as it supports the codec your application has chosen for
+RPC.&lt;/p&gt;
+
+&lt;p&gt;The fact that the communication occurs over stdin and stdout means that there is
+no need to worry about negotiating ports, it&amp;rsquo;s easily cross platform compatible,
+and it&amp;rsquo;s very secure.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_1&#34;&gt;Orthogonality&lt;/h3&gt;
+
+&lt;p&gt;Pie is written to be a very simple set of functions that help you set up
+communication between your process and a plugin process.  Once you make a couple
+calls to pie, you then need to work out your own way to use the RPC connection
+created.  Pie does not attempt to be an all-in-one plugin framework, though you
+could certainly use it as the basis for one.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_2&#34;&gt;Why is it called pie?&lt;/h3&gt;
+
+&lt;p&gt;Because if you pronounce API like &amp;ldquo;a pie&amp;rdquo;, then all this consuming and serving
+of APIs becomes a lot more palatable.  Also, pies are the ultimate pluggable
+interface - depending on what&amp;rsquo;s inside, you can get dinner, dessert, a snack, or
+even breakfast.  Plus, then I get to say that plugins in Go are as easy as&amp;hellip;
+well, you know.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_3&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;I plan to be using pie in one of my own side projects.  Take it out for a spin
+in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -1360,18 +1428,6 @@ on Go interfaces, I highly recommend it.&lt;/p&gt;
       <guid>http://npf.io/2014/04/mocking-functions-in-go/</guid>
       <description>&lt;p&gt;Functions in Go are first class citizens, that means you can have a variable that contains a function value, and call it like a regular function.&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;printf := fmt.Printf&lt;br /&gt;printf(&amp;ldquo;This will output %d line.\n&amp;rdquo;, 1)&lt;/pre&gt;This ability can come in very handy for testing code that calls a function which is hard to properly test while testing the surrounding code. &amp;nbsp;In &lt;a href=&#34;http://juju.ubuntu.com/&#34; target=&#34;_blank&#34;&gt;Juju&lt;/a&gt;, we occasionally use function variables to allow us to stub out a difficult function during tests, in order to more easily test the code that calls it. &amp;nbsp;Here&amp;rsquo;s a simplified example:&lt;br /&gt;
 &lt;pre style=&#34;tab-size: 4;&#34;&gt;// in install/mongodb.go&lt;br /&gt;package install&lt;br /&gt;&lt;br /&gt;func SetupMongodb(path string) error {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;// suppose the code in this method modifies files in root&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;// directories, mucks with the environment, etc&amp;hellip; &lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;// Actions you actively don&amp;rsquo;t want to do during most tests.&lt;br /&gt;}&lt;/pre&gt;&lt;/span&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;&lt;br /&gt;// in startup/bootstrap.go&lt;br /&gt;package startup&lt;br /&gt;&lt;br /&gt;func Bootstrap() error {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;hellip;&lt;br /&gt;&amp;nbsp; &amp;nbsp; path := getPath()&lt;br /&gt;&amp;nbsp; &amp;nbsp; if err := install.SetupMongodb(path); err != nil {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;return err&lt;br /&gt;&amp;nbsp; &amp;nbsp; }&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;hellip;&lt;br /&gt;}&lt;/pre&gt;&lt;/span&gt;So, suppose you want to write a test for Bootstrap, but you know SetupMongodb won&amp;rsquo;t work, because the tests don&amp;rsquo;t run with root privileges (and you don&amp;rsquo;t want to setup mongodb on the dev&amp;rsquo;s machine anyway). &amp;nbsp;What can you do? &amp;nbsp;This is where mocking comes in.&lt;br /&gt;&lt;br /&gt;We just make a little tweak to Bootstrap:&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;package startup&lt;br /&gt;&lt;br /&gt;var setupMongo = install.SetupMongodb&lt;br /&gt;&lt;br /&gt;func Bootstrap() error {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;hellip;&lt;br /&gt;&amp;nbsp; &amp;nbsp; path := getRootDirPath()&lt;br /&gt;&amp;nbsp; &amp;nbsp; if err := setupMongo(path); err != nil {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;return err&lt;br /&gt;&amp;nbsp; &amp;nbsp; }&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;hellip;&lt;br /&gt;}&lt;/pre&gt;&lt;/span&gt;Now if we want to test Bootstrap, we can mock out the setupMongo function thusly:&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;&lt;span style=&#34;TRACE&#34;&gt;// in startup/bootstrap_test.go&lt;br /&gt;package startup&lt;br /&gt;&lt;br /&gt;type fakeSetup struct {&lt;br /&gt;&amp;nbsp; &amp;nbsp; path string&lt;br /&gt;&amp;nbsp; &amp;nbsp; err error&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;func (f *fakeSetup) setup(path string) error {&lt;br /&gt;&amp;nbsp; &amp;nbsp; f.path = path&lt;br /&gt;&amp;nbsp; &amp;nbsp; return f.err&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;TestBootstrap(t *testing.T) {&lt;br /&gt;&amp;nbsp; &amp;nbsp; f := &amp;amp;fakeSetup{ err: errors.New(&amp;ldquo;Failed!&amp;rdquo;) }&lt;br /&gt;&amp;nbsp; &amp;nbsp; // this mocks out the function that Bootstrap() calls&lt;br /&gt;&amp;nbsp; &amp;nbsp; setupMongo = f.setup&lt;br /&gt;&amp;nbsp; &amp;nbsp; err := Bootstrap()&lt;br /&gt;&amp;nbsp; &amp;nbsp; if err != f.err {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; t.Fail(&amp;ldquo;Error from setupMongo not returned.  Expected %v, got %v&amp;rdquo;, f.err, err)&lt;br /&gt;&amp;nbsp; &amp;nbsp; }&lt;br /&gt;&amp;nbsp; &amp;nbsp; expPath := getPath()&lt;br /&gt;&amp;nbsp; &amp;nbsp; if f.path != expPath {&lt;br /&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; t.Fail(&amp;ldquo;Path not correctly passed into setupMongo. Expected %q, got %q&amp;rdquo;, expPath, f.path)&lt;br /&gt;&amp;nbsp; &amp;nbsp; }&lt;br /&gt;&lt;br /&gt;&amp;nbsp; &amp;nbsp; // and then try again with f.err == nil, you get the idea&lt;br /&gt;}&lt;/pre&gt;&lt;/span&gt;Now we have full control over what happens in the setupMongo function, we can record the parameters that are passed into it, what it returns, and test that Bootstrap is at least using the API of the function correctly.&lt;br /&gt;&lt;br /&gt;Obviously, we need tests elsewhere for install.SetupMongodb to make sure it does the right thing, but those can be tests internal to the install package, which can use non-exported fields and functions to effectively test the logic that would be impossible from an external package (like the setup package).  Using this mocking means that we don&amp;rsquo;t have to worry about setting up an environment that allows us to test SetupMongodb when we really only want to test Bootstrap. &amp;nbsp;We can just stub out the function and test that Bootstrap does everything correctly, and trust that SetupMongodb works because it&amp;rsquo;s tested in its own package.&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Effective Godoc</title>
-      <link>http://npf.io/2014/04/effective-godoc/</link>
-      <pubDate>Tue, 01 Apr 2014 06:43:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2014/04/effective-godoc/</guid>
-      <description>&lt;p&gt;I started to write a blog post about how to get the most out of godoc, with examples in a repo, and then realized I could just write the whole post as godoc on the repo, so that&amp;rsquo;s what I did. &amp;nbsp;Feel free to send pull requests if there&amp;rsquo;s anything you see that could be improved.&lt;br /&gt;&lt;br /&gt;I actually learned quite a lot writing this article, by exploring all the nooks and crannies of Go&amp;rsquo;s documentation generation. &amp;nbsp;Hopefully you&amp;rsquo;ll learn something too.&lt;br /&gt;&lt;br /&gt;Either view the documentation on godoc.org:&lt;br /&gt;&lt;br /&gt;&lt;a href=&#34;https://godoc.org/github.com/natefinch/godocgo&#34;&gt;https://godoc.org/github.com/natefinch/godocgo&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;or view it locally using the godoc tool:&lt;br /&gt;&lt;br /&gt;&lt;pre style=&#34;background-color: whitesmoke; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 4px; border: 1px solid rgb(204, 204, 204); box-sizing: border-box; color: #333333; font-family: Monaco, Menlo, Consolas, &#39;Courier New&#39;, monospace; font-size: 13px; line-height: 1.428571429; margin-bottom: 10px; overflow: auto; padding: 9.5px; word-break: normal; word-wrap: normal;&#34;&gt;go get code.google.com/p/go.tools/cmd/godoc&lt;br /&gt;go get github.com/natefinch/godocgo&lt;br /&gt;godoc -http=:8080&lt;/pre&gt;&lt;br /&gt;Then open a browser to &lt;a href=&#34;http://localhost:8080/pkg/github.com/natefinch/godocgo&#34;&gt;http://localhost:8080/pkg/github.com/natefinch/godocgo&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;Enjoy!&lt;/p&gt;
 </description>
     </item>
     

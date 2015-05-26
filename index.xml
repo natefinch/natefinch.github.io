@@ -6,8 +6,76 @@
     <link>http://npf.io/index.xml/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
-    <copyright>2014 Nate Finch</copyright>
-    <updated>Fri, 21 Nov 2014 06:26:13 EST</updated>
+    <copyright>2015 Nate Finch</copyright>
+    <updated>Mon, 25 May 2015 22:44:32 EDT</updated>
+    
+    
+    <item>
+      <title>Go Plugins are as Easy as Pie</title>
+      <link>http://npf.io/2015/05/pie/</link>
+      <pubDate>Mon, 25 May 2015 22:44:32 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2015/05/pie/</guid>
+      <description>
+
+&lt;p&gt;When people hear that Go only supports static linking, one of the things they
+eventually realize is that they can&amp;rsquo;t have traditional plugins via dlls/libs (in
+compiled languages) or scripts (in interpreted languages).  However, that
+doesn&amp;rsquo;t mean that you can&amp;rsquo;t have plugins.  Some people suggest doing &amp;ldquo;compiled-
+in&amp;rdquo; plugins - but to me, that&amp;rsquo;s not a plugin, that&amp;rsquo;s just code.  Some people
+suggest just running sub processes and sending messages via their CLI, but that
+runs into CLI parsing issues and requires runnnig a new process for every
+request.  The last option people think of is using RPC to an external process,
+which may also seem cumbersome, but it doesn&amp;rsquo;t have to be.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_0&#34;&gt;Serving up some pie&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;d like to introduce you to &lt;a href=&#34;https://github.com/natefinch/pie&#34;&gt;https://github.com/natefinch/pie&lt;/a&gt; - this is a Go
+package which contains a toolkit for writing plugins in Go.  It uses processes
+external to the main program as the plugins, and communicates with them via RPC
+over the plugin&amp;rsquo;s stdin and stout.  Having the plugin as an external process can
+actually has several benefits:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If the plugin crashes, it won&amp;rsquo;t crash your process.&lt;/li&gt;
+&lt;li&gt;The plugin is not in your process&amp;rsquo; memory space, so it can&amp;rsquo;t do anything nasty.&lt;/li&gt;
+&lt;li&gt;The plugin can be written in any language, not just Go.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I think this last point is actually the most valuable.  One of the nicest things
+about Go applications is that they&amp;rsquo;re just copy-and-run.  No one even needs to
+know they were written in Go.  With plugins as external processes, this remains
+true.  People wanting to extend your application can do so in the language of
+their choice, so long as it supports the codec your application has chosen for
+RPC.&lt;/p&gt;
+
+&lt;p&gt;The fact that the communication occurs over stdin and stdout means that there is
+no need to worry about negotiating ports, it&amp;rsquo;s easily cross platform compatible,
+and it&amp;rsquo;s very secure.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_1&#34;&gt;Orthogonality&lt;/h3&gt;
+
+&lt;p&gt;Pie is written to be a very simple set of functions that help you set up
+communication between your process and a plugin process.  Once you make a couple
+calls to pie, you then need to work out your own way to use the RPC connection
+created.  Pie does not attempt to be an all-in-one plugin framework, though you
+could certainly use it as the basis for one.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_2&#34;&gt;Why is it called pie?&lt;/h3&gt;
+
+&lt;p&gt;Because if you pronounce API like &amp;ldquo;a pie&amp;rdquo;, then all this consuming and serving
+of APIs becomes a lot more palatable.  Also, pies are the ultimate pluggable
+interface - depending on what&amp;rsquo;s inside, you can get dinner, dessert, a snack, or
+even breakfast.  Plus, then I get to say that plugins in Go are as easy as&amp;hellip;
+well, you know.&lt;/p&gt;
+
+&lt;h3 id=&#34;toc_3&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;I plan to be using pie in one of my own side projects.  Take it out for a spin
+in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     
@@ -972,18 +1040,6 @@ stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>http://npf.io/2014/07/ci-for-windows-go-packages-with-appveyor/</guid>
       <description>&lt;p&gt;I recently needed to update my &lt;a href=&#34;https://github.com/natefinch/npipe&#34; target=&#34;_blank&#34;&gt;npipe&lt;/a&gt; package, and since I want it to be production quality, that means setting up CI, so that people using my package can know it&amp;rsquo;s passing tests. &amp;nbsp;Normally I&amp;rsquo;d use Travis CI or Drone.io for that, but npipe is a Windows-only Go package, and neither of the aforementioned services support running tests on Windows.&lt;br /&gt;&lt;br /&gt;With some googling, I saw that &lt;a href=&#34;https://twitter.com/nathany&#34; target=&#34;_blank&#34;&gt;Nathan Youngman&lt;/a&gt;&amp;nbsp;had worked with&amp;nbsp;&lt;a href=&#34;http://www.appveyor.com/&#34; target=&#34;_blank&#34;&gt;AppVeyor&lt;/a&gt;&amp;nbsp;to add Go support to their CI system. &amp;nbsp;The example on the blog talks about making a build.cmd file in your repo to enable Go builds, but I found that you can easily set up a Go build without having to put CI-specific files in your repo.&lt;br /&gt;&lt;br /&gt;To get started with AppVeyor, just log into their site and tell it where to get your code (I logged in with Github, and it was easy to specify what repo of mine to test). &amp;nbsp;Once you choose the repo, go to the Settings page on AppVeyor for that repo. &amp;nbsp;Under the Environment tab on the left, set the clone directory to C:\GOPATH\src&amp;amp;lt;your import path&amp;gt; and set an environment variable called GOPATH to C:\GOPATH. &amp;nbsp;Under the build tab, set the build type to &amp;ldquo;SCRIPT&amp;rdquo; and the script type to &amp;ldquo;CMD&amp;rdquo;, and make the contents of the script &lt;pre style=&#34;tab-size: 4;&#34;&gt;go get -v -d -t &amp;lt;your import path&amp;gt;/&amp;hellip;&lt;/pre&gt; (this will download the dependencies for your package). &amp;nbsp;In the test tab, set the test type to &amp;ldquo;SCRIPT&amp;rdquo;, the script type to &amp;ldquo;CMD&amp;rdquo; and the script contents to &lt;pre style=&#34;tab-size: 4;&#34;&gt;go test -v -cover ./&amp;hellip;&lt;/pre&gt; &amp;nbsp;(this will run all the tests in verbose mode and also output the test coverage).&lt;br /&gt;&lt;br /&gt;That&amp;rsquo;s pretty much it. &amp;nbsp;AppVeyor will automatically run a build on commits, like you&amp;rsquo;d expect. &amp;nbsp;You can watch the progress on a console output on their page, and get a pretty little badge from the badges page. &amp;nbsp;It&amp;rsquo;s free for open source projects, and seems relatively responsive from my admittedly limited experience.&lt;br /&gt;&lt;br /&gt;This is a great boon for Go developers, so you can be sure your code builds and passes tests on Windows, with very little work to set it up. &amp;nbsp;I&amp;rsquo;m probably going to add this to all my production repos, even the ones that aren&amp;rsquo;t Windows-only, to ensure my code works well on Windows as well as Linux.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Intro to BoltDB: Painless Performant Persistence</title>
-      <link>http://npf.io/2014/07/intro-to-boltdb-painless-performant-persistence/</link>
-      <pubDate>Mon, 07 Jul 2014 08:25:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2014/07/intro-to-boltdb-painless-performant-persistence/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;http://github.com/boltdb/bolt&#34; target=&#34;_blank&#34;&gt;BoltDB&lt;/a&gt; is a pure Go persistence solution that saves data to a memory mapped file.  I call it a persistence solution and not a database, because the word database has a lot of baggage associated with it that doesn&amp;rsquo;t apply to bolt. And that lack of baggage is what makes bolt so awesome.&lt;br /&gt;&lt;br /&gt;Bolt is just a Go package.  There&amp;rsquo;s nothing you need to install on the system, no configuration to figure out before you can start coding, nothing.  You just go get github.com/boltdb/bolt and then import &amp;ldquo;github.com/boltdb/bolt&amp;rdquo;. &lt;br /&gt;&lt;br /&gt;All you need to fully use bolt as storage is a file name.  This is fantastic from both a developer&amp;rsquo;s point of view, and a user&amp;rsquo;s point of view.  I don&amp;rsquo;t know about you, but I&amp;rsquo;ve spent months of work time over my career configuring and setting up databases and debugging configuration problems, users and permissions and all the other crap you get from more traditional databases like Postgres and Mongo.  There&amp;rsquo;s none of that with bolt.  No users, no setup, just a file name.  This is also a boon for users of your application, because &lt;em&gt;they&lt;/em&gt; don&amp;rsquo;t have to futz with all that crap either.&lt;br /&gt;&lt;br /&gt;Bolt is not a relational database.  It&amp;rsquo;s not even a document store, though you can sort of use it that way.  It&amp;rsquo;s really just a key/value store&amp;hellip; but don&amp;rsquo;t worry if you don&amp;rsquo;t really know what that means or how you&amp;rsquo;d use that for storage.  It&amp;rsquo;s super simple and it&amp;rsquo;s incredibly flexible.  Let&amp;rsquo;s take a look.&lt;br /&gt;&lt;br /&gt;Storage in bolt is divided into buckets.  A bucket is simply a named collection of key/value pairs, just like Go&amp;rsquo;s map.  The name of the bucket, the keys, and the values are all of type []byte.  Buckets can contain other buckets, also keyed by a []byte name. &lt;br /&gt;&lt;br /&gt;&amp;hellip; that&amp;rsquo;s it.  No, really, that&amp;rsquo;s it.  Bolt is basically a bunch of nested maps.  And this simplicity is what makes it so easy to use.  There&amp;rsquo;s no tables to set up, no schemas, no complex querying language to struggle with.  Let&amp;rsquo;s look at a bolt hello world:&lt;br /&gt;&lt;br /&gt;&lt;pre&gt;package main&lt;br /&gt;&lt;br /&gt;import (&lt;br /&gt;    &amp;ldquo;fmt&amp;rdquo;&lt;br /&gt;    &amp;ldquo;log&amp;rdquo;&lt;br /&gt;&lt;br /&gt;    &amp;ldquo;github.com/boltdb/bolt&amp;rdquo;&lt;br /&gt;)&lt;br /&gt;&lt;br /&gt;var world = []byte(&amp;ldquo;world&amp;rdquo;)&lt;br /&gt;&lt;br /&gt;func main() {&lt;br /&gt;    db, err := bolt.Open(&amp;ldquo;/home/nate/foo/bolt.db&amp;rdquo;, 0644, nil)&lt;br /&gt;    if err != nil {&lt;br /&gt;        log.Fatal(err)&lt;br /&gt;    }&lt;br /&gt;    defer db.Close()&lt;br /&gt;&lt;br /&gt;    key := []byte(&amp;ldquo;hello&amp;rdquo;)&lt;br /&gt;    value := []byte(&amp;ldquo;Hello World!&amp;rdquo;)&lt;br /&gt;&lt;br /&gt;    // store some data&lt;br /&gt;    err = db.Update(func(tx *bolt.Tx) error {&lt;br /&gt;        bucket, err := tx.CreateBucketIfNotExists(world)&lt;br /&gt;        if err != nil {&lt;br /&gt;            return err&lt;br /&gt;        }&lt;br /&gt;&lt;br /&gt;        err = bucket.Put(key, value)&lt;br /&gt;        if err != nil {&lt;br /&gt;            return err&lt;br /&gt;        }&lt;br /&gt;        return nil&lt;br /&gt;    })&lt;br /&gt;&lt;br /&gt;    if err != nil {&lt;br /&gt;        log.Fatal(err)&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;    // retrieve the data&lt;br /&gt;    err = db.View(func(tx *bolt.Tx) error {&lt;br /&gt;        bucket := tx.Bucket(world)&lt;br /&gt;        if bucket == nil {&lt;br /&gt;            return fmt.Errorf(&amp;ldquo;Bucket %q not found!&amp;rdquo;, world)&lt;br /&gt;        }&lt;br /&gt;&lt;br /&gt;        val := bucket.Get(key)&lt;br /&gt;        fmt.Println(string(val))&lt;br /&gt;&lt;br /&gt;        return nil&lt;br /&gt;    })&lt;br /&gt;&lt;br /&gt;    if err != nil {&lt;br /&gt;        log.Fatal(err)&lt;br /&gt;    }&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;// output:&lt;br /&gt;// Hello World!&lt;/pre&gt;&lt;div&gt;&lt;/div&gt;I know what you&amp;rsquo;re thinking - that seems kinda long.  But keep in mind, I fully handled all errors in at least a semi-proper way, and we&amp;rsquo;re doing all this:&lt;br /&gt;&lt;br /&gt;1.) creating a database &lt;br /&gt;2.) creating some structure (the &amp;ldquo;world&amp;rdquo; bucket)&lt;br /&gt;3.) storing data to the structure&lt;br /&gt;4.) retrieving data from the structure.&lt;br /&gt;&lt;br /&gt;I think that&amp;rsquo;s not too bad in 54 lines of code.&lt;br /&gt;&lt;br /&gt;So let&amp;rsquo;s look at what that example is really doing.  First we call bolt.Open to get the database.  This will create the file if necessary, or open it if it exists.&lt;br /&gt;&lt;br /&gt;All reads from or writes to the bolt database must be done within a transaction. You can have as many Readers in read-only transactions at the same time as you want, but only one Writer in a writable transaction at a time (readers maintain a consistent view of the DB while writers are writing).&lt;br /&gt;&lt;br /&gt;To begin, we call db.Update, which takes a function to which it&amp;rsquo;ll pass a bolt.Tx - bolt&amp;rsquo;s transaction object.  We then create a Bucket (since all data in bolt lives in buckets), and add our key/value pair to it.  After the write transaction finishes, we start a read- only transaction with DB.View, and get the values back out.&lt;br /&gt;&lt;br /&gt;What&amp;rsquo;s great about bolt&amp;rsquo;s transaction mechanism is that it&amp;rsquo;s super simple - the scope of the function is the scope of the transaction.  If the function passed to Update returns nil, all updates from the transaction are atomically stored to the database.  If the function passed to Update returns an error, the transaction is rolled back.  This makes bolt&amp;rsquo;s transactions completely intuitive from a Go developer&amp;rsquo;s point of view.  You just exit early out of your function by returning an error as usual, and bolt Does The Right Thing.  No need to worry about manually rolling back updates or anything, just return an error.&lt;br /&gt;&lt;br /&gt;The only other basic thing you may need is to iterate over key/value pairs in a Bucket, in which case, you just call bucket.Cursor(), which returns a Cursor value, which has functions like Next(), Prev() etc that return a key/value pair and work like you&amp;rsquo;d expect.&lt;br /&gt;&lt;br /&gt;There&amp;rsquo;s a lot more to the bolt API, but most of the rest of it is more about database statistics and some stuff for more advanced usage scenarios&amp;hellip; but the above is all you really need to know to start storing data in a bolt database.&lt;br /&gt;&lt;br /&gt;For a more complex application, just storing strings in the database may not be sufficient, but that&amp;rsquo;s ok, Go has your back there, too.  You can easily use encoding/json or encoding/gob to serialize structs into the database, keyed by a unique name or id.  This is what makes it easy for bolt to go from a key/value store to a document store - just have one bucket per document type.  Again, the benefit of bolt is low barrier of entry.  You don&amp;rsquo;t have to figure out a whole database schema or install anything to be able to just start dumping data to disk in a performant and manageable way.&lt;br /&gt;&lt;br /&gt;The main drawback of bolt is that there are no queries.  You can&amp;rsquo;t say &amp;ldquo;give me all foo objects with a name that starts with bar&amp;rdquo;.  You &lt;i&gt;could&lt;/i&gt; make your own index in the database and keep it up to date manually.  This could be as easy as a slice of IDs serialized into an &amp;ldquo;indices&amp;rdquo; bucket for a particular query. Obviously, this is where you start getting into the realm of developing your own relational database, but if you don&amp;rsquo;t go overboard, it can be nice that all this code is just that - code.  It&amp;rsquo;s not queries in some external DSL, it&amp;rsquo;s just code like you&amp;rsquo;d write for an in-memory data store.&lt;br /&gt;&lt;br /&gt;Bolt is not for every application.  You must understand your application&amp;rsquo;s needs and if bolt&amp;rsquo;s key/value style will be sufficient to fulfill those needs.  If it is, I think you&amp;rsquo;ll be very happy to use such a simple data store with so little mental overhead.&lt;br /&gt;&lt;br /&gt;[edited to clarify reader/writer relationship]   Bonus Gob vs. Json benchmark for storing structs in Bolt: &lt;pre&gt;&lt;br /&gt;BenchmarkGobEncode  1000000       2191 ns/op&lt;br /&gt;BenchmarkJsonEncode   500000       4738 ns/op&lt;br /&gt;BenchmarkGobDecode  1000000       2019 ns/op&lt;br /&gt;BenchmarkJsonDecode   200000      12993 ns/op&lt;br /&gt;&lt;/pre&gt;Code: &lt;a href=&#34;http://play.golang.org/p/IvfDUGBpJ6&#34;&gt;http://play.golang.org/p/IvfDUGBpJ6&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
