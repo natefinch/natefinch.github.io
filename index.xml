@@ -7,7 +7,9 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
-    <updated>Mon, 25 May 2015 22:44:32 EDT</updated>
+    <updated>Tue, 02 Jun 2015 17:00:00 UTC</updated>
+    
+    
     
     
     <item>
@@ -1030,18 +1032,6 @@ stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
     
     
     
-    
-    
-    
-    <item>
-      <title>CI for Windows Go Packages with AppVeyor</title>
-      <link>http://npf.io/2014/07/ci-for-windows-go-packages-with-appveyor/</link>
-      <pubDate>Wed, 09 Jul 2014 17:43:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2014/07/ci-for-windows-go-packages-with-appveyor/</guid>
-      <description>&lt;p&gt;I recently needed to update my &lt;a href=&#34;https://github.com/natefinch/npipe&#34; target=&#34;_blank&#34;&gt;npipe&lt;/a&gt; package, and since I want it to be production quality, that means setting up CI, so that people using my package can know it&amp;rsquo;s passing tests. &amp;nbsp;Normally I&amp;rsquo;d use Travis CI or Drone.io for that, but npipe is a Windows-only Go package, and neither of the aforementioned services support running tests on Windows.&lt;br /&gt;&lt;br /&gt;With some googling, I saw that &lt;a href=&#34;https://twitter.com/nathany&#34; target=&#34;_blank&#34;&gt;Nathan Youngman&lt;/a&gt;&amp;nbsp;had worked with&amp;nbsp;&lt;a href=&#34;http://www.appveyor.com/&#34; target=&#34;_blank&#34;&gt;AppVeyor&lt;/a&gt;&amp;nbsp;to add Go support to their CI system. &amp;nbsp;The example on the blog talks about making a build.cmd file in your repo to enable Go builds, but I found that you can easily set up a Go build without having to put CI-specific files in your repo.&lt;br /&gt;&lt;br /&gt;To get started with AppVeyor, just log into their site and tell it where to get your code (I logged in with Github, and it was easy to specify what repo of mine to test). &amp;nbsp;Once you choose the repo, go to the Settings page on AppVeyor for that repo. &amp;nbsp;Under the Environment tab on the left, set the clone directory to C:\GOPATH\src&amp;amp;lt;your import path&amp;gt; and set an environment variable called GOPATH to C:\GOPATH. &amp;nbsp;Under the build tab, set the build type to &amp;ldquo;SCRIPT&amp;rdquo; and the script type to &amp;ldquo;CMD&amp;rdquo;, and make the contents of the script &lt;pre style=&#34;tab-size: 4;&#34;&gt;go get -v -d -t &amp;lt;your import path&amp;gt;/&amp;hellip;&lt;/pre&gt; (this will download the dependencies for your package). &amp;nbsp;In the test tab, set the test type to &amp;ldquo;SCRIPT&amp;rdquo;, the script type to &amp;ldquo;CMD&amp;rdquo; and the script contents to &lt;pre style=&#34;tab-size: 4;&#34;&gt;go test -v -cover ./&amp;hellip;&lt;/pre&gt; &amp;nbsp;(this will run all the tests in verbose mode and also output the test coverage).&lt;br /&gt;&lt;br /&gt;That&amp;rsquo;s pretty much it. &amp;nbsp;AppVeyor will automatically run a build on commits, like you&amp;rsquo;d expect. &amp;nbsp;You can watch the progress on a console output on their page, and get a pretty little badge from the badges page. &amp;nbsp;It&amp;rsquo;s free for open source projects, and seems relatively responsive from my admittedly limited experience.&lt;br /&gt;&lt;br /&gt;This is a great boon for Go developers, so you can be sure your code builds and passes tests on Windows, with very little work to set it up. &amp;nbsp;I&amp;rsquo;m probably going to add this to all my production repos, even the ones that aren&amp;rsquo;t Windows-only, to ensure my code works well on Windows as well as Linux.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
-</description>
-    </item>
     
     
   </channel>
