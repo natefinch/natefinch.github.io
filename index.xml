@@ -3,11 +3,56 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>http://npf.io/index.xml/</link>
+    <link>http://npf.io/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
-    <updated>Tue, 02 Jun 2015 17:00:00 UTC</updated>
+    <updated>Thu, 11 Jun 2015 07:37:00 EDT</updated>
+    
+    
+    <item>
+      <title>Sharing Godoc of a WIP Branch</title>
+      <link>http://npf.io/2015/06/wip-godoc/</link>
+      <pubDate>Thu, 11 Jun 2015 07:37:00 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2015/06/wip-godoc/</guid>
+      <description>&lt;p&gt;I had a problem yesterday - I wanted to use the excellent godoc.org to show
+coworkers the godoc for the feature I was working on.  However, the feature was
+on a branch of the main code in Github, and &lt;code&gt;go get&lt;/code&gt; Does Not Work That Way™.
+So, what to do?  Well, I figured out a hack to make it work.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://gopkg.in&#34;&gt;https://gopkg.in&lt;/a&gt; is a super handy service that lets you point &lt;code&gt;go get&lt;/code&gt; at
+branches of your repo named vN (e.g. v0, v1, etc).  It also happens to work on
+tags.  So, we can leverage this to get godoc.org to render the godoc for our WIP
+branch.&lt;/p&gt;
+
+&lt;p&gt;From your WIP branch, simply do&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git tag v0
+git push myremote v0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This creates a lightweight tag that only affects your repo (not upstream from
+whence you forked).&lt;/p&gt;
+
+&lt;p&gt;You now can point godoc at your branch by way of gopkg.in:
+&lt;a href=&#34;https://godoc.org/gopkg.in/GithubUser/repo.v0&#34;&gt;https://godoc.org/gopkg.in/GithubUser/repo.v0&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This will tell godoc to &amp;lsquo;go get&amp;rsquo; your code from gopkg.in, and gopkg.in will
+redirect the command to your v0 tag, which is currently on your branch.  Bam,
+now you have godoc for your WIP branch on godoc.org.&lt;/p&gt;
+
+&lt;p&gt;Later, the tag can easily be removed (and reused if needed) thusly:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git tag -d v0
+git push myremote :refs/tags/v0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, there you go, go forth and share your godoc.  I find it&amp;rsquo;s a great way to get
+feedback on architecture before I dive into the reeds of the implementation.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     
@@ -30,7 +75,7 @@ runs into CLI parsing issues and requires runnnig a new process for every
 request.  The last option people think of is using RPC to an external process,
 which may also seem cumbersome, but it doesn&amp;rsquo;t have to be.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_0&#34;&gt;Serving up some pie&lt;/h3&gt;
+&lt;h3 id=&#34;serving-up-some-pie:786534216edb3831c5addeda1aa68cd4&#34;&gt;Serving up some pie&lt;/h3&gt;
 
 &lt;p&gt;I&amp;rsquo;d like to introduce you to &lt;a href=&#34;https://github.com/natefinch/pie&#34;&gt;https://github.com/natefinch/pie&lt;/a&gt; - this is a Go
 package which contains a toolkit for writing plugins in Go.  It uses processes
@@ -55,7 +100,7 @@ RPC.&lt;/p&gt;
 no need to worry about negotiating ports, it&amp;rsquo;s easily cross platform compatible,
 and it&amp;rsquo;s very secure.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_1&#34;&gt;Orthogonality&lt;/h3&gt;
+&lt;h3 id=&#34;orthogonality:786534216edb3831c5addeda1aa68cd4&#34;&gt;Orthogonality&lt;/h3&gt;
 
 &lt;p&gt;Pie is written to be a very simple set of functions that help you set up
 communication between your process and a plugin process.  Once you make a couple
@@ -63,7 +108,7 @@ calls to pie, you then need to work out your own way to use the RPC connection
 created.  Pie does not attempt to be an all-in-one plugin framework, though you
 could certainly use it as the basis for one.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_2&#34;&gt;Why is it called pie?&lt;/h3&gt;
+&lt;h3 id=&#34;why-is-it-called-pie:786534216edb3831c5addeda1aa68cd4&#34;&gt;Why is it called pie?&lt;/h3&gt;
 
 &lt;p&gt;Because if you pronounce API like &amp;ldquo;a pie&amp;rdquo;, then all this consuming and serving
 of APIs becomes a lot more palatable.  Also, pies are the ultimate pluggable
@@ -71,7 +116,7 @@ interface - depending on what&amp;rsquo;s inside, you can get dinner, dessert, a
 even breakfast.  Plus, then I get to say that plugins in Go are as easy as&amp;hellip;
 well, you know.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_3&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;h3 id=&#34;conclusion:786534216edb3831c5addeda1aa68cd4&#34;&gt;Conclusion&lt;/h3&gt;
 
 &lt;p&gt;I plan to be using pie in one of my own side projects.  Take it out for a spin
 in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
@@ -97,7 +142,7 @@ in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
 
 &lt;p&gt;I figured I&amp;rsquo;d answer it here about Go.  Luckily, Go is a very small language, so there&amp;rsquo;s not a lot of surface area to dislike. However, there&amp;rsquo;s definitely some things I wish were different. Most of these are nitpicks, thus the title.&lt;/p&gt;
 
-&lt;h4 id=&#34;toc_0&#34;&gt;#1 Bare Returns&lt;/h4&gt;
+&lt;h4 id=&#34;1-bare-returns:07e255e65a16527c982a11975fdc6037&#34;&gt;#1 Bare Returns&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code&gt;func foo() (i int, err error) {
     i, err = strconv.ParseInt(&amp;quot;5&amp;quot;) 
@@ -109,7 +154,7 @@ in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
 
 &lt;p&gt;To all gophers out there: don&amp;rsquo;t use bare returns.  Ever.&lt;/p&gt;
 
-&lt;h4 id=&#34;toc_1&#34;&gt;#2 New&lt;/h4&gt;
+&lt;h4 id=&#34;2-new:07e255e65a16527c982a11975fdc6037&#34;&gt;#2 New&lt;/h4&gt;
 
 &lt;pre&gt;&lt;code&gt;a := new(MyStruct)
 &lt;/code&gt;&lt;/pre&gt;
@@ -137,11 +182,11 @@ b := &amp;amp;a
 
 &lt;p&gt;To all the gophers out there: don&amp;rsquo;t use new. Always use &amp;amp;Foo{} with structs, maps, and slices. Use the two line version for numbers and strings.&lt;/p&gt;
 
-&lt;h4 id=&#34;toc_2&#34;&gt;#3 Close&lt;/h4&gt;
+&lt;h4 id=&#34;3-close:07e255e65a16527c982a11975fdc6037&#34;&gt;#3 Close&lt;/h4&gt;
 
 &lt;p&gt;The close built-in function closes a channel. If the channel is already closed, close will panic.  This pisses me off, because most of the time when I call close, I don&amp;rsquo;t actually care if it&amp;rsquo;s already closed.  I just want to ensure that it&amp;rsquo;s closed.  I&amp;rsquo;d much prefer if close returned a boolean that said whether or not it did anything, and then if &lt;strong&gt;I&lt;/strong&gt; choose to panic, I can.  Or, you know, not.&lt;/p&gt;
 
-&lt;h4 id=&#34;toc_3&#34;&gt;#4 There is no 4&lt;/h4&gt;
+&lt;h4 id=&#34;4-there-is-no-4:07e255e65a16527c982a11975fdc6037&#34;&gt;#4 There is no 4&lt;/h4&gt;
 
 &lt;p&gt;That&amp;rsquo;s basically it.  There&amp;rsquo;s some things I think are necessary evils, like &lt;code&gt;goto&lt;/code&gt; and &lt;code&gt;panic&lt;/code&gt;.  There&amp;rsquo;s some things that are necessary ugliness, like the built-in functions &lt;code&gt;append&lt;/code&gt;, &lt;code&gt;make&lt;/code&gt;, &lt;code&gt;delete&lt;/code&gt;, etc.  I sorta wish &lt;code&gt;x := range foo&lt;/code&gt; returned the value in x and not the index, but I get that it&amp;rsquo;s to be consistent between maps and slices, and returning the value in maps would be odd, I think.&lt;/p&gt;
 
@@ -149,7 +194,7 @@ b := &amp;amp;a
 
 &lt;p&gt;So that&amp;rsquo;s my list for Go.&lt;/p&gt;
 
-&lt;h4 id=&#34;toc_4&#34;&gt;Postscript&lt;/h4&gt;
+&lt;h4 id=&#34;postscript:07e255e65a16527c982a11975fdc6037&#34;&gt;Postscript&lt;/h4&gt;
 
 &lt;p&gt;Someone on the twitter discussion mentioned he couldn&amp;rsquo;t think of anything he disliked about C#, which just about made me spit my coffee across the room.  I programmed in C# for ~9 years, starting out porting some 1.1 code to 2.0, and leaving as 5.0 came out.  The list of features in C# as of 5.0 is gigantic.  Even being a developer writing in it 40+ hours a week for 9 years, there was still stuff I had to look up to remember how it worked.&lt;/p&gt;
 
@@ -444,7 +489,7 @@ immediately.&lt;/p&gt;
 vaguely similar to YAML or property lists, but far, far better.  But before we
 get into it in detail, let&amp;rsquo;s look back at what came before.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_0&#34;&gt;Long Ago, In A Galaxy Far, Far Away&lt;/h3&gt;
+&lt;h3 id=&#34;long-ago-in-a-galaxy-far-far-away:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Long Ago, In A Galaxy Far, Far Away&lt;/h3&gt;
 
 &lt;p&gt;Since the beginning of computing, people have needed a way to configure
 their software.  On Linux, this generally is done in text files.  For simple
@@ -456,7 +501,7 @@ parsed as a number instead of a string?  How do you namespace related
 configuration values so you don&amp;rsquo;t need ridiculously long names to prevent
 collisions?&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_1&#34;&gt;The Dark Ages&lt;/h3&gt;
+&lt;h3 id=&#34;the-dark-ages:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;The Dark Ages&lt;/h3&gt;
 
 &lt;p&gt;In the 90&amp;rsquo;s, we used XML.  And it sucked.  XML is verbose, it&amp;rsquo;s hard for humans
 to read and write, and it still doesn&amp;rsquo;t solve a lot of the problems above (like
@@ -464,7 +509,7 @@ how to specify the type of a value).  In addition, the XML spec is huge,
 processing is very complicated, and all the extra features invite abuse and
 overcomplication.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_2&#34;&gt;Enlightenment&lt;/h3&gt;
+&lt;h3 id=&#34;enlightenment:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Enlightenment&lt;/h3&gt;
 
 &lt;p&gt;In the mid 2000&amp;rsquo;s, JSON came to popularity as a data exchange format, and it was
 so much better than XML.  It had real types, it was easy for programs to
@@ -476,7 +521,7 @@ compact data format turns into a nested mess of curly braces.  Also, JSON is not
 without its problems&amp;hellip; for example, there&amp;rsquo;s no date type, there&amp;rsquo;s no support
 for comments, and all numbers are floats.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_3&#34;&gt;A False Start&lt;/h3&gt;
+&lt;h3 id=&#34;a-false-start:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;A False Start&lt;/h3&gt;
 
 &lt;p&gt;YAML came to popularity some time after JSON as a more human-readable format,
 and its &lt;code&gt;key: value&lt;/code&gt; syntax and pretty indentation is definitely a lot easier on
@@ -490,7 +535,7 @@ difficult to write.  Writing YAML by hand is a ridden with landmines of corner
 cases where your choice of names or values happens to hit a reserved word or
 special marker.  It does support comments, though.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_4&#34;&gt;The Savior&lt;/h3&gt;
+&lt;h3 id=&#34;the-savior:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;The Savior&lt;/h3&gt;
 
 &lt;p&gt;On February 23, 2013, Tom Preston-Werner (former CEO of GitHub) made his first
 commit to &lt;a href=&#34;https://github.com/toml-lang/toml&#34;&gt;https://github.com/toml-lang/toml&lt;/a&gt;.  TOML stands for Tom&amp;rsquo;s Obvious,
@@ -505,7 +550,7 @@ whitespace, without requiring a ton of delimiters.&lt;/p&gt;
 
 &lt;p&gt;Let&amp;rsquo;s dive in.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_5&#34;&gt;The Basics&lt;/h3&gt;
+&lt;h3 id=&#34;the-basics:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;The Basics&lt;/h3&gt;
 
 &lt;p&gt;The basic form is key = value&lt;/p&gt;
 
@@ -541,7 +586,7 @@ and our posterity, do ordain and establish this Constitution for the United
 States of America.&amp;quot;&amp;quot;&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;toc_6&#34;&gt;Lists&lt;/h3&gt;
+&lt;h3 id=&#34;lists:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Lists&lt;/h3&gt;
 
 &lt;p&gt;Lists (arrays) are signified with brackets and delimited with commas.  Only
 primitives are allowed in this form, though you may have nested lists.  The
@@ -561,7 +606,7 @@ nested = [[ &amp;quot;a&amp;quot;, &amp;quot;b&amp;quot;], [1, 2]]
 that the arrays are all of a single type, but allowing mixed types of sub-arrays
 bugs the heck out of me.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_7&#34;&gt;Now we get crazy&lt;/h3&gt;
+&lt;h3 id=&#34;now-we-get-crazy:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Now we get crazy&lt;/h3&gt;
 
 &lt;p&gt;What&amp;rsquo;s left?  In JSON there are objects, in YAML there are associative arrays&amp;hellip;
 in common parlance they are maps or dictionaries or hash tables.  Named
@@ -648,7 +693,7 @@ bat = &amp;quot;hi&amp;quot;
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;toc_8&#34;&gt;Last but not least&lt;/h3&gt;
+&lt;h3 id=&#34;last-but-not-least:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Last but not least&lt;/h3&gt;
 
 &lt;p&gt;The last thing is arrays of tables, which are declared with double brackets
 thusly:&lt;/p&gt;
@@ -705,7 +750,7 @@ text = &amp;quot;Love it!&amp;quot;
 fashion, but it&amp;rsquo;s nice that you can&amp;rsquo;t shoot yourself in the foot if you reorder
 things &amp;ldquo;incorrectly&amp;rdquo;.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_9&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;h3 id=&#34;conclusion:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Conclusion&lt;/h3&gt;
 
 &lt;p&gt;That&amp;rsquo;s TOML.  It&amp;rsquo;s pretty awesome.&lt;/p&gt;
 
@@ -1028,8 +1073,6 @@ stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
 &lt;p&gt;Right now the site is pretty basic, but I will add more features to it, such as post history etc.&lt;/p&gt;
 </description>
     </item>
-    
-    
     
     
     

@@ -3,11 +3,56 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>http://npf.io/tags/go/index.xml/</link>
+    <link>http://npf.io/tags/go/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
-    <updated>Mon, 25 May 2015 22:44:32 EDT</updated>
+    <updated>Thu, 11 Jun 2015 07:37:00 EDT</updated>
+    
+    
+    <item>
+      <title>Sharing Godoc of a WIP Branch</title>
+      <link>http://npf.io/2015/06/wip-godoc/</link>
+      <pubDate>Thu, 11 Jun 2015 07:37:00 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2015/06/wip-godoc/</guid>
+      <description>&lt;p&gt;I had a problem yesterday - I wanted to use the excellent godoc.org to show
+coworkers the godoc for the feature I was working on.  However, the feature was
+on a branch of the main code in Github, and &lt;code&gt;go get&lt;/code&gt; Does Not Work That Way™.
+So, what to do?  Well, I figured out a hack to make it work.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://gopkg.in&#34;&gt;https://gopkg.in&lt;/a&gt; is a super handy service that lets you point &lt;code&gt;go get&lt;/code&gt; at
+branches of your repo named vN (e.g. v0, v1, etc).  It also happens to work on
+tags.  So, we can leverage this to get godoc.org to render the godoc for our WIP
+branch.&lt;/p&gt;
+
+&lt;p&gt;From your WIP branch, simply do&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git tag v0
+git push myremote v0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This creates a lightweight tag that only affects your repo (not upstream from
+whence you forked).&lt;/p&gt;
+
+&lt;p&gt;You now can point godoc at your branch by way of gopkg.in:
+&lt;a href=&#34;https://godoc.org/gopkg.in/GithubUser/repo.v0&#34;&gt;https://godoc.org/gopkg.in/GithubUser/repo.v0&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This will tell godoc to &amp;lsquo;go get&amp;rsquo; your code from gopkg.in, and gopkg.in will
+redirect the command to your v0 tag, which is currently on your branch.  Bam,
+now you have godoc for your WIP branch on godoc.org.&lt;/p&gt;
+
+&lt;p&gt;Later, the tag can easily be removed (and reused if needed) thusly:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git tag -d v0
+git push myremote :refs/tags/v0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, there you go, go forth and share your godoc.  I find it&amp;rsquo;s a great way to get
+feedback on architecture before I dive into the reeds of the implementation.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -28,7 +73,7 @@ runs into CLI parsing issues and requires runnnig a new process for every
 request.  The last option people think of is using RPC to an external process,
 which may also seem cumbersome, but it doesn&amp;rsquo;t have to be.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_0&#34;&gt;Serving up some pie&lt;/h3&gt;
+&lt;h3 id=&#34;serving-up-some-pie:786534216edb3831c5addeda1aa68cd4&#34;&gt;Serving up some pie&lt;/h3&gt;
 
 &lt;p&gt;I&amp;rsquo;d like to introduce you to &lt;a href=&#34;https://github.com/natefinch/pie&#34;&gt;https://github.com/natefinch/pie&lt;/a&gt; - this is a Go
 package which contains a toolkit for writing plugins in Go.  It uses processes
@@ -53,7 +98,7 @@ RPC.&lt;/p&gt;
 no need to worry about negotiating ports, it&amp;rsquo;s easily cross platform compatible,
 and it&amp;rsquo;s very secure.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_1&#34;&gt;Orthogonality&lt;/h3&gt;
+&lt;h3 id=&#34;orthogonality:786534216edb3831c5addeda1aa68cd4&#34;&gt;Orthogonality&lt;/h3&gt;
 
 &lt;p&gt;Pie is written to be a very simple set of functions that help you set up
 communication between your process and a plugin process.  Once you make a couple
@@ -61,7 +106,7 @@ calls to pie, you then need to work out your own way to use the RPC connection
 created.  Pie does not attempt to be an all-in-one plugin framework, though you
 could certainly use it as the basis for one.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_2&#34;&gt;Why is it called pie?&lt;/h3&gt;
+&lt;h3 id=&#34;why-is-it-called-pie:786534216edb3831c5addeda1aa68cd4&#34;&gt;Why is it called pie?&lt;/h3&gt;
 
 &lt;p&gt;Because if you pronounce API like &amp;ldquo;a pie&amp;rdquo;, then all this consuming and serving
 of APIs becomes a lot more palatable.  Also, pies are the ultimate pluggable
@@ -69,7 +114,7 @@ interface - depending on what&amp;rsquo;s inside, you can get dinner, dessert, a
 even breakfast.  Plus, then I get to say that plugins in Go are as easy as&amp;hellip;
 well, you know.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_3&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;h3 id=&#34;conclusion:786534216edb3831c5addeda1aa68cd4&#34;&gt;Conclusion&lt;/h3&gt;
 
 &lt;p&gt;I plan to be using pie in one of my own side projects.  Take it out for a spin
 in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
@@ -236,7 +281,7 @@ anyone I offended.&lt;/p&gt;
       <guid>http://npf.io/2014/05/intro-to-go-interfaces/</guid>
       <description>
 
-&lt;h3 id=&#34;toc_0&#34;&gt;Standard Interface Intro&lt;/h3&gt;
+&lt;h3 id=&#34;standard-interface-intro:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Standard Interface Intro&lt;/h3&gt;
 
 &lt;p&gt;Go’s interfaces are one of it’s best features, but they’re also one of the most confusing for newbies.  This post will try to give you the understanding you need to use Go’s interfaces and not get frustrated when things don’t work the way you expect.  It’s a little long, but a bunch of that is just code examples.&lt;/p&gt;
 
@@ -280,7 +325,7 @@ In fact, Camel and Walker can live in totally different packages and never know
 about one another, and this will still work if a third package decides to make a
 Camel and pass it into LongWalk.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_1&#34;&gt;Non-Standard Continuation&lt;/h3&gt;
+&lt;h3 id=&#34;non-standard-continuation:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Non-Standard Continuation&lt;/h3&gt;
 
 &lt;p&gt;This is where most tutorials stop, and where most questions and problems begin.
 The problem is that you still don’t know how the interfaces actually work, and
@@ -338,7 +383,7 @@ copied into the interface value’s Type.valtype field.  The actual data in the
 value of c is copied into a new place in memory, and w’s Data field points at
 that memory location.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_2&#34;&gt;Implications of the Implementation&lt;/h3&gt;
+&lt;h3 id=&#34;implications-of-the-implementation:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Implications of the Implementation&lt;/h3&gt;
 
 &lt;p&gt;Now, let’s look at the implications of this code.  First, interface values are
 very small - just two pointers.  When you assign a value to an interface, that
@@ -350,7 +395,7 @@ they’re small anyway, so you don’t have to worry about copying the memory, p
 they hold your data in a pointer, so changes to the data will travel with the
 interface.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_3&#34;&gt;Interfaces Are Types&lt;/h3&gt;
+&lt;h3 id=&#34;interfaces-are-types:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Interfaces Are Types&lt;/h3&gt;
 
 &lt;p&gt;Let’s look at Walker again, this is important:&lt;/p&gt;
 
@@ -447,7 +492,7 @@ value into an interface.  The reason is that the value in an interface is in a
 hidden memory location, and so the compiler can’t automatically get a pointer to
 that memory for you (in Go parlance, this is known as being “not addressable”).&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_4&#34;&gt;Nil Pointers and Nil Interfaces&lt;/h3&gt;
+&lt;h3 id=&#34;nil-pointers-and-nil-interfaces:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Nil Pointers and Nil Interfaces&lt;/h3&gt;
 
 &lt;p&gt;The interaction between nil interfaces and nil pointers is where nearly everyone
 gets tripped up when they first start with Go.&lt;/p&gt;
@@ -565,7 +610,7 @@ c.Walk(500)
 
 &lt;p&gt;&lt;a href=&#34;http://play.golang.org/p/4EfyV21at9&#34;&gt;http://play.golang.org/p/4EfyV21at9&lt;/a&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_5&#34;&gt;Outro&lt;/h3&gt;
+&lt;h3 id=&#34;outro:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Outro&lt;/h3&gt;
 
 &lt;p&gt;I hope this article helps you better understand how interfaces works, and helps
 you avoid some of the common pitfalls and misconceptions newbies have about how

@@ -3,11 +3,56 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>http://npf.io/tags/golang/index.xml/</link>
+    <link>http://npf.io/tags/golang/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
-    <updated>Mon, 25 May 2015 22:44:32 EDT</updated>
+    <updated>Thu, 11 Jun 2015 07:37:00 EDT</updated>
+    
+    
+    <item>
+      <title>Sharing Godoc of a WIP Branch</title>
+      <link>http://npf.io/2015/06/wip-godoc/</link>
+      <pubDate>Thu, 11 Jun 2015 07:37:00 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2015/06/wip-godoc/</guid>
+      <description>&lt;p&gt;I had a problem yesterday - I wanted to use the excellent godoc.org to show
+coworkers the godoc for the feature I was working on.  However, the feature was
+on a branch of the main code in Github, and &lt;code&gt;go get&lt;/code&gt; Does Not Work That Way™.
+So, what to do?  Well, I figured out a hack to make it work.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://gopkg.in&#34;&gt;https://gopkg.in&lt;/a&gt; is a super handy service that lets you point &lt;code&gt;go get&lt;/code&gt; at
+branches of your repo named vN (e.g. v0, v1, etc).  It also happens to work on
+tags.  So, we can leverage this to get godoc.org to render the godoc for our WIP
+branch.&lt;/p&gt;
+
+&lt;p&gt;From your WIP branch, simply do&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git tag v0
+git push myremote v0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This creates a lightweight tag that only affects your repo (not upstream from
+whence you forked).&lt;/p&gt;
+
+&lt;p&gt;You now can point godoc at your branch by way of gopkg.in:
+&lt;a href=&#34;https://godoc.org/gopkg.in/GithubUser/repo.v0&#34;&gt;https://godoc.org/gopkg.in/GithubUser/repo.v0&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This will tell godoc to &amp;lsquo;go get&amp;rsquo; your code from gopkg.in, and gopkg.in will
+redirect the command to your v0 tag, which is currently on your branch.  Bam,
+now you have godoc for your WIP branch on godoc.org.&lt;/p&gt;
+
+&lt;p&gt;Later, the tag can easily be removed (and reused if needed) thusly:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git tag -d v0
+git push myremote :refs/tags/v0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, there you go, go forth and share your godoc.  I find it&amp;rsquo;s a great way to get
+feedback on architecture before I dive into the reeds of the implementation.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -28,7 +73,7 @@ runs into CLI parsing issues and requires runnnig a new process for every
 request.  The last option people think of is using RPC to an external process,
 which may also seem cumbersome, but it doesn&amp;rsquo;t have to be.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_0&#34;&gt;Serving up some pie&lt;/h3&gt;
+&lt;h3 id=&#34;serving-up-some-pie:786534216edb3831c5addeda1aa68cd4&#34;&gt;Serving up some pie&lt;/h3&gt;
 
 &lt;p&gt;I&amp;rsquo;d like to introduce you to &lt;a href=&#34;https://github.com/natefinch/pie&#34;&gt;https://github.com/natefinch/pie&lt;/a&gt; - this is a Go
 package which contains a toolkit for writing plugins in Go.  It uses processes
@@ -53,7 +98,7 @@ RPC.&lt;/p&gt;
 no need to worry about negotiating ports, it&amp;rsquo;s easily cross platform compatible,
 and it&amp;rsquo;s very secure.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_1&#34;&gt;Orthogonality&lt;/h3&gt;
+&lt;h3 id=&#34;orthogonality:786534216edb3831c5addeda1aa68cd4&#34;&gt;Orthogonality&lt;/h3&gt;
 
 &lt;p&gt;Pie is written to be a very simple set of functions that help you set up
 communication between your process and a plugin process.  Once you make a couple
@@ -61,7 +106,7 @@ calls to pie, you then need to work out your own way to use the RPC connection
 created.  Pie does not attempt to be an all-in-one plugin framework, though you
 could certainly use it as the basis for one.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_2&#34;&gt;Why is it called pie?&lt;/h3&gt;
+&lt;h3 id=&#34;why-is-it-called-pie:786534216edb3831c5addeda1aa68cd4&#34;&gt;Why is it called pie?&lt;/h3&gt;
 
 &lt;p&gt;Because if you pronounce API like &amp;ldquo;a pie&amp;rdquo;, then all this consuming and serving
 of APIs becomes a lot more palatable.  Also, pies are the ultimate pluggable
@@ -69,7 +114,7 @@ interface - depending on what&amp;rsquo;s inside, you can get dinner, dessert, a
 even breakfast.  Plus, then I get to say that plugins in Go are as easy as&amp;hellip;
 well, you know.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_3&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;h3 id=&#34;conclusion:786534216edb3831c5addeda1aa68cd4&#34;&gt;Conclusion&lt;/h3&gt;
 
 &lt;p&gt;I plan to be using pie in one of my own side projects.  Take it out for a spin
 in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
@@ -236,7 +281,7 @@ anyone I offended.&lt;/p&gt;
       <guid>http://npf.io/2014/05/intro-to-go-interfaces/</guid>
       <description>
 
-&lt;h3 id=&#34;toc_0&#34;&gt;Standard Interface Intro&lt;/h3&gt;
+&lt;h3 id=&#34;standard-interface-intro:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Standard Interface Intro&lt;/h3&gt;
 
 &lt;p&gt;Go’s interfaces are one of it’s best features, but they’re also one of the most confusing for newbies.  This post will try to give you the understanding you need to use Go’s interfaces and not get frustrated when things don’t work the way you expect.  It’s a little long, but a bunch of that is just code examples.&lt;/p&gt;
 
@@ -280,7 +325,7 @@ In fact, Camel and Walker can live in totally different packages and never know
 about one another, and this will still work if a third package decides to make a
 Camel and pass it into LongWalk.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_1&#34;&gt;Non-Standard Continuation&lt;/h3&gt;
+&lt;h3 id=&#34;non-standard-continuation:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Non-Standard Continuation&lt;/h3&gt;
 
 &lt;p&gt;This is where most tutorials stop, and where most questions and problems begin.
 The problem is that you still don’t know how the interfaces actually work, and
@@ -338,7 +383,7 @@ copied into the interface value’s Type.valtype field.  The actual data in the
 value of c is copied into a new place in memory, and w’s Data field points at
 that memory location.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_2&#34;&gt;Implications of the Implementation&lt;/h3&gt;
+&lt;h3 id=&#34;implications-of-the-implementation:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Implications of the Implementation&lt;/h3&gt;
 
 &lt;p&gt;Now, let’s look at the implications of this code.  First, interface values are
 very small - just two pointers.  When you assign a value to an interface, that
@@ -350,7 +395,7 @@ they’re small anyway, so you don’t have to worry about copying the memory, p
 they hold your data in a pointer, so changes to the data will travel with the
 interface.&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_3&#34;&gt;Interfaces Are Types&lt;/h3&gt;
+&lt;h3 id=&#34;interfaces-are-types:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Interfaces Are Types&lt;/h3&gt;
 
 &lt;p&gt;Let’s look at Walker again, this is important:&lt;/p&gt;
 
@@ -447,7 +492,7 @@ value into an interface.  The reason is that the value in an interface is in a
 hidden memory location, and so the compiler can’t automatically get a pointer to
 that memory for you (in Go parlance, this is known as being “not addressable”).&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_4&#34;&gt;Nil Pointers and Nil Interfaces&lt;/h3&gt;
+&lt;h3 id=&#34;nil-pointers-and-nil-interfaces:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Nil Pointers and Nil Interfaces&lt;/h3&gt;
 
 &lt;p&gt;The interaction between nil interfaces and nil pointers is where nearly everyone
 gets tripped up when they first start with Go.&lt;/p&gt;
@@ -565,7 +610,7 @@ c.Walk(500)
 
 &lt;p&gt;&lt;a href=&#34;http://play.golang.org/p/4EfyV21at9&#34;&gt;http://play.golang.org/p/4EfyV21at9&lt;/a&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;toc_5&#34;&gt;Outro&lt;/h3&gt;
+&lt;h3 id=&#34;outro:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Outro&lt;/h3&gt;
 
 &lt;p&gt;I hope this article helps you better understand how interfaces works, and helps
 you avoid some of the common pitfalls and misconceptions newbies have about how
@@ -739,18 +784,6 @@ that error:&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>http://npf.io/2013/01/go-is-for-open-source/</guid>
       <description>&lt;p&gt;The Go programming language is built from the ground up to implicitly encourage Go projects to be open source. If you want your project not only to contribute to open source, but to encourage other people to write open source code, Go is a great language to choose.&lt;br /&gt;&lt;br /&gt;Let&amp;rsquo;s look at how Go does this. These first two points are overly obvious, but we should get them out of the way.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;The language is open source&lt;/h3&gt;You can go look at the &lt;a href=&#34;https://code.google.com/p/go/source/browse/&#34; target=&#34;_blank&#34;&gt;source code&lt;/a&gt;&amp;nbsp;for the language, the compilers, and the build tools for the language. It&amp;rsquo;s a fully open source project. Even though a lot of the work is being done by Google engineers, there are hundreds of names on the &lt;a href=&#34;https://code.google.com/p/go/source/browse/CONTRIBUTORS&#34; target=&#34;_blank&#34;&gt;list of contributors&lt;/a&gt; of people who are not Google employees.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;The standard library is open source&lt;/h3&gt;&lt;div&gt;Want to see high quality example code? Look at the code in the standard library. It has been carefully reviewed to be of the best quality, and in canonical Go style. Reading the standard library is a great way to learn the best ways to use and write Go.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;span style=&#34;color: red;&#34;&gt;Ok, that&amp;rsquo;s great, but what about all the code that isn&amp;rsquo;t part of Go itself?&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;The design of Go really shows its embrace of open source in how third party code is used in day to day projects.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Go makes it trivial to use someone&amp;nbsp;else&amp;rsquo;s code in your project&lt;/h3&gt;&lt;div&gt;Go has distributed version control built-in from the ground up. If you want to use a package from github, for example, you just specify the URL in the imports, as if it were a local package:&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;pre class=&#34;brush: go; gutter: false&#34;&gt;import (&lt;br /&gt;    &amp;ldquo;bytes&amp;rdquo; // std lib package&lt;br /&gt;    &amp;ldquo;github.com/fake/foo&amp;rdquo; // 3rd party package&lt;br /&gt;)&lt;/pre&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;You don&amp;rsquo;t have to go find and download fake/foo from github and put it in a special directory or anything. Just run &amp;ldquo;go get github.com/fake/foo&amp;rdquo;. Go will then download, build, and install the code, so that you can reference it&amp;hellip; nicely stored in a directory defined by the URL, in this case $GOPATH/src/github.com/fake/foo. Go will even figure out what source control system is used on the other side so you don&amp;rsquo;t have to (support for git, svn, mercurial, and bazaar).&lt;br /&gt;&lt;br /&gt;What&amp;rsquo;s even better is that the auto-download happens for anyone who calls &amp;ldquo;go get&amp;rdquo; on&amp;nbsp;&lt;i&gt;your&lt;/i&gt;&amp;nbsp;code repository. No more giving long drawn-out installation instructions about getting half a dozen 3rd party libraries first. If someone wants your code, they type &amp;ldquo;go get path.to/your/code&amp;rdquo;, and Go will download your code, and any remote imports you have (like the one for github above), any remote imports &lt;i&gt;that&lt;/i&gt; code has, etc, and then builds everything.&lt;br /&gt;&lt;br /&gt;The fact that this is available from the command line tools that come with the language makes it the de facto standard for how all Go code is written. There&amp;rsquo;s no fragmentation in the community about how packages are stored, accessed, used, etc. This means zero overhead for using third party code, it&amp;rsquo;s as easy to use as if it were built into the Go standard library.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Sharing code is the default&lt;/h3&gt;&lt;/div&gt;&lt;div&gt;Like most scripting languages (and unlike many compiled languages), using source code from another project is the default way to use third party code in Go. Go creates a monolithic executable during its build, so there are no DLLs to create and distribute in the way you often see with other compiled languages. In theory you could distribute the compiled .a files from your project for other people to link to in their project, but this is not encouraged by the tooling, and I&amp;rsquo;ve personally never seen anyone do it.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;All Go code uses the same style&lt;/h3&gt;&lt;div&gt;Have you ever gone to read the source for a project you&amp;rsquo;d like to contribute to, and had your eyes cross over at the bizarre formatting the authors used? That almost never happens with Go. Go comes with a code formatting tool called gofmt that automatically formats Go code to the same style. The use of gofmt is strongly encouraged in the Go community, and nearly everyone uses it. Most text editors have an extension to automatically format your code with gofmt on save, so you don&amp;rsquo;t even have to think about it. You never have to worry about having a poorly formatted library to work with&amp;hellip; and in the very rare situation where you do, you can just run it through gofmt and you&amp;rsquo;re good to go.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Easy cross platform support&lt;/h3&gt;&lt;div&gt;Go makes it easy to support multiple platforms. The tooling &lt;a href=&#34;http://dave.cheney.net/2012/09/08/an-introduction-to-cross-compilation-with-go&#34; target=&#34;_blank&#34;&gt;can create native binaries&lt;/a&gt; for any popular operating system from the same source on a single machine. If you need platform-specific code, it&amp;rsquo;s easy to specify code that only gets compiled for a single platform, by simply appending _&amp;lt;os&amp;gt; to a file name &lt;i&gt;.e.g&lt;/i&gt;&amp;nbsp;path_windows.go will only be compiled for builds targeting Windows.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Built-in documentation and testing&lt;/h3&gt;&lt;div&gt;Go comes with a documentation generator that spits generates HTML or plain text from minimally formatted comments in the code. It also comes with a standard testing package that can run unit tests, performance benchmarks, and runnable example code. Because this is all available in the standard library and with the standard tools, nearly everyone uses it&amp;hellip; which means it&amp;rsquo;s easy to look at the documentation for any random Go package, and easy check if the tests pass, without having to go install some third party support tool. Because it&amp;rsquo;s all standardized, several popular websites have popped up to &lt;a href=&#34;http://godoc.org/&#34; target=&#34;_blank&#34;&gt;automate generating&lt;/a&gt;&amp;nbsp;(and hosting) the documentation for your project, and you can easily run &lt;a href=&#34;http://about.travis-ci.org/docs/user/languages/go/&#34; target=&#34;_blank&#34;&gt;continuous integration&lt;/a&gt; on your package, with only a single line in the setup script - &amp;ldquo;language: go&amp;rdquo;.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Conclusion&lt;/h3&gt;&lt;div&gt;Everything about Go encourages standardization and openness&amp;hellip; which not only makes it &lt;i&gt;possible &lt;/i&gt;to use other people&amp;rsquo;s code, it makes it &lt;b&gt;easy&lt;/b&gt;&lt;i&gt;&amp;nbsp;&lt;/i&gt;to use other people&amp;rsquo;s code. I hope to see Go blossom as a language embraced by the open source community, as they discover the strengths that make it uniquely qualified for open source projects.&lt;/div&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>What I love about Go</title>
-      <link>http://npf.io/2013/01/what-i-love-about-go/</link>
-      <pubDate>Fri, 25 Jan 2013 08:49:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2013/01/what-i-love-about-go/</guid>
-      <description>&lt;p&gt;&lt;h2&gt;&lt;span style=&#34;font-weight: normal;&#34;&gt;The best things about Go have nothing to do with the language.&lt;/span&gt;&lt;/h2&gt;&lt;h3&gt;Single Executable Output&lt;/h3&gt;Go compiles into a single executable that runs natively on the target OS. No more needing to install java, .net, mono, python, ruby, whatever. Here&amp;rsquo;s your executable, feel free to run it like a normal person. &amp;nbsp;And you can target builds for any major OS (windows, linux, OSX, BSD).&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;One True Coding Style&lt;/h3&gt;GoFmt is a build tool that formats your source code in the standard Go format. No more arguing about spacing or brace matching or whatever. There is one true format, and now we can all move on&amp;hellip; and even better, many editors integrate GoFmt so that your code can be automatically formatted whenever you save.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Integrated Testing&lt;/h3&gt;Testing is integrated into the language. Name a file with the suffix _test.go and it&amp;rsquo;ll only build under test. You run tests simply by running &amp;ldquo;go test&amp;rdquo; in the directory. You can also define runnable example code with output that is checked at test time. &amp;nbsp;This example code is then included in the documentation (see below)&amp;hellip; now you&amp;rsquo;ll never have examples in documentation with errors in them. &amp;nbsp;Finally, you can have built-in benchmarks that are controlled by the go tool to automatically run enough iterations to get a significant result, displayed in number of operations per second.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Integrated Documentation&lt;/h3&gt;HTML documentation is built into the language. No need for ugly HTML in your source or weirdly formatted comments. Plaintext comments are turned into very legible documentation, and see above for examples that actually run and can have their output tested as a part of the tests.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;DVCS&lt;/h3&gt;Support for distributed version control is built into the language. Want to reference code from a project on github? &amp;nbsp;Just use the url of the project as the import path in your code, &lt;i&gt;e.g.&lt;/i&gt; import &amp;ldquo;github.com/jsmith/foo&amp;rdquo; &amp;nbsp; When you build your code it&amp;rsquo;ll get downloaded and built automatically.&lt;br /&gt;&lt;br /&gt;Want to get a tool written in go? &amp;nbsp;From the command line type &amp;ldquo;go get github.com/jsmith/bar&amp;rdquo; - go will download the source, build it, and install the executable in your path. &amp;nbsp;Now you can run bar.&lt;br /&gt;&lt;br /&gt;Any git, SVN, mercurial, or bazaar repository will work, but all the major public source code sites are supported out of the box - github, bitbucket, google code, and launchpad.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Other Cool Stuff&lt;/h3&gt;&lt;div&gt;Debugging with gdb&lt;br /&gt;Integrated profiling tools&lt;br /&gt;Easy to define custom includes per targeted OS/architecture (simple _windows will only build if targetting windows)&lt;br /&gt;Integrated code parsers and lexers.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h4&gt;Do you even care about the actual language anymore? &amp;nbsp;I wouldn&amp;rsquo;t. &amp;nbsp;But just in case:&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;C-like&lt;/li&gt;&lt;li&gt;Garbage Collected&lt;/li&gt;&lt;li&gt;Statically typed&lt;/li&gt;&lt;li&gt;&amp;hellip;but with type inference so you&amp;rsquo;re not typing boilerplate all the time: a := &amp;ldquo;my string&amp;rdquo;&lt;/li&gt;&lt;li&gt;Implicit interfaces - if a type has the methods of an interface, it implements the interface&lt;/li&gt;&lt;li&gt;Pointers but no pointer arithmetic (thank god)&lt;/li&gt;&lt;li&gt;First class functions&lt;/li&gt;&lt;li&gt;No exceptions&lt;/li&gt;&lt;li&gt;&amp;hellip;but multiple returns from a single function so you don&amp;rsquo;t have to overload return types&lt;/li&gt;&lt;li&gt;Everything is UTF8 (both strings and source code.. yes you can have Θ as a variable name now)&lt;/li&gt;&lt;li&gt;Highly performant asynchronous code that is trivial to write&lt;/li&gt;&lt;li&gt;A deep standard library that does most of the boring stuff for you&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;/p&gt;
 </description>
     </item>
     

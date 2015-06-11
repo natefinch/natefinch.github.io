@@ -22,7 +22,7 @@
   <link rel="shortcut icon" href="/favicon.ico">
 
   
-  <link href="http://npf.io/index.xml/" rel="alternate" type="application/rss+xml" title="npf.io" />
+  <link href="http://npf.io/index.xml" rel="alternate" type="application/rss+xml" title="npf.io" />
 
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
@@ -55,17 +55,17 @@
     <ul class="sidebar-nav">
       <li><a href="http://npf.io/blog">Posts</a></li>
       
-        <li><a href="http://npf.io/about/">About </a></li>
+        <li><a href="/about/">About </a></li>
       
       <br/>
       
       <li>Code:</li>
         
-          <li><a href="http://npf.io/lumberjack.v2/">Lumberjack </a></li>
+          <li><a href="/lumberjack.v2/">Lumberjack </a></li>
         
-          <li><a href="http://npf.io/pie/">Pie </a></li>
+          <li><a href="/pie/">Pie </a></li>
         
-          <li><a href="http://npf.io/npipe.v2/">npipe </a></li>
+          <li><a href="/npipe.v2/">npipe </a></li>
         
       
     </ul>
@@ -86,6 +86,57 @@
 <div class="posts">
 
       
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="http://npf.io/2015/06/wip-godoc/">
+        Sharing Godoc of a WIP Branch
+      </a>
+    </h1>
+
+    <span class="post-date">Jun 11, 2015</span>
+
+    
+
+
+    <p>I had a problem yesterday - I wanted to use the excellent godoc.org to show
+coworkers the godoc for the feature I was working on.  However, the feature was
+on a branch of the main code in Github, and <code>go get</code> Does Not Work That Way™.
+So, what to do?  Well, I figured out a hack to make it work.</p>
+
+<p><a href="https://gopkg.in">https://gopkg.in</a> is a super handy service that lets you point <code>go get</code> at
+branches of your repo named vN (e.g. v0, v1, etc).  It also happens to work on
+tags.  So, we can leverage this to get godoc.org to render the godoc for our WIP
+branch.</p>
+
+<p>From your WIP branch, simply do</p>
+
+<pre><code>git tag v0
+git push myremote v0
+</code></pre>
+
+<p>This creates a lightweight tag that only affects your repo (not upstream from
+whence you forked).</p>
+
+<p>You now can point godoc at your branch by way of gopkg.in:
+<a href="https://godoc.org/gopkg.in/GithubUser/repo.v0">https://godoc.org/gopkg.in/GithubUser/repo.v0</a></p>
+
+<p>This will tell godoc to &lsquo;go get&rsquo; your code from gopkg.in, and gopkg.in will
+redirect the command to your v0 tag, which is currently on your branch.  Bam,
+now you have godoc for your WIP branch on godoc.org.</p>
+
+<p>Later, the tag can easily be removed (and reused if needed) thusly:</p>
+
+<pre><code>git tag -d v0
+git push myremote :refs/tags/v0
+</code></pre>
+
+<p>So, there you go, go forth and share your godoc.  I find it&rsquo;s a great way to get
+feedback on architecture before I dive into the reeds of the implementation.</p>
+
+  </div>
+  
+  
   
   
   
@@ -113,7 +164,7 @@ runs into CLI parsing issues and requires runnnig a new process for every
 request.  The last option people think of is using RPC to an external process,
 which may also seem cumbersome, but it doesn&rsquo;t have to be.</p>
 
-<h3 id="toc_0">Serving up some pie</h3>
+<h3 id="serving-up-some-pie:786534216edb3831c5addeda1aa68cd4">Serving up some pie</h3>
 
 <p>I&rsquo;d like to introduce you to <a href="https://github.com/natefinch/pie">https://github.com/natefinch/pie</a> - this is a Go
 package which contains a toolkit for writing plugins in Go.  It uses processes
@@ -138,7 +189,7 @@ RPC.</p>
 no need to worry about negotiating ports, it&rsquo;s easily cross platform compatible,
 and it&rsquo;s very secure.</p>
 
-<h3 id="toc_1">Orthogonality</h3>
+<h3 id="orthogonality:786534216edb3831c5addeda1aa68cd4">Orthogonality</h3>
 
 <p>Pie is written to be a very simple set of functions that help you set up
 communication between your process and a plugin process.  Once you make a couple
@@ -146,7 +197,7 @@ calls to pie, you then need to work out your own way to use the RPC connection
 created.  Pie does not attempt to be an all-in-one plugin framework, though you
 could certainly use it as the basis for one.</p>
 
-<h3 id="toc_2">Why is it called pie?</h3>
+<h3 id="why-is-it-called-pie:786534216edb3831c5addeda1aa68cd4">Why is it called pie?</h3>
 
 <p>Because if you pronounce API like &ldquo;a pie&rdquo;, then all this consuming and serving
 of APIs becomes a lot more palatable.  Also, pies are the ultimate pluggable
@@ -154,7 +205,7 @@ interface - depending on what&rsquo;s inside, you can get dinner, dessert, a sna
 even breakfast.  Plus, then I get to say that plugins in Go are as easy as&hellip;
 well, you know.</p>
 
-<h3 id="toc_3">Conclusion</h3>
+<h3 id="conclusion:786534216edb3831c5addeda1aa68cd4">Conclusion</h3>
 
 <p>I plan to be using pie in one of my own side projects.  Take it out for a spin
 in one of your projects and let me know what you think.  Happy eating!</p>
@@ -186,7 +237,7 @@ in one of your projects and let me know what you think.  Happy eating!</p>
 
 <p>I figured I&rsquo;d answer it here about Go.  Luckily, Go is a very small language, so there&rsquo;s not a lot of surface area to dislike. However, there&rsquo;s definitely some things I wish were different. Most of these are nitpicks, thus the title.</p>
 
-<h4 id="toc_0">#1 Bare Returns</h4>
+<h4 id="1-bare-returns:07e255e65a16527c982a11975fdc6037">#1 Bare Returns</h4>
 
 <pre><code>func foo() (i int, err error) {
     i, err = strconv.ParseInt(&quot;5&quot;) 
@@ -198,7 +249,7 @@ in one of your projects and let me know what you think.  Happy eating!</p>
 
 <p>To all gophers out there: don&rsquo;t use bare returns.  Ever.</p>
 
-<h4 id="toc_1">#2 New</h4>
+<h4 id="2-new:07e255e65a16527c982a11975fdc6037">#2 New</h4>
 
 <pre><code>a := new(MyStruct)
 </code></pre>
@@ -226,11 +277,11 @@ b := &amp;a
 
 <p>To all the gophers out there: don&rsquo;t use new. Always use &amp;Foo{} with structs, maps, and slices. Use the two line version for numbers and strings.</p>
 
-<h4 id="toc_2">#3 Close</h4>
+<h4 id="3-close:07e255e65a16527c982a11975fdc6037">#3 Close</h4>
 
 <p>The close built-in function closes a channel. If the channel is already closed, close will panic.  This pisses me off, because most of the time when I call close, I don&rsquo;t actually care if it&rsquo;s already closed.  I just want to ensure that it&rsquo;s closed.  I&rsquo;d much prefer if close returned a boolean that said whether or not it did anything, and then if <strong>I</strong> choose to panic, I can.  Or, you know, not.</p>
 
-<h4 id="toc_3">#4 There is no 4</h4>
+<h4 id="4-there-is-no-4:07e255e65a16527c982a11975fdc6037">#4 There is no 4</h4>
 
 <p>That&rsquo;s basically it.  There&rsquo;s some things I think are necessary evils, like <code>goto</code> and <code>panic</code>.  There&rsquo;s some things that are necessary ugliness, like the built-in functions <code>append</code>, <code>make</code>, <code>delete</code>, etc.  I sorta wish <code>x := range foo</code> returned the value in x and not the index, but I get that it&rsquo;s to be consistent between maps and slices, and returning the value in maps would be odd, I think.</p>
 
@@ -238,7 +289,7 @@ b := &amp;a
 
 <p>So that&rsquo;s my list for Go.</p>
 
-<h4 id="toc_4">Postscript</h4>
+<h4 id="postscript:07e255e65a16527c982a11975fdc6037">Postscript</h4>
 
 <p>Someone on the twitter discussion mentioned he couldn&rsquo;t think of anything he disliked about C#, which just about made me spit my coffee across the room.  I programmed in C# for ~9 years, starting out porting some 1.1 code to 2.0, and leaving as 5.0 came out.  The list of features in C# as of 5.0 is gigantic.  Even being a developer writing in it 40+ hours a week for 9 years, there was still stuff I had to look up to remember how it worked.</p>
 
@@ -551,7 +602,7 @@ immediately.</p>
 vaguely similar to YAML or property lists, but far, far better.  But before we
 get into it in detail, let&rsquo;s look back at what came before.</p>
 
-<h3 id="toc_0">Long Ago, In A Galaxy Far, Far Away</h3>
+<h3 id="long-ago-in-a-galaxy-far-far-away:e2600f20c5cda367beec1116d4d8e23c">Long Ago, In A Galaxy Far, Far Away</h3>
 
 <p>Since the beginning of computing, people have needed a way to configure
 their software.  On Linux, this generally is done in text files.  For simple
@@ -563,7 +614,7 @@ parsed as a number instead of a string?  How do you namespace related
 configuration values so you don&rsquo;t need ridiculously long names to prevent
 collisions?</p>
 
-<h3 id="toc_1">The Dark Ages</h3>
+<h3 id="the-dark-ages:e2600f20c5cda367beec1116d4d8e23c">The Dark Ages</h3>
 
 <p>In the 90&rsquo;s, we used XML.  And it sucked.  XML is verbose, it&rsquo;s hard for humans
 to read and write, and it still doesn&rsquo;t solve a lot of the problems above (like
@@ -571,7 +622,7 @@ how to specify the type of a value).  In addition, the XML spec is huge,
 processing is very complicated, and all the extra features invite abuse and
 overcomplication.</p>
 
-<h3 id="toc_2">Enlightenment</h3>
+<h3 id="enlightenment:e2600f20c5cda367beec1116d4d8e23c">Enlightenment</h3>
 
 <p>In the mid 2000&rsquo;s, JSON came to popularity as a data exchange format, and it was
 so much better than XML.  It had real types, it was easy for programs to
@@ -583,7 +634,7 @@ compact data format turns into a nested mess of curly braces.  Also, JSON is not
 without its problems&hellip; for example, there&rsquo;s no date type, there&rsquo;s no support
 for comments, and all numbers are floats.</p>
 
-<h3 id="toc_3">A False Start</h3>
+<h3 id="a-false-start:e2600f20c5cda367beec1116d4d8e23c">A False Start</h3>
 
 <p>YAML came to popularity some time after JSON as a more human-readable format,
 and its <code>key: value</code> syntax and pretty indentation is definitely a lot easier on
@@ -597,7 +648,7 @@ difficult to write.  Writing YAML by hand is a ridden with landmines of corner
 cases where your choice of names or values happens to hit a reserved word or
 special marker.  It does support comments, though.</p>
 
-<h3 id="toc_4">The Savior</h3>
+<h3 id="the-savior:e2600f20c5cda367beec1116d4d8e23c">The Savior</h3>
 
 <p>On February 23, 2013, Tom Preston-Werner (former CEO of GitHub) made his first
 commit to <a href="https://github.com/toml-lang/toml">https://github.com/toml-lang/toml</a>.  TOML stands for Tom&rsquo;s Obvious,
@@ -612,7 +663,7 @@ whitespace, without requiring a ton of delimiters.</p>
 
 <p>Let&rsquo;s dive in.</p>
 
-<h3 id="toc_5">The Basics</h3>
+<h3 id="the-basics:e2600f20c5cda367beec1116d4d8e23c">The Basics</h3>
 
 <p>The basic form is key = value</p>
 
@@ -648,7 +699,7 @@ and our posterity, do ordain and establish this Constitution for the United
 States of America.&quot;&quot;&quot;
 </code></pre>
 
-<h3 id="toc_6">Lists</h3>
+<h3 id="lists:e2600f20c5cda367beec1116d4d8e23c">Lists</h3>
 
 <p>Lists (arrays) are signified with brackets and delimited with commas.  Only
 primitives are allowed in this form, though you may have nested lists.  The
@@ -668,7 +719,7 @@ nested = [[ &quot;a&quot;, &quot;b&quot;], [1, 2]]
 that the arrays are all of a single type, but allowing mixed types of sub-arrays
 bugs the heck out of me.</p>
 
-<h3 id="toc_7">Now we get crazy</h3>
+<h3 id="now-we-get-crazy:e2600f20c5cda367beec1116d4d8e23c">Now we get crazy</h3>
 
 <p>What&rsquo;s left?  In JSON there are objects, in YAML there are associative arrays&hellip;
 in common parlance they are maps or dictionaries or hash tables.  Named
@@ -755,7 +806,7 @@ bat = &quot;hi&quot;
 }
 </code></pre>
 
-<h3 id="toc_8">Last but not least</h3>
+<h3 id="last-but-not-least:e2600f20c5cda367beec1116d4d8e23c">Last but not least</h3>
 
 <p>The last thing is arrays of tables, which are declared with double brackets
 thusly:</p>
@@ -812,7 +863,7 @@ text = &quot;Love it!&quot;
 fashion, but it&rsquo;s nice that you can&rsquo;t shoot yourself in the foot if you reorder
 things &ldquo;incorrectly&rdquo;.</p>
 
-<h3 id="toc_9">Conclusion</h3>
+<h3 id="conclusion:e2600f20c5cda367beec1116d4d8e23c">Conclusion</h3>
 
 <p>That&rsquo;s TOML.  It&rsquo;s pretty awesome.</p>
 
@@ -1261,7 +1312,7 @@ stuff don&rsquo;t have to get inundated with programming posts.</p>
 
     
 
-<h3 id="toc_0">Standard Interface Intro</h3>
+<h3 id="standard-interface-intro:9f8207e5f3f66a5b9890a1aedbe72d3e">Standard Interface Intro</h3>
 
 <p>Go’s interfaces are one of it’s best features, but they’re also one of the most confusing for newbies.  This post will try to give you the understanding you need to use Go’s interfaces and not get frustrated when things don’t work the way you expect.  It’s a little long, but a bunch of that is just code examples.</p>
 
@@ -1305,7 +1356,7 @@ In fact, Camel and Walker can live in totally different packages and never know
 about one another, and this will still work if a third package decides to make a
 Camel and pass it into LongWalk.</p>
 
-<h3 id="toc_1">Non-Standard Continuation</h3>
+<h3 id="non-standard-continuation:9f8207e5f3f66a5b9890a1aedbe72d3e">Non-Standard Continuation</h3>
 
 <p>This is where most tutorials stop, and where most questions and problems begin.
 The problem is that you still don’t know how the interfaces actually work, and
@@ -1363,7 +1414,7 @@ copied into the interface value’s Type.valtype field.  The actual data in the
 value of c is copied into a new place in memory, and w’s Data field points at
 that memory location.</p>
 
-<h3 id="toc_2">Implications of the Implementation</h3>
+<h3 id="implications-of-the-implementation:9f8207e5f3f66a5b9890a1aedbe72d3e">Implications of the Implementation</h3>
 
 <p>Now, let’s look at the implications of this code.  First, interface values are
 very small - just two pointers.  When you assign a value to an interface, that
@@ -1375,7 +1426,7 @@ they’re small anyway, so you don’t have to worry about copying the memory, p
 they hold your data in a pointer, so changes to the data will travel with the
 interface.</p>
 
-<h3 id="toc_3">Interfaces Are Types</h3>
+<h3 id="interfaces-are-types:9f8207e5f3f66a5b9890a1aedbe72d3e">Interfaces Are Types</h3>
 
 <p>Let’s look at Walker again, this is important:</p>
 
@@ -1472,7 +1523,7 @@ value into an interface.  The reason is that the value in an interface is in a
 hidden memory location, and so the compiler can’t automatically get a pointer to
 that memory for you (in Go parlance, this is known as being “not addressable”).</p>
 
-<h3 id="toc_4">Nil Pointers and Nil Interfaces</h3>
+<h3 id="nil-pointers-and-nil-interfaces:9f8207e5f3f66a5b9890a1aedbe72d3e">Nil Pointers and Nil Interfaces</h3>
 
 <p>The interaction between nil interfaces and nil pointers is where nearly everyone
 gets tripped up when they first start with Go.</p>
@@ -1590,7 +1641,7 @@ c.Walk(500)
 
 <p><a href="http://play.golang.org/p/4EfyV21at9">http://play.golang.org/p/4EfyV21at9</a></p>
 
-<h3 id="toc_5">Outro</h3>
+<h3 id="outro:9f8207e5f3f66a5b9890a1aedbe72d3e">Outro</h3>
 
 <p>I hope this article helps you better understand how interfaces works, and helps
 you avoid some of the common pitfalls and misconceptions newbies have about how
