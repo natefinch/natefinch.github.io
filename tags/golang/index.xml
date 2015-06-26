@@ -7,7 +7,129 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
-    <updated>Thu, 11 Jun 2015 07:37:00 EDT</updated>
+    <updated>Fri, 26 Jun 2015 06:41:56 EDT</updated>
+    
+    
+    <item>
+      <title>Testing os/exec.Command</title>
+      <link>http://npf.io/2015/06/testing-exec-command/</link>
+      <pubDate>Fri, 26 Jun 2015 06:41:56 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2015/06/testing-exec-command/</guid>
+      <description>&lt;p&gt;In &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we often have code that needs to run external
+executables.  Testing this code is a nightmare&amp;hellip; because you really don&amp;rsquo;t want
+to run those files on the dev&amp;rsquo;s machine or the CI machine.  But mocking out
+os/exec is really hard.  There&amp;rsquo;s no interface to replace, there&amp;rsquo;s no function to
+mock out and replace.  In the end, your code calls the Run method on the
+exec.Cmd struct.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;s a bunch of bad ways you can mock this out - you can write out scripts to
+disk with the right name and structure their contents to write out the correct
+data to stdout, stderr and return the right return code&amp;hellip; but then you&amp;rsquo;re
+writing platform-specific code in your tests, which means you need a Windows
+version and a Linux version&amp;hellip; It also means you&amp;rsquo;re writing shell scripts or
+Windows batch files or whatever, instead of writing Go.  And we all know that we
+want our tests to be in Go, not shell scripts.&lt;/p&gt;
+
+&lt;p&gt;So what&amp;rsquo;s the answer?  Well, it turns out, if you want to mock out exec.Command,
+the best place to look is in the exec package&amp;rsquo;s tests themselves.  Lo and
+behold, it&amp;rsquo;s right there in the first function of &lt;a href=&#34;https://github.com/golang/go/blob/master/src/os/exec/exec_test.go#L31&#34;&gt;exec_test.go&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func helperCommand(t *testing.T, s ...string) *exec.Cmd {
+    cs := []string{&amp;quot;-test.run=TestHelperProcess&amp;quot;, &amp;quot;--&amp;quot;}
+    cs = append(cs, s...)
+    cmd := exec.Command(os.Args[0], cs...)
+    cmd.Env = []string{&amp;quot;GO_WANT_HELPER_PROCESS=1&amp;quot;}
+    return cmd
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;sub&gt;&lt;sup&gt;(one line elided for clarity) &lt;/sup&gt;&lt;/sub&gt;&lt;/p&gt;
+
+&lt;p&gt;What the heck is that doing?  It&amp;rsquo;s pretty slick, so I&amp;rsquo;ll explain it.&lt;/p&gt;
+
+&lt;p&gt;First off, you have to understand how tests in Go work.  When running &lt;code&gt;go test&lt;/code&gt;,
+the go tool compiles an executable from your code, runs it, and passes it the
+flags you passed to &lt;code&gt;go test&lt;/code&gt;.  It&amp;rsquo;s that executable which actually handles the
+flags and runs the tests.  Thus, while your tests are running, os.Args[0] is the
+name of the test executable.&lt;/p&gt;
+
+&lt;p&gt;This function is making an exec.Command that runs the test executable, and
+passes it the flag to tell the executable just to run a single test.  It then
+terminates the argument list with &lt;code&gt;--&lt;/code&gt; and appends the command and arguments
+that would have been given to exec.Command to run &lt;em&gt;your&lt;/em&gt; command.&lt;/p&gt;
+
+&lt;p&gt;The end result is that when you run the exec.Cmd that is returned, it will run
+the single test from this package called &amp;ldquo;TestHelperProcess&amp;rdquo; and os.Args will
+contain (after the &lt;code&gt;--&lt;/code&gt;) the command and arguments from the original call.&lt;/p&gt;
+
+&lt;p&gt;The environment variable is there so that the test can know to do nothing unless
+that environment variable is set.&lt;/p&gt;
+
+&lt;p&gt;This is awesome for a few reasons:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It&amp;rsquo;s all Go code. No more needing to write shell scripts.&lt;/li&gt;
+&lt;li&gt;The code run in the excutable is compiled with the rest of your test code.  No more needing to worry about typos in the strings you&amp;rsquo;re writing to disk.&lt;/li&gt;
+&lt;li&gt;No need to create new files on disk - the executable is already there and runnable, by definition.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So, let&amp;rsquo;s use this in a real example to make it more clear.&lt;/p&gt;
+
+&lt;p&gt;In your production code, you can do something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var execCommand = exec.Command
+func RunDocker(container string) ([]byte, error) {
+    cmd := execCommand(&amp;quot;docker&amp;quot;, &amp;quot;run&amp;quot;, &amp;quot;-d&amp;quot;, container)
+    out, err := cmd.CombinedOutput()
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Mocking this out in test code is now super easy:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func fakeExecCommand(command string, args...string) *exec.Cmd {
+    cs := []string{&amp;quot;-test.run=TestHelperProcess&amp;quot;, &amp;quot;--&amp;quot;, command}
+    cs = append(cs, args...)
+    cmd := exec.Command(os.Args[0], cs...)
+    cmd.Env = []string{&amp;quot;GO_WANT_HELPER_PROCESS=1&amp;quot;}
+    return cmd
+}
+
+const dockerRunResult = &amp;quot;foo!&amp;quot;
+func TestRunDocker(t *testing.T) {
+    execCommand = fakeExecCommand
+    defer func(){ execCommand = exec.Command }()
+    out, err := RunDocker(&amp;quot;docker/whalesay&amp;quot;)
+    if err != nil {
+        t.Errorf(&amp;quot;Expected nil error, got %#v&amp;quot;, err)
+    }
+    if string(out) != dockerRunResult {
+        t.Errorf(&amp;quot;Expected %q, got %q&amp;quot;, dockerRunResult, out)
+    }
+}
+
+func TestHelperProcess(t *testing.T){
+    if os.GetEnv(&amp;quot;GO_WANT_HELPER_PROCESS&amp;quot;) != &amp;quot;1&amp;quot; {
+        return
+    }
+    // some code here to check arguments perhaps?
+    fmt.Fprintf(os.Stdout, dockerRunResult)
+    os.Exit(0)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Of course, you can do a lot more interesting things. The environment variables
+on the command that fakeExecCommand returns make a nice side channel for telling
+the executable what you want it to do.  I use one to tell the process to exit
+with a non-zero error code, which is great for testing your error handling code.
+You can see how the standard library uses its TestHelperProcess test
+&lt;a href=&#34;https://github.com/golang/go/blob/master/src/os/exec/exec_test.go#L559&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Hopefully this will help you avoid writing really gnarly testing code (or even worse,
+not testing your code at all).&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -772,18 +894,6 @@ that error:&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>http://npf.io/2013/04/statically-typed-generic-data-structures-in-go/</guid>
       <description>&lt;p&gt;&lt;br /&gt;I gave a talk at the &lt;a href=&#34;https://plus.google.com/u/0/communities/103337146295481792015&#34; target=&#34;_blank&#34;&gt;Go Boston&lt;/a&gt; meetup last night and figured I should write it up and put it here.&lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;The second thing everyone says when they read up on Go is &amp;ldquo;There are no generics!&amp;rdquo;. &lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;(The first thing people say is &amp;ldquo;There are no exceptions!&amp;rdquo;)&lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Both are only mostly true, &amp;nbsp;but we&amp;rsquo;re only going to talk about generics today.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Go has generic built-in data structures - arrays, slices, maps, and channels. You just can&amp;rsquo;t create your own new type, and you can&amp;rsquo;t create generic functions. So, what&amp;rsquo;s a programmer to do? Find another language?&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;No. Many, possibly even most, problems can be solved with the built-in data structures. You can write pretty huge applications just using maps and slices and the occasional channel. There may be a tiny bit of code duplication, but probably not much, and certainly not any tricky code.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;However, there definitely are times when you need more complicated data structures. Most people writing Go solve this problem by using Interface{}, the empty interface, which is basically like Object in C# or Java or void * in C/C++. &amp;nbsp;It&amp;rsquo;s a thing that can hold any type&amp;hellip; but then you need to type cast it to get at the actual type. This breaks static typing, since the compiler can&amp;rsquo;t tell if you make a mistake and pass the wrong type into something that takes an Interface{}, and it can&amp;rsquo;t tell until runtime if a cast will succeed or not.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;So, is there any solution? Yes. The inspiration comes from the standard library&amp;rsquo;s&lt;a href=&#34;http://golang.org/pkg/sort/#Interface&#34; target=&#34;_blank&#34;&gt; sort package&lt;/a&gt;. Package sort can sort a slice of any type, it can even sort things that aren&amp;rsquo;t slices, if you&amp;rsquo;ve made your own custom data structure. How does it do that? To sort something, it must support the methods on sort.Interface. Most interesting is Less(i, j int). Less returns true if the item at index i in your data structure is Less than the object at index j in your data structure. Your code has to implement what &amp;ldquo;Less&amp;rdquo; means&amp;hellip; and by only using indices, sort doesn&amp;rsquo;t need to know the types of objects held in your data structure.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;This use of indices to blindly access data in a separate data structure is how we&amp;rsquo;ll implement our strongly typed tree. The tree structure will hold an index as its data value in each node, and the indices will index into a data structure that holds the actual objects. To make a tree of a new type, you simply implement a Compare function that the tree can use to compare the values at two indices in your data structure. You can use whatever data structure you like, probably a slice or a map, as long as you can use integers to reference values in the data structure.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;In this way we separate the organization of the data from the storage of the data. The tree structure holds the organization, a slice or map (or something custom) stores the data. The indices are the generic pointers into the storage that holds the actual strongly typed values.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;This does require a little code for each new tree type, just as using package sort requires a little code for each type. However, it&amp;rsquo;s only a few lines for a few functions, wrapping a tree and your data.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;You can check out an example binary search tree I wrote that uses this technique in my github account&lt;br /&gt;&lt;br /&gt;&lt;a href=&#34;https://github.com/natefinch/tree&#34;&gt;https://github.com/natefinch/tree&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;or go get the runnable sample tree:&lt;br /&gt;&lt;br /&gt;go get github.com/natefinch/treesample&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;This required only 36 lines of code to make the actual tree structure (including empty lines and comments).&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;In some simple benchmarks, this implementation of a tree is about 25% faster than using the same code with Interface{} as the values and casting at runtime&amp;hellip;. plus it&amp;rsquo;s strongly typed.&lt;/div&gt;&lt;/div&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Go is for Open Source</title>
-      <link>http://npf.io/2013/01/go-is-for-open-source/</link>
-      <pubDate>Tue, 29 Jan 2013 07:45:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2013/01/go-is-for-open-source/</guid>
-      <description>&lt;p&gt;The Go programming language is built from the ground up to implicitly encourage Go projects to be open source. If you want your project not only to contribute to open source, but to encourage other people to write open source code, Go is a great language to choose.&lt;br /&gt;&lt;br /&gt;Let&amp;rsquo;s look at how Go does this. These first two points are overly obvious, but we should get them out of the way.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;The language is open source&lt;/h3&gt;You can go look at the &lt;a href=&#34;https://code.google.com/p/go/source/browse/&#34; target=&#34;_blank&#34;&gt;source code&lt;/a&gt;&amp;nbsp;for the language, the compilers, and the build tools for the language. It&amp;rsquo;s a fully open source project. Even though a lot of the work is being done by Google engineers, there are hundreds of names on the &lt;a href=&#34;https://code.google.com/p/go/source/browse/CONTRIBUTORS&#34; target=&#34;_blank&#34;&gt;list of contributors&lt;/a&gt; of people who are not Google employees.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;The standard library is open source&lt;/h3&gt;&lt;div&gt;Want to see high quality example code? Look at the code in the standard library. It has been carefully reviewed to be of the best quality, and in canonical Go style. Reading the standard library is a great way to learn the best ways to use and write Go.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;span style=&#34;color: red;&#34;&gt;Ok, that&amp;rsquo;s great, but what about all the code that isn&amp;rsquo;t part of Go itself?&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;The design of Go really shows its embrace of open source in how third party code is used in day to day projects.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Go makes it trivial to use someone&amp;nbsp;else&amp;rsquo;s code in your project&lt;/h3&gt;&lt;div&gt;Go has distributed version control built-in from the ground up. If you want to use a package from github, for example, you just specify the URL in the imports, as if it were a local package:&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;pre class=&#34;brush: go; gutter: false&#34;&gt;import (&lt;br /&gt;    &amp;ldquo;bytes&amp;rdquo; // std lib package&lt;br /&gt;    &amp;ldquo;github.com/fake/foo&amp;rdquo; // 3rd party package&lt;br /&gt;)&lt;/pre&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;You don&amp;rsquo;t have to go find and download fake/foo from github and put it in a special directory or anything. Just run &amp;ldquo;go get github.com/fake/foo&amp;rdquo;. Go will then download, build, and install the code, so that you can reference it&amp;hellip; nicely stored in a directory defined by the URL, in this case $GOPATH/src/github.com/fake/foo. Go will even figure out what source control system is used on the other side so you don&amp;rsquo;t have to (support for git, svn, mercurial, and bazaar).&lt;br /&gt;&lt;br /&gt;What&amp;rsquo;s even better is that the auto-download happens for anyone who calls &amp;ldquo;go get&amp;rdquo; on&amp;nbsp;&lt;i&gt;your&lt;/i&gt;&amp;nbsp;code repository. No more giving long drawn-out installation instructions about getting half a dozen 3rd party libraries first. If someone wants your code, they type &amp;ldquo;go get path.to/your/code&amp;rdquo;, and Go will download your code, and any remote imports you have (like the one for github above), any remote imports &lt;i&gt;that&lt;/i&gt; code has, etc, and then builds everything.&lt;br /&gt;&lt;br /&gt;The fact that this is available from the command line tools that come with the language makes it the de facto standard for how all Go code is written. There&amp;rsquo;s no fragmentation in the community about how packages are stored, accessed, used, etc. This means zero overhead for using third party code, it&amp;rsquo;s as easy to use as if it were built into the Go standard library.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Sharing code is the default&lt;/h3&gt;&lt;/div&gt;&lt;div&gt;Like most scripting languages (and unlike many compiled languages), using source code from another project is the default way to use third party code in Go. Go creates a monolithic executable during its build, so there are no DLLs to create and distribute in the way you often see with other compiled languages. In theory you could distribute the compiled .a files from your project for other people to link to in their project, but this is not encouraged by the tooling, and I&amp;rsquo;ve personally never seen anyone do it.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;All Go code uses the same style&lt;/h3&gt;&lt;div&gt;Have you ever gone to read the source for a project you&amp;rsquo;d like to contribute to, and had your eyes cross over at the bizarre formatting the authors used? That almost never happens with Go. Go comes with a code formatting tool called gofmt that automatically formats Go code to the same style. The use of gofmt is strongly encouraged in the Go community, and nearly everyone uses it. Most text editors have an extension to automatically format your code with gofmt on save, so you don&amp;rsquo;t even have to think about it. You never have to worry about having a poorly formatted library to work with&amp;hellip; and in the very rare situation where you do, you can just run it through gofmt and you&amp;rsquo;re good to go.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Easy cross platform support&lt;/h3&gt;&lt;div&gt;Go makes it easy to support multiple platforms. The tooling &lt;a href=&#34;http://dave.cheney.net/2012/09/08/an-introduction-to-cross-compilation-with-go&#34; target=&#34;_blank&#34;&gt;can create native binaries&lt;/a&gt; for any popular operating system from the same source on a single machine. If you need platform-specific code, it&amp;rsquo;s easy to specify code that only gets compiled for a single platform, by simply appending _&amp;lt;os&amp;gt; to a file name &lt;i&gt;.e.g&lt;/i&gt;&amp;nbsp;path_windows.go will only be compiled for builds targeting Windows.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Built-in documentation and testing&lt;/h3&gt;&lt;div&gt;Go comes with a documentation generator that spits generates HTML or plain text from minimally formatted comments in the code. It also comes with a standard testing package that can run unit tests, performance benchmarks, and runnable example code. Because this is all available in the standard library and with the standard tools, nearly everyone uses it&amp;hellip; which means it&amp;rsquo;s easy to look at the documentation for any random Go package, and easy check if the tests pass, without having to go install some third party support tool. Because it&amp;rsquo;s all standardized, several popular websites have popped up to &lt;a href=&#34;http://godoc.org/&#34; target=&#34;_blank&#34;&gt;automate generating&lt;/a&gt;&amp;nbsp;(and hosting) the documentation for your project, and you can easily run &lt;a href=&#34;http://about.travis-ci.org/docs/user/languages/go/&#34; target=&#34;_blank&#34;&gt;continuous integration&lt;/a&gt; on your package, with only a single line in the setup script - &amp;ldquo;language: go&amp;rdquo;.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Conclusion&lt;/h3&gt;&lt;div&gt;Everything about Go encourages standardization and openness&amp;hellip; which not only makes it &lt;i&gt;possible &lt;/i&gt;to use other people&amp;rsquo;s code, it makes it &lt;b&gt;easy&lt;/b&gt;&lt;i&gt;&amp;nbsp;&lt;/i&gt;to use other people&amp;rsquo;s code. I hope to see Go blossom as a language embraced by the open source community, as they discover the strengths that make it uniquely qualified for open source projects.&lt;/div&gt;&lt;/p&gt;
 </description>
     </item>
     

@@ -7,7 +7,129 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
-    <updated>Thu, 11 Jun 2015 07:37:00 EDT</updated>
+    <updated>Fri, 26 Jun 2015 06:41:56 EDT</updated>
+    
+    
+    <item>
+      <title>Testing os/exec.Command</title>
+      <link>http://npf.io/2015/06/testing-exec-command/</link>
+      <pubDate>Fri, 26 Jun 2015 06:41:56 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2015/06/testing-exec-command/</guid>
+      <description>&lt;p&gt;In &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we often have code that needs to run external
+executables.  Testing this code is a nightmare&amp;hellip; because you really don&amp;rsquo;t want
+to run those files on the dev&amp;rsquo;s machine or the CI machine.  But mocking out
+os/exec is really hard.  There&amp;rsquo;s no interface to replace, there&amp;rsquo;s no function to
+mock out and replace.  In the end, your code calls the Run method on the
+exec.Cmd struct.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;s a bunch of bad ways you can mock this out - you can write out scripts to
+disk with the right name and structure their contents to write out the correct
+data to stdout, stderr and return the right return code&amp;hellip; but then you&amp;rsquo;re
+writing platform-specific code in your tests, which means you need a Windows
+version and a Linux version&amp;hellip; It also means you&amp;rsquo;re writing shell scripts or
+Windows batch files or whatever, instead of writing Go.  And we all know that we
+want our tests to be in Go, not shell scripts.&lt;/p&gt;
+
+&lt;p&gt;So what&amp;rsquo;s the answer?  Well, it turns out, if you want to mock out exec.Command,
+the best place to look is in the exec package&amp;rsquo;s tests themselves.  Lo and
+behold, it&amp;rsquo;s right there in the first function of &lt;a href=&#34;https://github.com/golang/go/blob/master/src/os/exec/exec_test.go#L31&#34;&gt;exec_test.go&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func helperCommand(t *testing.T, s ...string) *exec.Cmd {
+    cs := []string{&amp;quot;-test.run=TestHelperProcess&amp;quot;, &amp;quot;--&amp;quot;}
+    cs = append(cs, s...)
+    cmd := exec.Command(os.Args[0], cs...)
+    cmd.Env = []string{&amp;quot;GO_WANT_HELPER_PROCESS=1&amp;quot;}
+    return cmd
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;sub&gt;&lt;sup&gt;(one line elided for clarity) &lt;/sup&gt;&lt;/sub&gt;&lt;/p&gt;
+
+&lt;p&gt;What the heck is that doing?  It&amp;rsquo;s pretty slick, so I&amp;rsquo;ll explain it.&lt;/p&gt;
+
+&lt;p&gt;First off, you have to understand how tests in Go work.  When running &lt;code&gt;go test&lt;/code&gt;,
+the go tool compiles an executable from your code, runs it, and passes it the
+flags you passed to &lt;code&gt;go test&lt;/code&gt;.  It&amp;rsquo;s that executable which actually handles the
+flags and runs the tests.  Thus, while your tests are running, os.Args[0] is the
+name of the test executable.&lt;/p&gt;
+
+&lt;p&gt;This function is making an exec.Command that runs the test executable, and
+passes it the flag to tell the executable just to run a single test.  It then
+terminates the argument list with &lt;code&gt;--&lt;/code&gt; and appends the command and arguments
+that would have been given to exec.Command to run &lt;em&gt;your&lt;/em&gt; command.&lt;/p&gt;
+
+&lt;p&gt;The end result is that when you run the exec.Cmd that is returned, it will run
+the single test from this package called &amp;ldquo;TestHelperProcess&amp;rdquo; and os.Args will
+contain (after the &lt;code&gt;--&lt;/code&gt;) the command and arguments from the original call.&lt;/p&gt;
+
+&lt;p&gt;The environment variable is there so that the test can know to do nothing unless
+that environment variable is set.&lt;/p&gt;
+
+&lt;p&gt;This is awesome for a few reasons:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It&amp;rsquo;s all Go code. No more needing to write shell scripts.&lt;/li&gt;
+&lt;li&gt;The code run in the excutable is compiled with the rest of your test code.  No more needing to worry about typos in the strings you&amp;rsquo;re writing to disk.&lt;/li&gt;
+&lt;li&gt;No need to create new files on disk - the executable is already there and runnable, by definition.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So, let&amp;rsquo;s use this in a real example to make it more clear.&lt;/p&gt;
+
+&lt;p&gt;In your production code, you can do something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var execCommand = exec.Command
+func RunDocker(container string) ([]byte, error) {
+    cmd := execCommand(&amp;quot;docker&amp;quot;, &amp;quot;run&amp;quot;, &amp;quot;-d&amp;quot;, container)
+    out, err := cmd.CombinedOutput()
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Mocking this out in test code is now super easy:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func fakeExecCommand(command string, args...string) *exec.Cmd {
+    cs := []string{&amp;quot;-test.run=TestHelperProcess&amp;quot;, &amp;quot;--&amp;quot;, command}
+    cs = append(cs, args...)
+    cmd := exec.Command(os.Args[0], cs...)
+    cmd.Env = []string{&amp;quot;GO_WANT_HELPER_PROCESS=1&amp;quot;}
+    return cmd
+}
+
+const dockerRunResult = &amp;quot;foo!&amp;quot;
+func TestRunDocker(t *testing.T) {
+    execCommand = fakeExecCommand
+    defer func(){ execCommand = exec.Command }()
+    out, err := RunDocker(&amp;quot;docker/whalesay&amp;quot;)
+    if err != nil {
+        t.Errorf(&amp;quot;Expected nil error, got %#v&amp;quot;, err)
+    }
+    if string(out) != dockerRunResult {
+        t.Errorf(&amp;quot;Expected %q, got %q&amp;quot;, dockerRunResult, out)
+    }
+}
+
+func TestHelperProcess(t *testing.T){
+    if os.GetEnv(&amp;quot;GO_WANT_HELPER_PROCESS&amp;quot;) != &amp;quot;1&amp;quot; {
+        return
+    }
+    // some code here to check arguments perhaps?
+    fmt.Fprintf(os.Stdout, dockerRunResult)
+    os.Exit(0)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Of course, you can do a lot more interesting things. The environment variables
+on the command that fakeExecCommand returns make a nice side channel for telling
+the executable what you want it to do.  I use one to tell the process to exit
+with a non-zero error code, which is great for testing your error handling code.
+You can see how the standard library uses its TestHelperProcess test
+&lt;a href=&#34;https://github.com/golang/go/blob/master/src/os/exec/exec_test.go#L559&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Hopefully this will help you avoid writing really gnarly testing code (or even worse,
+not testing your code at all).&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -1111,355 +1233,6 @@ stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>http://npf.io/2014/05/diffing-go-with-beyond-compare/</guid>
       <description>&lt;p&gt;I love Beyond Compare, it&amp;rsquo;s an awesome visual diff/merge tool. &amp;nbsp;It&amp;rsquo;s not free, but I don&amp;rsquo;t care, because it&amp;rsquo;s awesome. &amp;nbsp;However, there&amp;rsquo;s no built-in configuration for Go code, so I made one. &amp;nbsp;Not sure what the venn diagram of Beyond Compare users and Go users looks like, it might be that I&amp;rsquo;m the one point of crossover, but just in case I&amp;rsquo;m not, here&amp;rsquo;s the configuration file for Beyond Compare 3 for the Go programming language:&amp;nbsp;&lt;a href=&#34;http://play.golang.org/p/G6NWE0z1GC&#34;&gt;http://play.golang.org/p/G6NWE0z1GC&lt;/a&gt; &amp;nbsp;(please forgive the abuse of the Go playground)&lt;br /&gt;&lt;br /&gt;Just copy the text into a file and in Beyond Compare, go to Tools-&amp;gt;Import Settings&amp;hellip; and choose the file. &amp;nbsp;Please let me know if you have any troubles or suggested improvements.&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Intro&#43;&#43; to Go Interfaces</title>
-      <link>http://npf.io/2014/05/intro-to-go-interfaces/</link>
-      <pubDate>Tue, 13 May 2014 07:08:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2014/05/intro-to-go-interfaces/</guid>
-      <description>
-
-&lt;h3 id=&#34;standard-interface-intro:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Standard Interface Intro&lt;/h3&gt;
-
-&lt;p&gt;Go’s interfaces are one of it’s best features, but they’re also one of the most confusing for newbies.  This post will try to give you the understanding you need to use Go’s interfaces and not get frustrated when things don’t work the way you expect.  It’s a little long, but a bunch of that is just code examples.&lt;/p&gt;
-
-&lt;p&gt;Go’s interfaces are different than interfaces in other languages, they are implicitly fulfilled.  This means that you never need to mark your type as explicitly implementing the interface (like class CFoo implements IFoo).  Instead, your type just needs to have the methods defined in the interface, and the compiler does the rest.&lt;/p&gt;
-
-&lt;p&gt;For example:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type Walker interface {
-    Walk(miles int)
-}
-
-type Camel struct {
-    Name string
-}
-
-func (c Camel) Walk(miles int) {
-     fmt.Printf(“%s is walking %v miles\n”, c.Name, miles)
-}
-
-func LongWalk(w Walker) {
-     w.Walk(500)
-     w.Walk(500)
-}
-
-func main() {
-    c := Camel{“Bill”}
-    LongWalk(c)
-}
-
-// prints
-// Bill is walking 500 miles.
-// Bill is walking 500 miles.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://play.golang.org/p/erodX-JplO&#34;&gt;http://play.golang.org/p/erodX-JplO&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Camel implements the Walker interface, because it has a method named Walk that
-takes an int and doesn’t return anything.  This means you can pass it into the
-LongWalk function, even though you never specified that your Camel is a Walker.
-In fact, Camel and Walker can live in totally different packages and never know
-about one another, and this will still work if a third package decides to make a
-Camel and pass it into LongWalk.&lt;/p&gt;
-
-&lt;h3 id=&#34;non-standard-continuation:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Non-Standard Continuation&lt;/h3&gt;
-
-&lt;p&gt;This is where most tutorials stop, and where most questions and problems begin.
-The problem is that you still don’t know how the interfaces actually work, and
-since it’s not actually that complicated, let’s talk about that.&lt;/p&gt;
-
-&lt;p&gt;What actually happens when you pass Camel into LongWalk?&lt;/p&gt;
-
-&lt;p&gt;So, first off, you’re not passing Camel into LongWalk.  You’re actually
-assigning c, a value of type Camel to a value w of type Walker, and w is what
-you operate on in LongWalk.&lt;/p&gt;
-
-&lt;p&gt;Under the covers, the Walker interface (like all interfaces), would look more or
-less like this if it were in Go (the actual code is in C, so this is just a
-really rough approximation that is easier to read).&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type Walker struct {
-    type InterfaceType
-    data *void
-}
-
-type InterfaceType struct {
-    valtype *gotype
-    func0 *func
-    func1 *func
-    ...
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;All interfaces values are just two pointers - one pointer to information about
-the interface type, and one pointer to the data from the value you passed into
-the interface (a void in C-like languages… this should probably be Go’s
-unsafe.Pointer, but I liked the explicitness of two actual *’s in the struct to
-show it’s just two pointers).&lt;/p&gt;
-
-&lt;p&gt;The InterfaceType contains a pointer to information about the type of the value
-that you passed into the interface (valtype).  It also contains pointers to the
-methods that are available on the interface.&lt;/p&gt;
-
-&lt;p&gt;When you assign c to w, the compiler generates instructions that looks more or
-less like this (it’s not actually generating Go, this is just an easier-to-read
-approximation):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;data := c
-w := Walker{ 
-    type: &amp;amp;InterfaceType{ 
-              valtype: &amp;amp;typeof(c), 
-              func0: &amp;amp;Camel.Walk 
-          }
-    data: &amp;amp;data
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;When you assign your Camel value c to the Walker value w, the Camel type is
-copied into the interface value’s Type.valtype field.  The actual data in the
-value of c is copied into a new place in memory, and w’s Data field points at
-that memory location.&lt;/p&gt;
-
-&lt;h3 id=&#34;implications-of-the-implementation:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Implications of the Implementation&lt;/h3&gt;
-
-&lt;p&gt;Now, let’s look at the implications of this code.  First, interface values are
-very small - just two pointers.  When you assign a value to an interface, that
-value gets copied once, into the interface, but after that, it’s held in a
-pointer, so it doesn’t get copied again if you pass the interface around.&lt;/p&gt;
-
-&lt;p&gt;So now you know why you don’t need to pass around pointers to interfaces -
-they’re small anyway, so you don’t have to worry about copying the memory, plus
-they hold your data in a pointer, so changes to the data will travel with the
-interface.&lt;/p&gt;
-
-&lt;h3 id=&#34;interfaces-are-types:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Interfaces Are Types&lt;/h3&gt;
-
-&lt;p&gt;Let’s look at Walker again, this is important:&lt;/p&gt;
-
-&lt;p&gt;type Walker interface&lt;/p&gt;
-
-&lt;p&gt;Note that first word there: type.  Interfaces are types, just like string is a
-type or Camel is a type.  They aren’t aliases, they’re not magic hand-waving,
-they’re real types and real values which are distinct from the type and value
-that gets assigned to them.&lt;/p&gt;
-
-&lt;p&gt;Now, let’s assume you have this function:&lt;/p&gt;
-
-&lt;p&gt;func LongWalkAll(walkers []Walker) {
-    for _, w := range walkers {
-        LongWalk(w)
-    }
-}&lt;/p&gt;
-
-&lt;p&gt;And let’s say you have a caravan of Camels that you want to send on a long walk:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;caravan := []Camel{ Camel{“Bill”}, Camel{“Bob”}, Camel{“Steve”}}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You want to pass caravan into LongWalkAll, will the compiler let you?  Nope.
-Why is that?  Well, []Walker is a specific type, it’s a slice of values of type
-Walker.  It’s not shorthand for “a slice of anything that matches the Walker
-interface”.  It’s an actual distinct type, the way []string is different from
-[]int.  The Go compiler will output code to assign a single value of Camel to a
-single value of Walker.  That’s the only place it’ll help you out.  So, with
-slices, you have to do it yourself:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;walkers := make([]Walker, len(caravan))
-for n, c := range caravan {
-    walkers[n] = c
-}
-LongWalkAll(walkers)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;However, there’s a better way if you know you’ll just need the caravan for
-passing into LongWalkAll:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;caravan := []Walker{ Camel{“Bill”}, Camel{“Bob”}, Camel{“Steve”}}
-LongWalkAll(caravan)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Note that this goes for any type which includes an interface as part of its
-definition: there’s no automatic conversion of your func(Camel) into
-func(Walker) or map[string]Camel into map[string]Walker.  Again, they’re totally
-different types, they’re not shorthand, and they’re not aliases, and they’re not
-just a pattern for the compiler to match.&lt;/p&gt;
-
-&lt;p&gt;Interfaces and the Pointers That Satisfy Them&lt;/p&gt;
-
-&lt;p&gt;What if Camel’s Walk method had this signature instead?&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func (c *Camel) Walk(miles int)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This line says that the type *Camel has a function called Walk.  This is
-important: *Camel is a type.  It’s the “pointer to a Camel” type.  It’s a
-distinct type from (non-pointer) Camel.  The part about it being a pointer is
-part of its type.  The Walk method is on the type *Camel.  The Walk method (in
-this new incarnation) is not on the type Camel. This becomes important when you
-try to assign it to an interface.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;c := Camel{“Bill”}
-LongWalk(c)
-
-// compiler output:
-cannot use c (type Camel) as type Walker in function argument:
- Camel does not implement Walker (Walk method has pointer receiver)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;To pass a Camel into LongWalk now, you need to pass in a pointer to a Camel:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;c := &amp;amp;Camel{“Bill”}
-LongWalk(c)
-
-or
-
-c := Camel{“Bill”}
-LongWalk(&amp;amp;c)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Note that this true even though you can still call Walk directly on Camel:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;c := Camel{“Bill”}
-c.Walk(500) // this works
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The reason you can do that is that the Go compiler automatically converts this
-line to (&amp;amp;c).Walk(500) for you.  However, that doesn’t work for passing the
-value into an interface.  The reason is that the value in an interface is in a
-hidden memory location, and so the compiler can’t automatically get a pointer to
-that memory for you (in Go parlance, this is known as being “not addressable”).&lt;/p&gt;
-
-&lt;h3 id=&#34;nil-pointers-and-nil-interfaces:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Nil Pointers and Nil Interfaces&lt;/h3&gt;
-
-&lt;p&gt;The interaction between nil interfaces and nil pointers is where nearly everyone
-gets tripped up when they first start with Go.&lt;/p&gt;
-
-&lt;p&gt;Let’s say we have our Camel type with the Walk method defined on *Camel as
-above, and we want to make a function that returns a Walker that is actually a
-Camel (note that you don’t need a function to do this, you can just assign a
-*Camel to a Walker, but the function is a good illustrative example):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func MakeWalker() Walker {
-    return &amp;amp;Camel{“Bill”}
-}
-
-w := MakeWalker()
-if w != nil {
-    w.Walk(500)  // we will hit this
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This works fine.  But now, what if we do something a little different:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func MakeWalker(c *Camel) Walker {
-    return c
-}
-
-var c *Camel
-w := MakeWalker(c)
-if w != nil {
-    // we’ll get in here, but why?
-    w.Walk(500)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This code will also get inside the if statement (and then panic, which we’ll
-talk about in a bit) because the returned Walker value is not nil.  How is that
-possible, if we returned a nil pointer?  Well, let’s go look back to the
-instructions that get generated when we assign a value to an interface.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;data := c
-w := Walker{ 
-    type: &amp;amp;InterfaceType{ 
-              valtype: &amp;amp;typeof(c), 
-              func0: &amp;amp;Camel.Walk 
-          }
-    data: &amp;amp;data
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;In this case, c is a nil pointer. However, that’s a perfectly valid value to
-assign to the Walker’s Data value, so it works just fine.  What you return is a
-non-nil Walker value, that has a pointer to a nil *Camel as its data.  So, of
-course, if you check w == nil, the answer is false, w is not nil… but then
-inside the if statement, we try to call Camel’s walk:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func (c *Camel) Walk(miles int) {
-     fmt.Printf(“%s is walking %v miles\n”, c.Name, miles)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And when we try to do c.Name, Go automatically turns that into (*c).Name, and
-the code panics with a nil pointer dereference error.&lt;/p&gt;
-
-&lt;p&gt;Hopefully this makes sense, given our new understanding of how interfaces wrap
-values, but then how do you account for nil pointers?  Assume you want
-MakeWalker to return a nil interface if it gets passed a nil Camel.  You have to
-explicitly assign nil to the interface:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func MakeWalker(c *Camel) Walker {
-    if c == nil {
-        return nil
-    }
-    return c
-}
-
-var c *Camel
-w := MakeWalker(c)
-if w != nil {
-    // Yay, we don’t get here!
-    w.Walk(500)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And now, finally, the code is doing what we expect.  When you pass in a nil
-*Camel, we return a nil interface.  Here’s an alternate way to write the
-function:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func MakeWalker(c *Camel) Walker {
-    var w Walker
-    if c != nil {
-        w = c
-    }
-    return w
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This is slightly less optimal, but it shows the other way to get a nil
-interface, which is to use the zero value for the interface, which is nil.&lt;/p&gt;
-
-&lt;p&gt;Note that you can have a nil pointer value that satisfies an interface.  You
-just need to be careful not to dereference the pointer in your methods.  For
-example, if *Camel’s Walk method looked like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;func (c *Camel) Walk(miles int) {
-    fmt.Printf(“I’m walking %d miles!”, miles)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Note that this method does not dereference c, and therefore you can call it even
-if c is nil:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;var c *Camel
-c.Walk(500)
-// prints “I’m walking 500 miles!”
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://play.golang.org/p/4EfyV21at9&#34;&gt;http://play.golang.org/p/4EfyV21at9&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;outro:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Outro&lt;/h3&gt;
-
-&lt;p&gt;I hope this article helps you better understand how interfaces works, and helps
-you avoid some of the common pitfalls and misconceptions newbies have about how
-interfaces work.  If you want more information about the internals of interfaces
-and some of the optimizations that I didn’t cover here, read Russ Cox’s article
-on Go interfaces, I highly recommend it.&lt;/p&gt;
 </description>
     </item>
     
