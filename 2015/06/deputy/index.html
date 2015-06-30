@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+
+  <title> Deputy  &middot; npf.io </title>
+
+  
+  <link rel="stylesheet" href="http://npf.io/css/poole.css">
+  <link rel="stylesheet" href="http://npf.io/css/syntax.css">
+  <link rel="stylesheet" href="http://npf.io/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="npf.io" />
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
+
+  <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Raleway']
+      }
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1 class="brand"><a href="http://npf.io">npf.io</a></h1>
+      <p class="lead">
+       code by Nate Finch 
+      </p>
+    </div>
+
+
+
+    <ul class="sidebar-nav">
+      <li><a href="http://npf.io/blog">Posts</a></li>
+      
+        <li><a href="/about/">About </a></li>
+      
+      <br/>
+      
+      <li>Code:</li>
+        
+          <li><a href="/lumberjack.v2/">Lumberjack </a></li>
+        
+          <li><a href="/pie/">Pie </a></li>
+        
+          <li><a href="/npipe.v2/">npipe </a></li>
+        
+      
+    </ul>
+      <a href="https://twitter.com/natethefinch"><i class="fa fa-twitter-square"></i></a>&nbsp;&nbsp;
+      
+      
+      <a href="https://github.com/natefinch"><i class="fa fa-github-square"></i></a>&nbsp;&nbsp;
+      <a href="https://plus.google.com/&#43;NateFinch"><i class="fa fa-google-plus"></i></a>
+
+    <p class="footnote">powered by <a href="http://hugo.spf13.com">Hugo</a> <br/>
+    &copy; 2015 Nate Finch. All rights reserved.</p>
+    
+  </div>
+</div>
+
+
+  <div class="content container">
+    <div class="post">
+    <h1 class="post-title">Deputy</h1>
+    <span class="post-date">Jun 26, 2015</span>
+    
+    
+
+<p><img src="https://cloud.githubusercontent.com/assets/3185864/8237448/6bc30102-15bd-11e5-9e87-6423197a73d6.jpg" alt="deputy-sm" /></p>
+
+<p><sup><sub>image: creative commons, &copy; <a href="http://matsurd.deviantart.com/art/Paper53-Deputy-Stubbs-342123485">MatsuRD</a></sub></sup></p>
+
+<p><blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">I want to name a package &quot;lieutenant&quot;, but it&#39;s too hard to spell.</p>&mdash; Nate Finch (@NateTheFinch) <a href="https://twitter.com/NateTheFinch/status/610481962311131136">June 15, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
+
+<p>True story.  The idea was this package would be a lieutenant commander (get
+it?)&hellip; but I also knew I didn&rsquo;t want to have to try to spell lieutenant
+correctly every time I used the package.  So that&rsquo;s why it&rsquo;s called deputy.
+He&rsquo;s the guy who&rsquo;s not in charge, but does all the work.</p>
+
+<h3 id="errors:c6ab1c3501e7e929f514472ad514e06f">Errors</h3>
+
+<p>At <a href="https://github.com/juju/juju">Juju</a>, we run a lot of external processes
+using os/exec. However, the default functionality of an exec.Cmd object is kind
+of lacking. The most obvious one is those error returns &ldquo;exit status 1&rdquo;.
+Fantastic.  Have you ever wished you could just have the stderr from the command
+as the error text?  Well, now you can, with deputy.</p>
+
+<pre><code>func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+    }
+    cmd := exec.Command(&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;)
+    err := d.Run(cmd)
+}
+</code></pre>
+
+<p>In the above code, if the command run by Deputy exits with a non-zero exit
+status, deputy will capture the text output to stderr and convert that into the
+error text.  <em>e.g.</em> if the command returned exit status 1 and output &ldquo;Error: No
+such image or container: bar&rdquo; to stderr, then the error&rsquo;s Error() text would
+look like &ldquo;exit status 1: Error: No such image or container: bar&rdquo;.  Bam, the
+errors from commands you run are infinitely more useful.</p>
+
+<h3 id="logging:c6ab1c3501e7e929f514472ad514e06f">Logging</h3>
+
+<p>Another idiom we use is to pipe some of the output from a command to our logs. This can be super useful for debugging purposes.  With deputy, this is again easy:</p>
+
+<pre><code>func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+        StdoutLog: func(b []byte) { log.Print(string(b)) },
+    }
+    cmd := exec.Command(&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;)
+    err := d.Run(cmd)
+}
+</code></pre>
+
+<p>That&rsquo;s it.  Now every line written to stdout by the process will be piped as a
+log message to your log.</p>
+
+<h3 id="timeouts:c6ab1c3501e7e929f514472ad514e06f">Timeouts</h3>
+
+<p>Finally, an idiom we don&rsquo;t use often enough, but should, is to add a timeout to
+command execution.  What happens if you run a command as part of your pipeline
+and that command hangs for 30 seconds, or 30 minutes, or forever?  Do you just
+assume it&rsquo;ll always finish in a reasonable time?  Adding a timeout to running
+commands requires some tricky coding with goroutines, channels, selects, and
+killing the process&hellip; and deputy wraps all that up for you in a simple API:</p>
+
+<pre><code>func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+        StdoutLog: func(b []byte) { log.Print(string(b)) },
+        Timeout:   time.Second * 10,
+    }
+    cmd := exec.Command(&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;)
+    err := d.Run(cmd)
+}
+</code></pre>
+
+<p>The above code adds a 10 second timeout.  After that time, if the process has
+not finished, it will be killed and an error returned.</p>
+
+<p>That&rsquo;s it.  Give deputy a spin and let me know what you think.</p>
+
+    
+
+     
+	
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") 
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'npfio';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by <a href="http://disqus.com/?ref_noscript">Disqus.</a></noscript>
+</div>
+</div> 
+
+</body>w
+</html>

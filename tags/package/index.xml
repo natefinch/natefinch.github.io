@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+      <title>npf.io</title>
+      <generator uri="https://hugo.spf13.com">Hugo</generator>
+    <link>http://npf.io/tags/package/</link>
+    <language>en-us</language>
+    <author>Nate Finch</author>
+    <copyright>2015 Nate Finch</copyright>
+    <updated>Fri, 26 Jun 2015 06:44:29 EDT</updated>
+    
+    
+    <item>
+      <title>Deputy</title>
+      <link>http://npf.io/2015/06/deputy/</link>
+      <pubDate>Fri, 26 Jun 2015 06:44:29 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2015/06/deputy/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;https://cloud.githubusercontent.com/assets/3185864/8237448/6bc30102-15bd-11e5-9e87-6423197a73d6.jpg&#34; alt=&#34;deputy-sm&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;sup&gt;&lt;sub&gt;image: creative commons, &amp;copy; &lt;a href=&#34;http://matsurd.deviantart.com/art/Paper53-Deputy-Stubbs-342123485&#34;&gt;MatsuRD&lt;/a&gt;&lt;/sub&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;I want to name a package &amp;quot;lieutenant&amp;quot;, but it&amp;#39;s too hard to spell.&lt;/p&gt;&amp;mdash; Nate Finch (@NateTheFinch) &lt;a href=&#34;https://twitter.com/NateTheFinch/status/610481962311131136&#34;&gt;June 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;True story.  The idea was this package would be a lieutenant commander (get
+it?)&amp;hellip; but I also knew I didn&amp;rsquo;t want to have to try to spell lieutenant
+correctly every time I used the package.  So that&amp;rsquo;s why it&amp;rsquo;s called deputy.
+He&amp;rsquo;s the guy who&amp;rsquo;s not in charge, but does all the work.&lt;/p&gt;
+
+&lt;h3 id=&#34;errors:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Errors&lt;/h3&gt;
+
+&lt;p&gt;At &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we run a lot of external processes
+using os/exec. However, the default functionality of an exec.Cmd object is kind
+of lacking. The most obvious one is those error returns &amp;ldquo;exit status 1&amp;rdquo;.
+Fantastic.  Have you ever wished you could just have the stderr from the command
+as the error text?  Well, now you can, with deputy.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+    }
+    cmd := exec.Command(&amp;quot;foo&amp;quot;, &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot;)
+    err := d.Run(cmd)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In the above code, if the command run by Deputy exits with a non-zero exit
+status, deputy will capture the text output to stderr and convert that into the
+error text.  &lt;em&gt;e.g.&lt;/em&gt; if the command returned exit status 1 and output &amp;ldquo;Error: No
+such image or container: bar&amp;rdquo; to stderr, then the error&amp;rsquo;s Error() text would
+look like &amp;ldquo;exit status 1: Error: No such image or container: bar&amp;rdquo;.  Bam, the
+errors from commands you run are infinitely more useful.&lt;/p&gt;
+
+&lt;h3 id=&#34;logging:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Logging&lt;/h3&gt;
+
+&lt;p&gt;Another idiom we use is to pipe some of the output from a command to our logs. This can be super useful for debugging purposes.  With deputy, this is again easy:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+        StdoutLog: func(b []byte) { log.Print(string(b)) },
+    }
+    cmd := exec.Command(&amp;quot;foo&amp;quot;, &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot;)
+    err := d.Run(cmd)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s it.  Now every line written to stdout by the process will be piped as a
+log message to your log.&lt;/p&gt;
+
+&lt;h3 id=&#34;timeouts:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Timeouts&lt;/h3&gt;
+
+&lt;p&gt;Finally, an idiom we don&amp;rsquo;t use often enough, but should, is to add a timeout to
+command execution.  What happens if you run a command as part of your pipeline
+and that command hangs for 30 seconds, or 30 minutes, or forever?  Do you just
+assume it&amp;rsquo;ll always finish in a reasonable time?  Adding a timeout to running
+commands requires some tricky coding with goroutines, channels, selects, and
+killing the process&amp;hellip; and deputy wraps all that up for you in a simple API:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+        StdoutLog: func(b []byte) { log.Print(string(b)) },
+        Timeout:   time.Second * 10,
+    }
+    cmd := exec.Command(&amp;quot;foo&amp;quot;, &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot;)
+    err := d.Run(cmd)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The above code adds a 10 second timeout.  After that time, if the process has
+not finished, it will be killed and an error returned.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s it.  Give deputy a spin and let me know what you think.&lt;/p&gt;
+</description>
+    </item>
+    
+    
+  </channel>
+</rss>

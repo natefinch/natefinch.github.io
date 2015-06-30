@@ -7,7 +7,97 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
-    <updated>Fri, 26 Jun 2015 06:41:56 EDT</updated>
+    <updated>Fri, 26 Jun 2015 06:44:29 EDT</updated>
+    
+    
+    <item>
+      <title>Deputy</title>
+      <link>http://npf.io/2015/06/deputy/</link>
+      <pubDate>Fri, 26 Jun 2015 06:44:29 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2015/06/deputy/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;https://cloud.githubusercontent.com/assets/3185864/8237448/6bc30102-15bd-11e5-9e87-6423197a73d6.jpg&#34; alt=&#34;deputy-sm&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;sup&gt;&lt;sub&gt;image: creative commons, &amp;copy; &lt;a href=&#34;http://matsurd.deviantart.com/art/Paper53-Deputy-Stubbs-342123485&#34;&gt;MatsuRD&lt;/a&gt;&lt;/sub&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;I want to name a package &amp;quot;lieutenant&amp;quot;, but it&amp;#39;s too hard to spell.&lt;/p&gt;&amp;mdash; Nate Finch (@NateTheFinch) &lt;a href=&#34;https://twitter.com/NateTheFinch/status/610481962311131136&#34;&gt;June 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;True story.  The idea was this package would be a lieutenant commander (get
+it?)&amp;hellip; but I also knew I didn&amp;rsquo;t want to have to try to spell lieutenant
+correctly every time I used the package.  So that&amp;rsquo;s why it&amp;rsquo;s called deputy.
+He&amp;rsquo;s the guy who&amp;rsquo;s not in charge, but does all the work.&lt;/p&gt;
+
+&lt;h3 id=&#34;errors:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Errors&lt;/h3&gt;
+
+&lt;p&gt;At &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we run a lot of external processes
+using os/exec. However, the default functionality of an exec.Cmd object is kind
+of lacking. The most obvious one is those error returns &amp;ldquo;exit status 1&amp;rdquo;.
+Fantastic.  Have you ever wished you could just have the stderr from the command
+as the error text?  Well, now you can, with deputy.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+    }
+    cmd := exec.Command(&amp;quot;foo&amp;quot;, &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot;)
+    err := d.Run(cmd)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In the above code, if the command run by Deputy exits with a non-zero exit
+status, deputy will capture the text output to stderr and convert that into the
+error text.  &lt;em&gt;e.g.&lt;/em&gt; if the command returned exit status 1 and output &amp;ldquo;Error: No
+such image or container: bar&amp;rdquo; to stderr, then the error&amp;rsquo;s Error() text would
+look like &amp;ldquo;exit status 1: Error: No such image or container: bar&amp;rdquo;.  Bam, the
+errors from commands you run are infinitely more useful.&lt;/p&gt;
+
+&lt;h3 id=&#34;logging:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Logging&lt;/h3&gt;
+
+&lt;p&gt;Another idiom we use is to pipe some of the output from a command to our logs. This can be super useful for debugging purposes.  With deputy, this is again easy:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+        StdoutLog: func(b []byte) { log.Print(string(b)) },
+    }
+    cmd := exec.Command(&amp;quot;foo&amp;quot;, &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot;)
+    err := d.Run(cmd)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s it.  Now every line written to stdout by the process will be piped as a
+log message to your log.&lt;/p&gt;
+
+&lt;h3 id=&#34;timeouts:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Timeouts&lt;/h3&gt;
+
+&lt;p&gt;Finally, an idiom we don&amp;rsquo;t use often enough, but should, is to add a timeout to
+command execution.  What happens if you run a command as part of your pipeline
+and that command hangs for 30 seconds, or 30 minutes, or forever?  Do you just
+assume it&amp;rsquo;ll always finish in a reasonable time?  Adding a timeout to running
+commands requires some tricky coding with goroutines, channels, selects, and
+killing the process&amp;hellip; and deputy wraps all that up for you in a simple API:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+        StdoutLog: func(b []byte) { log.Print(string(b)) },
+        Timeout:   time.Second * 10,
+    }
+    cmd := exec.Command(&amp;quot;foo&amp;quot;, &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot;)
+    err := d.Run(cmd)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The above code adds a 10 second timeout.  After that time, if the process has
+not finished, it will be killed and an error returned.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s it.  Give deputy a spin and let me know what you think.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -1221,18 +1311,6 @@ stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>http://npf.io/2014/06/autogenerate-docs-with-this-one-dumb-trick/</guid>
       <description>&lt;p&gt;Yesterday, I was trying to think of a way of automating some doc generation for my go packages.  The specific task I wanted to automate was updating a badge in my package&amp;rsquo;s README to show the test coverage.  What I wanted was a way to run go test -cover, parse the results, and put the result in the correct spot of my README.  My first thought was to write an application that would do that for me &amp;hellip; but then I&amp;rsquo;d have to run that &lt;i&gt;instead&lt;/i&gt; of go test.  What I realized I wanted was something that was &amp;ldquo;compatible with go test&amp;rdquo; - i.e. I want to run go test and not have to remember to run some special other command.&lt;br /&gt;&lt;br /&gt;And that&amp;rsquo;s when it hit me:  What is a test in Go?  A test is a Go function that gets run when you run &amp;ldquo;go test&amp;rdquo;. &amp;nbsp;Nothing says your test has to actually test anything. &amp;nbsp;And nothing prevents your test from doing something permanent on your machine (in fact we usually have to bend over backwards to make sure our tests &lt;i&gt;don&amp;rsquo;t&lt;/i&gt;&amp;nbsp;do anything permanent. &amp;nbsp;You can just write a test function that updates the docs for you.&lt;br /&gt;&lt;br /&gt;I actually quite like this technique. &amp;nbsp;I often have some manual tasks after updating my code - usually updating the docs in the README with changes to the API, or changing the docs to show new CLI flags, etc. &amp;nbsp;And there&amp;rsquo;s one thing I always do after I update my code - and that&amp;rsquo;s run &amp;ldquo;go test&amp;rdquo;. &amp;nbsp;If that also updates my docs, all the better.&lt;br /&gt;&lt;br /&gt;This is how covergen was born. &amp;nbsp;&lt;a href=&#34;https://github.com/natefinch/covergen&#34;&gt;https://github.com/natefinch/covergen&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;Covergen is a particularly heinous example of a test that updates your docs. &amp;nbsp;The heinous part is that it actually doubles the time it takes to run your tests&amp;hellip; this is because that one test re-runs all the tests with -cover to get the coverage percent. &amp;nbsp;I&amp;rsquo;m not sure I&amp;rsquo;d actually release real code that used such a thing - doubling the time it takes to run your tests just to save a few seconds of copy and paste is pretty terrible.&lt;br /&gt;&lt;br /&gt;However, it&amp;rsquo;s a valid example of what you can do when you throw away testing convention and decide you want to write some code in a test that doesn&amp;rsquo;t actually test anything, and instead just runs some automated tasks that you want run whenever anyone runs go test. &amp;nbsp;Just make sure the result is idempotent so you&amp;rsquo;re not continually causing things to look modified to version control.&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Diffing Go with Beyond Compare</title>
-      <link>http://npf.io/2014/05/diffing-go-with-beyond-compare/</link>
-      <pubDate>Wed, 14 May 2014 13:09:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2014/05/diffing-go-with-beyond-compare/</guid>
-      <description>&lt;p&gt;I love Beyond Compare, it&amp;rsquo;s an awesome visual diff/merge tool. &amp;nbsp;It&amp;rsquo;s not free, but I don&amp;rsquo;t care, because it&amp;rsquo;s awesome. &amp;nbsp;However, there&amp;rsquo;s no built-in configuration for Go code, so I made one. &amp;nbsp;Not sure what the venn diagram of Beyond Compare users and Go users looks like, it might be that I&amp;rsquo;m the one point of crossover, but just in case I&amp;rsquo;m not, here&amp;rsquo;s the configuration file for Beyond Compare 3 for the Go programming language:&amp;nbsp;&lt;a href=&#34;http://play.golang.org/p/G6NWE0z1GC&#34;&gt;http://play.golang.org/p/G6NWE0z1GC&lt;/a&gt; &amp;nbsp;(please forgive the abuse of the Go playground)&lt;br /&gt;&lt;br /&gt;Just copy the text into a file and in Beyond Compare, go to Tools-&amp;gt;Import Settings&amp;hellip; and choose the file. &amp;nbsp;Please let me know if you have any troubles or suggested improvements.&lt;/p&gt;
 </description>
     </item>
     

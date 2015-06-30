@@ -7,7 +7,97 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
-    <updated>Fri, 26 Jun 2015 06:41:56 EDT</updated>
+    <updated>Fri, 26 Jun 2015 06:44:29 EDT</updated>
+    
+    
+    <item>
+      <title>Deputy</title>
+      <link>http://npf.io/2015/06/deputy/</link>
+      <pubDate>Fri, 26 Jun 2015 06:44:29 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>http://npf.io/2015/06/deputy/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;https://cloud.githubusercontent.com/assets/3185864/8237448/6bc30102-15bd-11e5-9e87-6423197a73d6.jpg&#34; alt=&#34;deputy-sm&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;sup&gt;&lt;sub&gt;image: creative commons, &amp;copy; &lt;a href=&#34;http://matsurd.deviantart.com/art/Paper53-Deputy-Stubbs-342123485&#34;&gt;MatsuRD&lt;/a&gt;&lt;/sub&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;I want to name a package &amp;quot;lieutenant&amp;quot;, but it&amp;#39;s too hard to spell.&lt;/p&gt;&amp;mdash; Nate Finch (@NateTheFinch) &lt;a href=&#34;https://twitter.com/NateTheFinch/status/610481962311131136&#34;&gt;June 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;True story.  The idea was this package would be a lieutenant commander (get
+it?)&amp;hellip; but I also knew I didn&amp;rsquo;t want to have to try to spell lieutenant
+correctly every time I used the package.  So that&amp;rsquo;s why it&amp;rsquo;s called deputy.
+He&amp;rsquo;s the guy who&amp;rsquo;s not in charge, but does all the work.&lt;/p&gt;
+
+&lt;h3 id=&#34;errors:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Errors&lt;/h3&gt;
+
+&lt;p&gt;At &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we run a lot of external processes
+using os/exec. However, the default functionality of an exec.Cmd object is kind
+of lacking. The most obvious one is those error returns &amp;ldquo;exit status 1&amp;rdquo;.
+Fantastic.  Have you ever wished you could just have the stderr from the command
+as the error text?  Well, now you can, with deputy.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+    }
+    cmd := exec.Command(&amp;quot;foo&amp;quot;, &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot;)
+    err := d.Run(cmd)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In the above code, if the command run by Deputy exits with a non-zero exit
+status, deputy will capture the text output to stderr and convert that into the
+error text.  &lt;em&gt;e.g.&lt;/em&gt; if the command returned exit status 1 and output &amp;ldquo;Error: No
+such image or container: bar&amp;rdquo; to stderr, then the error&amp;rsquo;s Error() text would
+look like &amp;ldquo;exit status 1: Error: No such image or container: bar&amp;rdquo;.  Bam, the
+errors from commands you run are infinitely more useful.&lt;/p&gt;
+
+&lt;h3 id=&#34;logging:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Logging&lt;/h3&gt;
+
+&lt;p&gt;Another idiom we use is to pipe some of the output from a command to our logs. This can be super useful for debugging purposes.  With deputy, this is again easy:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+        StdoutLog: func(b []byte) { log.Print(string(b)) },
+    }
+    cmd := exec.Command(&amp;quot;foo&amp;quot;, &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot;)
+    err := d.Run(cmd)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s it.  Now every line written to stdout by the process will be piped as a
+log message to your log.&lt;/p&gt;
+
+&lt;h3 id=&#34;timeouts:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Timeouts&lt;/h3&gt;
+
+&lt;p&gt;Finally, an idiom we don&amp;rsquo;t use often enough, but should, is to add a timeout to
+command execution.  What happens if you run a command as part of your pipeline
+and that command hangs for 30 seconds, or 30 minutes, or forever?  Do you just
+assume it&amp;rsquo;ll always finish in a reasonable time?  Adding a timeout to running
+commands requires some tricky coding with goroutines, channels, selects, and
+killing the process&amp;hellip; and deputy wraps all that up for you in a simple API:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func main() {
+    d := deputy.Deputy{
+        Errors:    deputy.FromStderr,
+        StdoutLog: func(b []byte) { log.Print(string(b)) },
+        Timeout:   time.Second * 10,
+    }
+    cmd := exec.Command(&amp;quot;foo&amp;quot;, &amp;quot;bar&amp;quot;, &amp;quot;baz&amp;quot;)
+    err := d.Run(cmd)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The above code adds a 10 second timeout.  After that time, if the process has
+not finished, it will be killed and an error returned.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s it.  Give deputy a spin and let me know what you think.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -882,18 +972,6 @@ that error:&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>http://npf.io/2014/03/go-tips-for-newbie-gophers/</guid>
       <description>&lt;p&gt;This is just a collection of tips that would have saved me a lot of time if I had known about them when I was a newbie:&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Build or test everything under the current directory and subdirectories:&lt;/b&gt;&lt;br /&gt;&lt;b&gt;&lt;br /&gt;&lt;/b&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;go build ./&amp;hellip;&lt;br /&gt;go test ./&amp;hellip;&lt;/pre&gt;&lt;span style=&#34;font-family: inherit;&#34;&gt;Technically, both commands take a pattern to match the name of one or more packages, and the &amp;hellip; specifier is a wildcard, so you could do &amp;hellip;/foo/&amp;hellip; to match all packages under GOPATH with foo in their path.&amp;nbsp;&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Have an io.Writer that writes to an in-memory data structure:&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;&lt;div&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;b := &amp;amp;bytes.Buffer{}&lt;br /&gt;thing.WriteTo(b)&lt;/pre&gt;&lt;b&gt;Have an io.Reader read from a string (useful when you want to use a string as the input data for something):&lt;/b&gt;&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;r := strings.NewReader(myString)&lt;br /&gt;thing.ReadFrom(r)&lt;/pre&gt;&lt;b&gt;Copy data from a reader to a writer:&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;io.Copy(toWriter, fromReader)&lt;/pre&gt;&lt;b&gt;Timeout waiting on a channel:&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;select {&lt;br/&gt;&amp;nbsp; &amp;nbsp;case val := &amp;lt;- ch&lt;br/&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;// use val&lt;br/&gt;&amp;nbsp; &amp;nbsp;case &amp;lt;-time.After(time.Second*5)&lt;br /&gt;}&lt;/pre&gt;&lt;b&gt;Convert a slice of bytes to a string:&lt;/b&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;var b []byte = getData()&lt;br/&gt;s := string(b)&lt;/pre&gt;&lt;b&gt;Passing a nil pointer into an interface does not result in a nil interface:&lt;/b&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;func isNil(i interface{}) bool {&lt;br/&gt;&amp;nbsp; &amp;nbsp; return i == nil&lt;br/&gt;}&lt;br/&gt;var f *foo = nil&lt;br /&gt;fmt.Println(isNil(f)) &amp;nbsp;// prints false&lt;/pre&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;The only way to get a nil interface is to pass the keyword nil:&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;var f *foo = nil&lt;br/&gt;if f == nil {&lt;br /&gt;&amp;nbsp; &amp;nbsp; fmt.Println(isNil(nil)) &amp;nbsp;// prints true&lt;br/&gt;}&lt;/pre&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;How to remember where the arrow goes for channels:&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;The arrow points in the direction of data flow, either into or out of the channel, and always points left.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;The above is generalizable to anything where you have a source and destination, or reading and writing, or assigning.&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;br /&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;Data is taken from the right and assigned to the left, just as it is with a := b. &amp;nbsp;So, like io.Copy, you know that the reader (source) is on the right, the writer (destination) is on the left: &amp;nbsp;io.Copy(dest, src).&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;If you ever think &amp;ldquo;man, someone should have made a helper function to do this!&amp;rdquo;, chances are they have, and it&amp;rsquo;s in the std lib somewhere.&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Statically typed generic data structures in Go</title>
-      <link>http://npf.io/2013/04/statically-typed-generic-data-structures-in-go/</link>
-      <pubDate>Wed, 17 Apr 2013 08:01:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>http://npf.io/2013/04/statically-typed-generic-data-structures-in-go/</guid>
-      <description>&lt;p&gt;&lt;br /&gt;I gave a talk at the &lt;a href=&#34;https://plus.google.com/u/0/communities/103337146295481792015&#34; target=&#34;_blank&#34;&gt;Go Boston&lt;/a&gt; meetup last night and figured I should write it up and put it here.&lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;The second thing everyone says when they read up on Go is &amp;ldquo;There are no generics!&amp;rdquo;. &lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;(The first thing people say is &amp;ldquo;There are no exceptions!&amp;rdquo;)&lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Both are only mostly true, &amp;nbsp;but we&amp;rsquo;re only going to talk about generics today.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Go has generic built-in data structures - arrays, slices, maps, and channels. You just can&amp;rsquo;t create your own new type, and you can&amp;rsquo;t create generic functions. So, what&amp;rsquo;s a programmer to do? Find another language?&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;No. Many, possibly even most, problems can be solved with the built-in data structures. You can write pretty huge applications just using maps and slices and the occasional channel. There may be a tiny bit of code duplication, but probably not much, and certainly not any tricky code.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;However, there definitely are times when you need more complicated data structures. Most people writing Go solve this problem by using Interface{}, the empty interface, which is basically like Object in C# or Java or void * in C/C++. &amp;nbsp;It&amp;rsquo;s a thing that can hold any type&amp;hellip; but then you need to type cast it to get at the actual type. This breaks static typing, since the compiler can&amp;rsquo;t tell if you make a mistake and pass the wrong type into something that takes an Interface{}, and it can&amp;rsquo;t tell until runtime if a cast will succeed or not.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;So, is there any solution? Yes. The inspiration comes from the standard library&amp;rsquo;s&lt;a href=&#34;http://golang.org/pkg/sort/#Interface&#34; target=&#34;_blank&#34;&gt; sort package&lt;/a&gt;. Package sort can sort a slice of any type, it can even sort things that aren&amp;rsquo;t slices, if you&amp;rsquo;ve made your own custom data structure. How does it do that? To sort something, it must support the methods on sort.Interface. Most interesting is Less(i, j int). Less returns true if the item at index i in your data structure is Less than the object at index j in your data structure. Your code has to implement what &amp;ldquo;Less&amp;rdquo; means&amp;hellip; and by only using indices, sort doesn&amp;rsquo;t need to know the types of objects held in your data structure.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;This use of indices to blindly access data in a separate data structure is how we&amp;rsquo;ll implement our strongly typed tree. The tree structure will hold an index as its data value in each node, and the indices will index into a data structure that holds the actual objects. To make a tree of a new type, you simply implement a Compare function that the tree can use to compare the values at two indices in your data structure. You can use whatever data structure you like, probably a slice or a map, as long as you can use integers to reference values in the data structure.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;In this way we separate the organization of the data from the storage of the data. The tree structure holds the organization, a slice or map (or something custom) stores the data. The indices are the generic pointers into the storage that holds the actual strongly typed values.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;This does require a little code for each new tree type, just as using package sort requires a little code for each type. However, it&amp;rsquo;s only a few lines for a few functions, wrapping a tree and your data.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;You can check out an example binary search tree I wrote that uses this technique in my github account&lt;br /&gt;&lt;br /&gt;&lt;a href=&#34;https://github.com/natefinch/tree&#34;&gt;https://github.com/natefinch/tree&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;or go get the runnable sample tree:&lt;br /&gt;&lt;br /&gt;go get github.com/natefinch/treesample&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;This required only 36 lines of code to make the actual tree structure (including empty lines and comments).&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;In some simple benchmarks, this implementation of a tree is about 25% faster than using the same code with Interface{} as the values and casting at runtime&amp;hellip;. plus it&amp;rsquo;s strongly typed.&lt;/div&gt;&lt;/div&gt;&lt;/p&gt;
 </description>
     </item>
     
