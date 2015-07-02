@@ -3,7 +3,7 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>npf.io/series/hugo-101/</link>
+    <link>https://npf.io/series/hugo-101/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2014 Nate Finch</copyright>
@@ -12,10 +12,10 @@
     
     <item>
       <title>Making It a Series</title>
-      <link>/npf.io/2014/08/making-it-a-series/</link>
+      <link>https://npf.io/2014/08/making-it-a-series/</link>
       <pubDate>Fri, 08 Aug 2014 11:12:44 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2014/08/making-it-a-series/</guid>
+      <guid>https://npf.io/2014/08/making-it-a-series/</guid>
       <description>&lt;p&gt;I obviously have a lot to talk about with Hugo, so I decided I wanted to make
 this into a series of posts, and have links at the bottom of each post
 automatically populated with the other posts in the series.  This turned out to
@@ -126,10 +126,10 @@ series.&lt;/p&gt;
     
     <item>
       <title>Hugo: Beyond the Defaults</title>
-      <link>/npf.io/2014/08/hugo-beyond-the-defaults/</link>
+      <link>https://npf.io/2014/08/hugo-beyond-the-defaults/</link>
       <pubDate>Fri, 08 Aug 2014 10:07:46 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2014/08/hugo-beyond-the-defaults/</guid>
+      <guid>https://npf.io/2014/08/hugo-beyond-the-defaults/</guid>
       <description>&lt;p&gt;In my last post, I had deployed what is almost the most basic Hugo site
 possible.  The only reason it took more than 10 minutes is because I wanted to
 tweak the theme.  However, there were a few things that immediately annoyed me.&lt;/p&gt;
@@ -201,10 +201,10 @@ post, as the next post in the series! :)&lt;/p&gt;
     
     <item>
       <title>Hugo Is Friggin&#39; Awesome</title>
-      <link>/npf.io/2014/08/hugo-is-awesome/</link>
+      <link>https://npf.io/2014/08/hugo-is-awesome/</link>
       <pubDate>Fri, 01 Aug 2014 06:45:00 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2014/08/hugo-is-awesome/</guid>
+      <guid>https://npf.io/2014/08/hugo-is-awesome/</guid>
       <description>&lt;p&gt;This blog is powered by &lt;a href=&#34;http://hugo.spf13.com&#34;&gt;Hugo&lt;/a&gt;, a static site generator
 written by Steve Francia (aka spf13).  It is, of course, written in Go.  It is
 pretty similar to &lt;a href=&#34;jekyllrb.com&#34;&gt;Jekyll&lt;/a&gt;, in that you write markdown, run a

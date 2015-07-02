@@ -3,7 +3,7 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>npf.io/tags/godoc/</link>
+    <link>https://npf.io/tags/godoc/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
@@ -12,10 +12,10 @@
     
     <item>
       <title>Sharing Godoc of a WIP Branch</title>
-      <link>/npf.io/2015/06/wip-godoc/</link>
+      <link>https://npf.io/2015/06/wip-godoc/</link>
       <pubDate>Thu, 11 Jun 2015 07:37:00 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2015/06/wip-godoc/</guid>
+      <guid>https://npf.io/2015/06/wip-godoc/</guid>
       <description>&lt;p&gt;I had a problem yesterday - I wanted to use the excellent godoc.org to show
 coworkers the godoc for the feature I was working on.  However, the feature was
 on a branch of the main code in Github, and &lt;code&gt;go get&lt;/code&gt; Does Not Work That Way™.

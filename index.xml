@@ -3,7 +3,7 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>npf.io/</link>
+    <link>https://npf.io/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
@@ -12,10 +12,10 @@
     
     <item>
       <title>Take control of your commands with Deputy</title>
-      <link>/npf.io/2015/06/deputy/</link>
+      <link>https://npf.io/2015/06/deputy/</link>
       <pubDate>Tue, 30 Jun 2015 12:44:29 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2015/06/deputy/</guid>
+      <guid>https://npf.io/2015/06/deputy/</guid>
       <description>
 
 &lt;p&gt;&lt;img src=&#34;https://cloud.githubusercontent.com/assets/3185864/8237448/6bc30102-15bd-11e5-9e87-6423197a73d6.jpg&#34; alt=&#34;deputy-sm&#34; /&gt;&lt;/p&gt;
@@ -106,10 +106,10 @@ not finished, it will be killed and an error returned.&lt;/p&gt;
     
     <item>
       <title>Testing os/exec.Command</title>
-      <link>/npf.io/2015/06/testing-exec-command/</link>
+      <link>https://npf.io/2015/06/testing-exec-command/</link>
       <pubDate>Fri, 26 Jun 2015 06:41:56 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2015/06/testing-exec-command/</guid>
+      <guid>https://npf.io/2015/06/testing-exec-command/</guid>
       <description>&lt;p&gt;In &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we often have code that needs to run external
 executables.  Testing this code is a nightmare&amp;hellip; because you really don&amp;rsquo;t want
 to run those files on the dev&amp;rsquo;s machine or the CI machine.  But mocking out
@@ -228,10 +228,10 @@ not testing your code at all).&lt;/p&gt;
     
     <item>
       <title>Sharing Godoc of a WIP Branch</title>
-      <link>/npf.io/2015/06/wip-godoc/</link>
+      <link>https://npf.io/2015/06/wip-godoc/</link>
       <pubDate>Thu, 11 Jun 2015 07:37:00 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2015/06/wip-godoc/</guid>
+      <guid>https://npf.io/2015/06/wip-godoc/</guid>
       <description>&lt;p&gt;I had a problem yesterday - I wanted to use the excellent godoc.org to show
 coworkers the godoc for the feature I was working on.  However, the feature was
 on a branch of the main code in Github, and &lt;code&gt;go get&lt;/code&gt; Does Not Work That Way™.
@@ -275,10 +275,10 @@ feedback on architecture before I dive into the reeds of the implementation.&lt;
     
     <item>
       <title>Go Plugins are as Easy as Pie</title>
-      <link>/npf.io/2015/05/pie/</link>
+      <link>https://npf.io/2015/05/pie/</link>
       <pubDate>Mon, 25 May 2015 22:44:32 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2015/05/pie/</guid>
+      <guid>https://npf.io/2015/05/pie/</guid>
       <description>
 
 &lt;p&gt;When people hear that Go only supports static linking, one of the things they
@@ -345,10 +345,10 @@ in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
     
     <item>
       <title>Go Nitpicks</title>
-      <link>/npf.io/2014/10/go-nitpicks/</link>
+      <link>https://npf.io/2014/10/go-nitpicks/</link>
       <pubDate>Tue, 28 Oct 2014 06:17:21 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2014/10/go-nitpicks/</guid>
+      <guid>https://npf.io/2014/10/go-nitpicks/</guid>
       <description>
 
 &lt;p&gt;I saw this tweet last night:&lt;/p&gt;
@@ -422,10 +422,10 @@ b := &amp;amp;a
     
     <item>
       <title>Why Everyone Hates Go</title>
-      <link>/npf.io/2014/10/why-everyone-hates-go/</link>
+      <link>https://npf.io/2014/10/why-everyone-hates-go/</link>
       <pubDate>Tue, 14 Oct 2014 10:46:28 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2014/10/why-everyone-hates-go/</guid>
+      <guid>https://npf.io/2014/10/why-everyone-hates-go/</guid>
       <description>&lt;p&gt;Obviously, not &lt;em&gt;everyone&lt;/em&gt; hates Go.  But there was a &lt;a href=&#34;https://www.quora.com/Why-does-Go-seem-to-be-the-most-heavily-
 criticised-among-the-newer-programming-languages?srid=uCiY&amp;amp;share=1&#34;&gt;quora
 question&lt;/a&gt; recently
@@ -524,10 +524,10 @@ anyone I offended.&lt;/p&gt;
     
     <item>
       <title>Deploy Discourse with Juju in 8 minutes</title>
-      <link>/npf.io/2014/10/deploy-discourse-juju/</link>
+      <link>https://npf.io/2014/10/deploy-discourse-juju/</link>
       <pubDate>Wed, 01 Oct 2014 06:31:49 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2014/10/deploy-discourse-juju/</guid>
+      <guid>https://npf.io/2014/10/deploy-discourse-juju/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://stevefrancia.com/&#34;&gt;Steve Francia&lt;/a&gt; asked me to help him get
 &lt;a href=&#34;https://discourse.org&#34;&gt;Discourse&lt;/a&gt; deployed as a place for people to discuss
 &lt;a href=&#34;http://gohugo.io&#34;&gt;Hugo&lt;/a&gt;, his static site generator (which is what I use to
@@ -695,10 +695,10 @@ immediately.&lt;/p&gt;
     
     <item>
       <title>Intro to TOML</title>
-      <link>/npf.io/2014/08/intro-to-toml/</link>
+      <link>https://npf.io/2014/08/intro-to-toml/</link>
       <pubDate>Sat, 16 Aug 2014 07:31:51 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2014/08/intro-to-toml/</guid>
+      <guid>https://npf.io/2014/08/intro-to-toml/</guid>
       <description>
 
 &lt;p&gt;TOML stands for Tom&amp;rsquo;s Own Minimal Language.  It is a configuration language
@@ -988,10 +988,10 @@ look at TOML.  I think your users will thank you.&lt;/p&gt;
     
     <item>
       <title>Making It a Series</title>
-      <link>/npf.io/2014/08/making-it-a-series/</link>
+      <link>https://npf.io/2014/08/making-it-a-series/</link>
       <pubDate>Fri, 08 Aug 2014 11:12:44 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2014/08/making-it-a-series/</guid>
+      <guid>https://npf.io/2014/08/making-it-a-series/</guid>
       <description>&lt;p&gt;I obviously have a lot to talk about with Hugo, so I decided I wanted to make
 this into a series of posts, and have links at the bottom of each post
 automatically populated with the other posts in the series.  This turned out to
@@ -1102,10 +1102,10 @@ series.&lt;/p&gt;
     
     <item>
       <title>Hugo: Beyond the Defaults</title>
-      <link>/npf.io/2014/08/hugo-beyond-the-defaults/</link>
+      <link>https://npf.io/2014/08/hugo-beyond-the-defaults/</link>
       <pubDate>Fri, 08 Aug 2014 10:07:46 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2014/08/hugo-beyond-the-defaults/</guid>
+      <guid>https://npf.io/2014/08/hugo-beyond-the-defaults/</guid>
       <description>&lt;p&gt;In my last post, I had deployed what is almost the most basic Hugo site
 possible.  The only reason it took more than 10 minutes is because I wanted to
 tweak the theme.  However, there were a few things that immediately annoyed me.&lt;/p&gt;
@@ -1179,10 +1179,10 @@ post, as the next post in the series! :)&lt;/p&gt;
     
     <item>
       <title>Hugo Is Friggin&#39; Awesome</title>
-      <link>/npf.io/2014/08/hugo-is-awesome/</link>
+      <link>https://npf.io/2014/08/hugo-is-awesome/</link>
       <pubDate>Fri, 01 Aug 2014 06:45:00 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2014/08/hugo-is-awesome/</guid>
+      <guid>https://npf.io/2014/08/hugo-is-awesome/</guid>
       <description>&lt;p&gt;This blog is powered by &lt;a href=&#34;http://hugo.spf13.com&#34;&gt;Hugo&lt;/a&gt;, a static site generator
 written by Steve Francia (aka spf13).  It is, of course, written in Go.  It is
 pretty similar to &lt;a href=&#34;jekyllrb.com&#34;&gt;Jekyll&lt;/a&gt;, in that you write markdown, run a

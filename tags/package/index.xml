@@ -3,7 +3,7 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>npf.io/tags/package/</link>
+    <link>https://npf.io/tags/package/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
@@ -12,10 +12,10 @@
     
     <item>
       <title>Take control of your commands with Deputy</title>
-      <link>/npf.io/2015/06/deputy/</link>
+      <link>https://npf.io/2015/06/deputy/</link>
       <pubDate>Tue, 30 Jun 2015 12:44:29 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>/npf.io/2015/06/deputy/</guid>
+      <guid>https://npf.io/2015/06/deputy/</guid>
       <description>
 
 &lt;p&gt;&lt;img src=&#34;https://cloud.githubusercontent.com/assets/3185864/8237448/6bc30102-15bd-11e5-9e87-6423197a73d6.jpg&#34; alt=&#34;deputy-sm&#34; /&gt;&lt;/p&gt;
