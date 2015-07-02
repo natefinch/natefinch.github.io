@@ -3,7 +3,7 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>http://npf.io/blog/</link>
+    <link>npf.io/blog/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
@@ -12,10 +12,10 @@
     
     <item>
       <title>Take control of your commands with Deputy</title>
-      <link>http://npf.io/2015/06/deputy/</link>
+      <link>/npf.io/2015/06/deputy/</link>
       <pubDate>Tue, 30 Jun 2015 12:44:29 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2015/06/deputy/</guid>
+      <guid>/npf.io/2015/06/deputy/</guid>
       <description>
 
 &lt;p&gt;&lt;img src=&#34;https://cloud.githubusercontent.com/assets/3185864/8237448/6bc30102-15bd-11e5-9e87-6423197a73d6.jpg&#34; alt=&#34;deputy-sm&#34; /&gt;&lt;/p&gt;
@@ -106,10 +106,10 @@ not finished, it will be killed and an error returned.&lt;/p&gt;
     
     <item>
       <title>Testing os/exec.Command</title>
-      <link>http://npf.io/2015/06/testing-exec-command/</link>
+      <link>/npf.io/2015/06/testing-exec-command/</link>
       <pubDate>Fri, 26 Jun 2015 06:41:56 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2015/06/testing-exec-command/</guid>
+      <guid>/npf.io/2015/06/testing-exec-command/</guid>
       <description>&lt;p&gt;In &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we often have code that needs to run external
 executables.  Testing this code is a nightmare&amp;hellip; because you really don&amp;rsquo;t want
 to run those files on the dev&amp;rsquo;s machine or the CI machine.  But mocking out
@@ -228,10 +228,10 @@ not testing your code at all).&lt;/p&gt;
     
     <item>
       <title>Sharing Godoc of a WIP Branch</title>
-      <link>http://npf.io/2015/06/wip-godoc/</link>
+      <link>/npf.io/2015/06/wip-godoc/</link>
       <pubDate>Thu, 11 Jun 2015 07:37:00 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2015/06/wip-godoc/</guid>
+      <guid>/npf.io/2015/06/wip-godoc/</guid>
       <description>&lt;p&gt;I had a problem yesterday - I wanted to use the excellent godoc.org to show
 coworkers the godoc for the feature I was working on.  However, the feature was
 on a branch of the main code in Github, and &lt;code&gt;go get&lt;/code&gt; Does Not Work That Way™.
@@ -273,10 +273,10 @@ feedback on architecture before I dive into the reeds of the implementation.&lt;
     
     <item>
       <title>Go Plugins are as Easy as Pie</title>
-      <link>http://npf.io/2015/05/pie/</link>
+      <link>/npf.io/2015/05/pie/</link>
       <pubDate>Mon, 25 May 2015 22:44:32 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2015/05/pie/</guid>
+      <guid>/npf.io/2015/05/pie/</guid>
       <description>
 
 &lt;p&gt;When people hear that Go only supports static linking, one of the things they
@@ -341,10 +341,10 @@ in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
     
     <item>
       <title>Go Nitpicks</title>
-      <link>http://npf.io/2014/10/go-nitpicks/</link>
+      <link>/npf.io/2014/10/go-nitpicks/</link>
       <pubDate>Tue, 28 Oct 2014 06:17:21 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2014/10/go-nitpicks/</guid>
+      <guid>/npf.io/2014/10/go-nitpicks/</guid>
       <description>
 
 &lt;p&gt;I saw this tweet last night:&lt;/p&gt;
@@ -418,10 +418,10 @@ b := &amp;amp;a
     
     <item>
       <title>Why Everyone Hates Go</title>
-      <link>http://npf.io/2014/10/why-everyone-hates-go/</link>
+      <link>/npf.io/2014/10/why-everyone-hates-go/</link>
       <pubDate>Tue, 14 Oct 2014 10:46:28 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2014/10/why-everyone-hates-go/</guid>
+      <guid>/npf.io/2014/10/why-everyone-hates-go/</guid>
       <description>&lt;p&gt;Obviously, not &lt;em&gt;everyone&lt;/em&gt; hates Go.  But there was a &lt;a href=&#34;https://www.quora.com/Why-does-Go-seem-to-be-the-most-heavily-
 criticised-among-the-newer-programming-languages?srid=uCiY&amp;amp;share=1&#34;&gt;quora
 question&lt;/a&gt; recently
@@ -520,10 +520,10 @@ anyone I offended.&lt;/p&gt;
     
     <item>
       <title>Deploy Discourse with Juju in 8 minutes</title>
-      <link>http://npf.io/2014/10/deploy-discourse-juju/</link>
+      <link>/npf.io/2014/10/deploy-discourse-juju/</link>
       <pubDate>Wed, 01 Oct 2014 06:31:49 EDT</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2014/10/deploy-discourse-juju/</guid>
+      <guid>/npf.io/2014/10/deploy-discourse-juju/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://stevefrancia.com/&#34;&gt;Steve Francia&lt;/a&gt; asked me to help him get
 &lt;a href=&#34;https://discourse.org&#34;&gt;Discourse&lt;/a&gt; deployed as a place for people to discuss
 &lt;a href=&#34;http://gohugo.io&#34;&gt;Hugo&lt;/a&gt;, his static site generator (which is what I use to
@@ -691,10 +691,10 @@ immediately.&lt;/p&gt;
     
     <item>
       <title>Intro to TOML</title>
-      <link>http://npf.io/2014/08/intro-to-toml/</link>
+      <link>/npf.io/2014/08/intro-to-toml/</link>
       <pubDate>Sat, 16 Aug 2014 07:31:51 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2014/08/intro-to-toml/</guid>
+      <guid>/npf.io/2014/08/intro-to-toml/</guid>
       <description>
 
 &lt;p&gt;TOML stands for Tom&amp;rsquo;s Own Minimal Language.  It is a configuration language
@@ -982,10 +982,10 @@ look at TOML.  I think your users will thank you.&lt;/p&gt;
     
     <item>
       <title>Making It a Series</title>
-      <link>http://npf.io/2014/08/making-it-a-series/</link>
+      <link>/npf.io/2014/08/making-it-a-series/</link>
       <pubDate>Fri, 08 Aug 2014 11:12:44 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2014/08/making-it-a-series/</guid>
+      <guid>/npf.io/2014/08/making-it-a-series/</guid>
       <description>&lt;p&gt;I obviously have a lot to talk about with Hugo, so I decided I wanted to make
 this into a series of posts, and have links at the bottom of each post
 automatically populated with the other posts in the series.  This turned out to
@@ -1096,10 +1096,10 @@ series.&lt;/p&gt;
     
     <item>
       <title>Hugo: Beyond the Defaults</title>
-      <link>http://npf.io/2014/08/hugo-beyond-the-defaults/</link>
+      <link>/npf.io/2014/08/hugo-beyond-the-defaults/</link>
       <pubDate>Fri, 08 Aug 2014 10:07:46 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2014/08/hugo-beyond-the-defaults/</guid>
+      <guid>/npf.io/2014/08/hugo-beyond-the-defaults/</guid>
       <description>&lt;p&gt;In my last post, I had deployed what is almost the most basic Hugo site
 possible.  The only reason it took more than 10 minutes is because I wanted to
 tweak the theme.  However, there were a few things that immediately annoyed me.&lt;/p&gt;
@@ -1171,10 +1171,10 @@ post, as the next post in the series! :)&lt;/p&gt;
     
     <item>
       <title>Hugo Is Friggin&#39; Awesome</title>
-      <link>http://npf.io/2014/08/hugo-is-awesome/</link>
+      <link>/npf.io/2014/08/hugo-is-awesome/</link>
       <pubDate>Fri, 01 Aug 2014 06:45:00 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2014/08/hugo-is-awesome/</guid>
+      <guid>/npf.io/2014/08/hugo-is-awesome/</guid>
       <description>&lt;p&gt;This blog is powered by &lt;a href=&#34;http://hugo.spf13.com&#34;&gt;Hugo&lt;/a&gt;, a static site generator
 written by Steve Francia (aka spf13).  It is, of course, written in Go.  It is
 pretty similar to &lt;a href=&#34;jekyllrb.com&#34;&gt;Jekyll&lt;/a&gt;, in that you write markdown, run a
@@ -1267,10 +1267,10 @@ will come in time and with more posts :)&lt;/p&gt;
     
     <item>
       <title>First Post</title>
-      <link>http://npf.io/2014/08/first/</link>
+      <link>/npf.io/2014/08/first/</link>
       <pubDate>Fri, 01 Aug 2014 06:30:00 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2014/08/first/</guid>
+      <guid>/npf.io/2014/08/first/</guid>
       <description>&lt;p&gt;This is the first post of my new blog.  You may (eventually) see old posts
 showing up behind here, those have been pulled in from my personal blog at
 &lt;a href=&#34;http://blog.natefinch.com&#34;&gt;blog.natefinch.com&lt;/a&gt;. I&amp;rsquo;ve decided to split off my
@@ -1286,10 +1286,10 @@ stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
     
     <item>
       <title>CI for Windows Go Packages with AppVeyor</title>
-      <link>http://npf.io/2014/07/ci-for-windows-go-packages-with-appveyor/</link>
+      <link>/npf.io/2014/07/ci-for-windows-go-packages-with-appveyor/</link>
       <pubDate>Wed, 09 Jul 2014 17:43:00 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2014/07/ci-for-windows-go-packages-with-appveyor/</guid>
+      <guid>/npf.io/2014/07/ci-for-windows-go-packages-with-appveyor/</guid>
       <description>&lt;p&gt;I recently needed to update my &lt;a href=&#34;https://github.com/natefinch/npipe&#34; target=&#34;_blank&#34;&gt;npipe&lt;/a&gt; package, and since I want it to be production quality, that means setting up CI, so that people using my package can know it&amp;rsquo;s passing tests. &amp;nbsp;Normally I&amp;rsquo;d use Travis CI or Drone.io for that, but npipe is a Windows-only Go package, and neither of the aforementioned services support running tests on Windows.&lt;br /&gt;&lt;br /&gt;With some googling, I saw that &lt;a href=&#34;https://twitter.com/nathany&#34; target=&#34;_blank&#34;&gt;Nathan Youngman&lt;/a&gt;&amp;nbsp;had worked with&amp;nbsp;&lt;a href=&#34;http://www.appveyor.com/&#34; target=&#34;_blank&#34;&gt;AppVeyor&lt;/a&gt;&amp;nbsp;to add Go support to their CI system. &amp;nbsp;The example on the blog talks about making a build.cmd file in your repo to enable Go builds, but I found that you can easily set up a Go build without having to put CI-specific files in your repo.&lt;br /&gt;&lt;br /&gt;To get started with AppVeyor, just log into their site and tell it where to get your code (I logged in with Github, and it was easy to specify what repo of mine to test). &amp;nbsp;Once you choose the repo, go to the Settings page on AppVeyor for that repo. &amp;nbsp;Under the Environment tab on the left, set the clone directory to C:\GOPATH\src&amp;amp;lt;your import path&amp;gt; and set an environment variable called GOPATH to C:\GOPATH. &amp;nbsp;Under the build tab, set the build type to &amp;ldquo;SCRIPT&amp;rdquo; and the script type to &amp;ldquo;CMD&amp;rdquo;, and make the contents of the script &lt;pre style=&#34;tab-size: 4;&#34;&gt;go get -v -d -t &amp;lt;your import path&amp;gt;/&amp;hellip;&lt;/pre&gt; (this will download the dependencies for your package). &amp;nbsp;In the test tab, set the test type to &amp;ldquo;SCRIPT&amp;rdquo;, the script type to &amp;ldquo;CMD&amp;rdquo; and the script contents to &lt;pre style=&#34;tab-size: 4;&#34;&gt;go test -v -cover ./&amp;hellip;&lt;/pre&gt; &amp;nbsp;(this will run all the tests in verbose mode and also output the test coverage).&lt;br /&gt;&lt;br /&gt;That&amp;rsquo;s pretty much it. &amp;nbsp;AppVeyor will automatically run a build on commits, like you&amp;rsquo;d expect. &amp;nbsp;You can watch the progress on a console output on their page, and get a pretty little badge from the badges page. &amp;nbsp;It&amp;rsquo;s free for open source projects, and seems relatively responsive from my admittedly limited experience.&lt;br /&gt;&lt;br /&gt;This is a great boon for Go developers, so you can be sure your code builds and passes tests on Windows, with very little work to set it up. &amp;nbsp;I&amp;rsquo;m probably going to add this to all my production repos, even the ones that aren&amp;rsquo;t Windows-only, to ensure my code works well on Windows as well as Linux.&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 </description>
     </item>
@@ -1298,10 +1298,10 @@ stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
     
     <item>
       <title>Intro to BoltDB: Painless Performant Persistence</title>
-      <link>http://npf.io/2014/07/intro-to-boltdb-painless-performant-persistence/</link>
+      <link>/npf.io/2014/07/intro-to-boltdb-painless-performant-persistence/</link>
       <pubDate>Mon, 07 Jul 2014 08:25:00 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2014/07/intro-to-boltdb-painless-performant-persistence/</guid>
+      <guid>/npf.io/2014/07/intro-to-boltdb-painless-performant-persistence/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://github.com/boltdb/bolt&#34; target=&#34;_blank&#34;&gt;BoltDB&lt;/a&gt; is a pure Go persistence solution that saves data to a memory mapped file.  I call it a persistence solution and not a database, because the word database has a lot of baggage associated with it that doesn&amp;rsquo;t apply to bolt. And that lack of baggage is what makes bolt so awesome.&lt;br /&gt;&lt;br /&gt;Bolt is just a Go package.  There&amp;rsquo;s nothing you need to install on the system, no configuration to figure out before you can start coding, nothing.  You just go get github.com/boltdb/bolt and then import &amp;ldquo;github.com/boltdb/bolt&amp;rdquo;. &lt;br /&gt;&lt;br /&gt;All you need to fully use bolt as storage is a file name.  This is fantastic from both a developer&amp;rsquo;s point of view, and a user&amp;rsquo;s point of view.  I don&amp;rsquo;t know about you, but I&amp;rsquo;ve spent months of work time over my career configuring and setting up databases and debugging configuration problems, users and permissions and all the other crap you get from more traditional databases like Postgres and Mongo.  There&amp;rsquo;s none of that with bolt.  No users, no setup, just a file name.  This is also a boon for users of your application, because &lt;em&gt;they&lt;/em&gt; don&amp;rsquo;t have to futz with all that crap either.&lt;br /&gt;&lt;br /&gt;Bolt is not a relational database.  It&amp;rsquo;s not even a document store, though you can sort of use it that way.  It&amp;rsquo;s really just a key/value store&amp;hellip; but don&amp;rsquo;t worry if you don&amp;rsquo;t really know what that means or how you&amp;rsquo;d use that for storage.  It&amp;rsquo;s super simple and it&amp;rsquo;s incredibly flexible.  Let&amp;rsquo;s take a look.&lt;br /&gt;&lt;br /&gt;Storage in bolt is divided into buckets.  A bucket is simply a named collection of key/value pairs, just like Go&amp;rsquo;s map.  The name of the bucket, the keys, and the values are all of type []byte.  Buckets can contain other buckets, also keyed by a []byte name. &lt;br /&gt;&lt;br /&gt;&amp;hellip; that&amp;rsquo;s it.  No, really, that&amp;rsquo;s it.  Bolt is basically a bunch of nested maps.  And this simplicity is what makes it so easy to use.  There&amp;rsquo;s no tables to set up, no schemas, no complex querying language to struggle with.  Let&amp;rsquo;s look at a bolt hello world:&lt;br /&gt;&lt;br /&gt;&lt;pre&gt;package main&lt;br /&gt;&lt;br /&gt;import (&lt;br /&gt;    &amp;ldquo;fmt&amp;rdquo;&lt;br /&gt;    &amp;ldquo;log&amp;rdquo;&lt;br /&gt;&lt;br /&gt;    &amp;ldquo;github.com/boltdb/bolt&amp;rdquo;&lt;br /&gt;)&lt;br /&gt;&lt;br /&gt;var world = []byte(&amp;ldquo;world&amp;rdquo;)&lt;br /&gt;&lt;br /&gt;func main() {&lt;br /&gt;    db, err := bolt.Open(&amp;ldquo;/home/nate/foo/bolt.db&amp;rdquo;, 0644, nil)&lt;br /&gt;    if err != nil {&lt;br /&gt;        log.Fatal(err)&lt;br /&gt;    }&lt;br /&gt;    defer db.Close()&lt;br /&gt;&lt;br /&gt;    key := []byte(&amp;ldquo;hello&amp;rdquo;)&lt;br /&gt;    value := []byte(&amp;ldquo;Hello World!&amp;rdquo;)&lt;br /&gt;&lt;br /&gt;    // store some data&lt;br /&gt;    err = db.Update(func(tx *bolt.Tx) error {&lt;br /&gt;        bucket, err := tx.CreateBucketIfNotExists(world)&lt;br /&gt;        if err != nil {&lt;br /&gt;            return err&lt;br /&gt;        }&lt;br /&gt;&lt;br /&gt;        err = bucket.Put(key, value)&lt;br /&gt;        if err != nil {&lt;br /&gt;            return err&lt;br /&gt;        }&lt;br /&gt;        return nil&lt;br /&gt;    })&lt;br /&gt;&lt;br /&gt;    if err != nil {&lt;br /&gt;        log.Fatal(err)&lt;br /&gt;    }&lt;br /&gt;&lt;br /&gt;    // retrieve the data&lt;br /&gt;    err = db.View(func(tx *bolt.Tx) error {&lt;br /&gt;        bucket := tx.Bucket(world)&lt;br /&gt;        if bucket == nil {&lt;br /&gt;            return fmt.Errorf(&amp;ldquo;Bucket %q not found!&amp;rdquo;, world)&lt;br /&gt;        }&lt;br /&gt;&lt;br /&gt;        val := bucket.Get(key)&lt;br /&gt;        fmt.Println(string(val))&lt;br /&gt;&lt;br /&gt;        return nil&lt;br /&gt;    })&lt;br /&gt;&lt;br /&gt;    if err != nil {&lt;br /&gt;        log.Fatal(err)&lt;br /&gt;    }&lt;br /&gt;}&lt;br /&gt;&lt;br /&gt;// output:&lt;br /&gt;// Hello World!&lt;/pre&gt;&lt;div&gt;&lt;/div&gt;I know what you&amp;rsquo;re thinking - that seems kinda long.  But keep in mind, I fully handled all errors in at least a semi-proper way, and we&amp;rsquo;re doing all this:&lt;br /&gt;&lt;br /&gt;1.) creating a database &lt;br /&gt;2.) creating some structure (the &amp;ldquo;world&amp;rdquo; bucket)&lt;br /&gt;3.) storing data to the structure&lt;br /&gt;4.) retrieving data from the structure.&lt;br /&gt;&lt;br /&gt;I think that&amp;rsquo;s not too bad in 54 lines of code.&lt;br /&gt;&lt;br /&gt;So let&amp;rsquo;s look at what that example is really doing.  First we call bolt.Open to get the database.  This will create the file if necessary, or open it if it exists.&lt;br /&gt;&lt;br /&gt;All reads from or writes to the bolt database must be done within a transaction. You can have as many Readers in read-only transactions at the same time as you want, but only one Writer in a writable transaction at a time (readers maintain a consistent view of the DB while writers are writing).&lt;br /&gt;&lt;br /&gt;To begin, we call db.Update, which takes a function to which it&amp;rsquo;ll pass a bolt.Tx - bolt&amp;rsquo;s transaction object.  We then create a Bucket (since all data in bolt lives in buckets), and add our key/value pair to it.  After the write transaction finishes, we start a read- only transaction with DB.View, and get the values back out.&lt;br /&gt;&lt;br /&gt;What&amp;rsquo;s great about bolt&amp;rsquo;s transaction mechanism is that it&amp;rsquo;s super simple - the scope of the function is the scope of the transaction.  If the function passed to Update returns nil, all updates from the transaction are atomically stored to the database.  If the function passed to Update returns an error, the transaction is rolled back.  This makes bolt&amp;rsquo;s transactions completely intuitive from a Go developer&amp;rsquo;s point of view.  You just exit early out of your function by returning an error as usual, and bolt Does The Right Thing.  No need to worry about manually rolling back updates or anything, just return an error.&lt;br /&gt;&lt;br /&gt;The only other basic thing you may need is to iterate over key/value pairs in a Bucket, in which case, you just call bucket.Cursor(), which returns a Cursor value, which has functions like Next(), Prev() etc that return a key/value pair and work like you&amp;rsquo;d expect.&lt;br /&gt;&lt;br /&gt;There&amp;rsquo;s a lot more to the bolt API, but most of the rest of it is more about database statistics and some stuff for more advanced usage scenarios&amp;hellip; but the above is all you really need to know to start storing data in a bolt database.&lt;br /&gt;&lt;br /&gt;For a more complex application, just storing strings in the database may not be sufficient, but that&amp;rsquo;s ok, Go has your back there, too.  You can easily use encoding/json or encoding/gob to serialize structs into the database, keyed by a unique name or id.  This is what makes it easy for bolt to go from a key/value store to a document store - just have one bucket per document type.  Again, the benefit of bolt is low barrier of entry.  You don&amp;rsquo;t have to figure out a whole database schema or install anything to be able to just start dumping data to disk in a performant and manageable way.&lt;br /&gt;&lt;br /&gt;The main drawback of bolt is that there are no queries.  You can&amp;rsquo;t say &amp;ldquo;give me all foo objects with a name that starts with bar&amp;rdquo;.  You &lt;i&gt;could&lt;/i&gt; make your own index in the database and keep it up to date manually.  This could be as easy as a slice of IDs serialized into an &amp;ldquo;indices&amp;rdquo; bucket for a particular query. Obviously, this is where you start getting into the realm of developing your own relational database, but if you don&amp;rsquo;t go overboard, it can be nice that all this code is just that - code.  It&amp;rsquo;s not queries in some external DSL, it&amp;rsquo;s just code like you&amp;rsquo;d write for an in-memory data store.&lt;br /&gt;&lt;br /&gt;Bolt is not for every application.  You must understand your application&amp;rsquo;s needs and if bolt&amp;rsquo;s key/value style will be sufficient to fulfill those needs.  If it is, I think you&amp;rsquo;ll be very happy to use such a simple data store with so little mental overhead.&lt;br /&gt;&lt;br /&gt;[edited to clarify reader/writer relationship]   Bonus Gob vs. Json benchmark for storing structs in Bolt: &lt;pre&gt;&lt;br /&gt;BenchmarkGobEncode  1000000       2191 ns/op&lt;br /&gt;BenchmarkJsonEncode   500000       4738 ns/op&lt;br /&gt;BenchmarkGobDecode  1000000       2019 ns/op&lt;br /&gt;BenchmarkJsonDecode   200000      12993 ns/op&lt;br /&gt;&lt;/pre&gt;Code: &lt;a href=&#34;http://play.golang.org/p/IvfDUGBpJ6&#34;&gt;http://play.golang.org/p/IvfDUGBpJ6&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
@@ -1310,10 +1310,10 @@ stuff don&amp;rsquo;t have to get inundated with programming posts.&lt;/p&gt;
     
     <item>
       <title>Autogenerate docs with this one dumb trick</title>
-      <link>http://npf.io/2014/06/autogenerate-docs-with-this-one-dumb-trick/</link>
+      <link>/npf.io/2014/06/autogenerate-docs-with-this-one-dumb-trick/</link>
       <pubDate>Tue, 17 Jun 2014 05:59:00 UTC</pubDate>
       <author>Nate Finch</author>
-      <guid>http://npf.io/2014/06/autogenerate-docs-with-this-one-dumb-trick/</guid>
+      <guid>/npf.io/2014/06/autogenerate-docs-with-this-one-dumb-trick/</guid>
       <description>&lt;p&gt;Yesterday, I was trying to think of a way of automating some doc generation for my go packages.  The specific task I wanted to automate was updating a badge in my package&amp;rsquo;s README to show the test coverage.  What I wanted was a way to run go test -cover, parse the results, and put the result in the correct spot of my README.  My first thought was to write an application that would do that for me &amp;hellip; but then I&amp;rsquo;d have to run that &lt;i&gt;instead&lt;/i&gt; of go test.  What I realized I wanted was something that was &amp;ldquo;compatible with go test&amp;rdquo; - i.e. I want to run go test and not have to remember to run some special other command.&lt;br /&gt;&lt;br /&gt;And that&amp;rsquo;s when it hit me:  What is a test in Go?  A test is a Go function that gets run when you run &amp;ldquo;go test&amp;rdquo;. &amp;nbsp;Nothing says your test has to actually test anything. &amp;nbsp;And nothing prevents your test from doing something permanent on your machine (in fact we usually have to bend over backwards to make sure our tests &lt;i&gt;don&amp;rsquo;t&lt;/i&gt;&amp;nbsp;do anything permanent. &amp;nbsp;You can just write a test function that updates the docs for you.&lt;br /&gt;&lt;br /&gt;I actually quite like this technique. &amp;nbsp;I often have some manual tasks after updating my code - usually updating the docs in the README with changes to the API, or changing the docs to show new CLI flags, etc. &amp;nbsp;And there&amp;rsquo;s one thing I always do after I update my code - and that&amp;rsquo;s run &amp;ldquo;go test&amp;rdquo;. &amp;nbsp;If that also updates my docs, all the better.&lt;br /&gt;&lt;br /&gt;This is how covergen was born. &amp;nbsp;&lt;a href=&#34;https://github.com/natefinch/covergen&#34;&gt;https://github.com/natefinch/covergen&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;Covergen is a particularly heinous example of a test that updates your docs. &amp;nbsp;The heinous part is that it actually doubles the time it takes to run your tests&amp;hellip; this is because that one test re-runs all the tests with -cover to get the coverage percent. &amp;nbsp;I&amp;rsquo;m not sure I&amp;rsquo;d actually release real code that used such a thing - doubling the time it takes to run your tests just to save a few seconds of copy and paste is pretty terrible.&lt;br /&gt;&lt;br /&gt;However, it&amp;rsquo;s a valid example of what you can do when you throw away testing convention and decide you want to write some code in a test that doesn&amp;rsquo;t actually test anything, and instead just runs some automated tasks that you want run whenever anyone runs go test. &amp;nbsp;Just make sure the result is idempotent so you&amp;rsquo;re not continually causing things to look modified to version control.&lt;/p&gt;
 </description>
     </item>
