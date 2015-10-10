@@ -7,7 +7,121 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
-    <updated>Tue, 30 Jun 2015 12:44:29 EDT</updated>
+    <updated>Sat, 10 Oct 2015 00:00:19 EDT</updated>
+    
+    
+    <item>
+      <title>Returning Errors</title>
+      <link>https://npf.io/2015/10/errors/</link>
+      <pubDate>Sat, 10 Oct 2015 00:00:19 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2015/10/errors/</guid>
+      <description>&lt;p&gt;There are basically two ways to return errors in Go:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func (c Config) Save() error {
+	if err := c.checkDefault(); err != nil {
+		return err
+	}
+	...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;or&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func (c Config) Save() error {
+	if err := c.checkDefault(); err != nil {
+		return fmt.Errorf(&amp;quot;can&#39;t find default config file: %v&amp;quot;, err)
+	}
+	...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The former passes the original error up the stack, but adds no context to it.
+Thus, your saveConfig function may end up printing &amp;ldquo;file not found:
+default.cfg&amp;rdquo; without telling the caller why it was trying to open default.cfg.&lt;/p&gt;
+
+&lt;p&gt;The latter allows you to add context to an error, so the above error could
+become &amp;ldquo;can&amp;rsquo;t find default config file: file not found: default.cfg&amp;rdquo;.
+This gives nice context to the error, but unfortunately, it creates an entirely
+new error that only maintains the error string from the original.  This is fine
+for human-facing output, but is useless for error handling code.&lt;/p&gt;
+
+&lt;p&gt;If you use the former code, calling code can then use &lt;code&gt;os.IsNotExist()&lt;/code&gt;, figure
+out that it was a not found error, and create the file.  Using the latter code,
+the type of the error is now a different type than the one from os.Open, and
+thus will not return true from os.IsNotExist.  Using fmt.Errorf effectively
+masks the original error from calling code (unless you do ugly string parsing -
+please don&amp;rsquo;t).&lt;/p&gt;
+
+&lt;p&gt;Sometimes it&amp;rsquo;s good to mask the original error, if you don&amp;rsquo;t want your callers
+depending on what should be an implementation detail (thus effectively making it
+part of your API contract). However, lots of times you may want to give your
+callers the ability to introspect your errors and act on them. This then loses
+the opportunity to add context to the error, and so people calling your code
+have to do some mental gymnastics (and/or look at the implementation) to
+understand what an error really means.&lt;/p&gt;
+
+&lt;p&gt;A further problem for both these cases is that when debuging, you lose all
+knowledge of where an error came from.  There&amp;rsquo;s no stack trace, there&amp;rsquo;s not even
+a file and line number of where the error originated.  This can make debugging
+errors fairly difficult, unless you&amp;rsquo;re careful to make your error messages easy
+to grep for.  I can&amp;rsquo;t tell you how often I&amp;rsquo;ve searched for an error formatting
+string, and hoped I was guessing the format correctly.&lt;/p&gt;
+
+&lt;p&gt;This is just the way it is in Go, so what&amp;rsquo;s a developer to do?  Why, write an
+errors library that does smarter things of course!  And there are a ton of these
+things out there.  Many add a stack trace at error creation time.  Most wrap an
+original error in some way, so you can add some context while keeping the
+original error for checks like os.IsNotExist. At Canonical, the Juju team wrote
+just such a library (actually we wrote 3 and then had them fight until only one
+was standing), and the result is &lt;a href=&#34;https://github.com/juju/errors&#34;&gt;https://github.com/juju/errors&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Thus you might return an error this way:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func (c Config) Save() error {
+	if err := c.checkDefault(); err != nil {
+		return errors.Annotatef(err, &amp;quot;can&#39;t find default config file&amp;quot;)
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This returns a new error created by the errors package which adds the given
+string to the front of the original error&amp;rsquo;s error message (just like
+fmt.Errorf), but you can introspect it using &lt;code&gt;errors.Cause(err)&lt;/code&gt; to access the
+original error return by checkDefault.  Thus you can use
+&lt;code&gt;os.IsNotExist(errors.Cause(err))&lt;/code&gt; and it&amp;rsquo;ll do the right thing.&lt;/p&gt;
+
+&lt;p&gt;However, this and every other special error library suffer from the same problem
+- your library can only understand its own special errors.  And no one else&amp;rsquo;s
+code can understand your errors (because they won&amp;rsquo;t know to use errors.Cause
+before checking the error).  Now you&amp;rsquo;re back to square one - your errors are
+just as opaque to third party code as if they were created by fmt.Errorf.&lt;/p&gt;
+
+&lt;p&gt;I don&amp;rsquo;t really have an answer to this problem. It&amp;rsquo;s inherent in the
+functionality (or lack thereof) of the standard Go error type.&lt;/p&gt;
+
+&lt;p&gt;Obviously, if you&amp;rsquo;re writing a standalone package for many other people to use,
+don&amp;rsquo;t use a third party error wrapping library.  Your callers are likely not
+going to be using the same library, so they won&amp;rsquo;t get use out of it, and it adds
+unnecessary dependencies to your code.  To decide between returning the original
+error and an annotated error using fmt.Errorf is harder.  It&amp;rsquo;s hard to know when
+the information in the original error might be useful to your caller.  On the
+other hand, the additional context added by fmt.Errorf can often change an
+inscrutable error into an obvious one.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re writing an application where you&amp;rsquo;ll be controlling most of the
+packages being written, then an errors package may make sense&amp;hellip; but you still
+run the risk of giving your custom errors to third party code that can&amp;rsquo;t
+understand them.  Plus, any errors library adds some complexity to the code (for
+example, you always have to rememeber to call &lt;code&gt;os.IsNotExist(errors.Cause(err))&lt;/code&gt;
+rather than just calling &lt;code&gt;os.InNotExist(err)&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;You have to choose one of the three options every time you return an error.
+Choose carefully.  Sometimes you&amp;rsquo;re going to make a choice that makes your life
+more difficult down the road.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -964,18 +1078,6 @@ that error:&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>https://npf.io/2014/03/go-and-github/</guid>
       <description>&lt;p&gt;&lt;span class=&#34;fullname js-action-profile-name show-popup-with-id&#34; style=&#34;background-color: white; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 16px; text-decoration: none;&#34;&gt;Francesc Campoy&amp;nbsp;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;a href=&#34;http://blog.campoy.cat/2014/03/github-and-go-forking-pull-requests-and.html&#34; target=&#34;_blank&#34;&gt;recently posted&lt;/a&gt; about how to work on someone else&amp;rsquo;s Go repo from github. &amp;nbsp;His description was correct, but I think there&amp;rsquo;s an easier way, and also one that might be slightly less confusing.&lt;/span&gt;&lt;/span&gt;&lt;br /&gt;&lt;span class=&#34;fullname js-action-profile-name show-popup-with-id&#34; style=&#34;background-color: white; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 16px; text-decoration: none;&#34;&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;background-color: white; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;Let&amp;rsquo;s say you want to work on your own branch of github.com/natefinch/gocog - here&amp;rsquo;s the easiest way to do it:&lt;/span&gt;&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;ol&gt;&lt;li&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;Fork&amp;nbsp;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;github.com/natefinch/gocog on github&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;mkdir -p $GOPATH/src/github.com/natefinch/gocog&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;cd&amp;nbsp;&lt;/span&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;$GOPATH/src/github.com/natefinch/gocog&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;git clone https://&lt;/span&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;github.com/YOURNAME/gocog .&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;(optional) go get github.com/natefinch/gocog&lt;/span&gt;&lt;/li&gt;&lt;/ol&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;That&amp;rsquo;s it. &amp;nbsp;Now you can work on the code, push/pull etc from your github repo as normal, and submit a pull request when you&amp;rsquo;re done.&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;code&gt;go get&lt;/code&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt; is useful for getting code that you want to &lt;/span&gt;&lt;i style=&#34;font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif;&#34;&gt;use,&lt;/i&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&amp;nbsp;but it&amp;rsquo;s not very useful for getting code that you want to &lt;i&gt;work on&lt;/i&gt;. &amp;nbsp;It doesn&amp;rsquo;t set up source control. &amp;nbsp;&lt;/span&gt;&lt;code&gt;git clone&lt;/code&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt; does. &amp;nbsp;What go get is handy for is getting the dependencies of a project, which is what step 5 does (only needed if the project relies on outside repos you don&amp;rsquo;t already have). &amp;nbsp;(thanks to a post on G+ for reminding me that git clone won&amp;rsquo;t get the dependencies)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;Also note,&lt;b&gt; the path on disk is the same as the original repo&amp;rsquo;s URL, not your branch&amp;rsquo;s URL&lt;/b&gt;. &amp;nbsp;That&amp;rsquo;s intentional, and it&amp;rsquo;s the key to making this work. &amp;nbsp;&lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Courier New, Courier, monospace; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;go get&lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt; is the only thing that actually cares if the repo URL is the same as the path on disk. &amp;nbsp;Once the code is on disk, &lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Courier New, Courier, monospace; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;go build&lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt; etc just expects import paths to be directories under $GOPATH. &amp;nbsp;The code expects to be under $GOPATH/src/github.com/natefinch/gocog because that&amp;rsquo;s what the import statements say it should be. &amp;nbsp;There&amp;rsquo;s no need to change import paths or anything wacky like that (though it does mean that you can&amp;rsquo;t have both the original version of the code and your branch coexisting in the same $GOPATH).&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;Note that this is actually &lt;i&gt;the same procedure&amp;nbsp;&lt;/i&gt;that you&amp;rsquo;d use to work on your own code from github, you just change step 1 to &amp;ldquo;create the repo in github&amp;rdquo;. &amp;nbsp;I prefer making the repo in github first because it lets me set up the license, the readme, and the .gitignore with just a few checkboxes, though obviously that&amp;rsquo;s optional if you want to hack locally first. &amp;nbsp;In that case, just make sure to set up the path under gopath where it &lt;i&gt;would go&lt;/i&gt; if you used &lt;/span&gt;&lt;code&gt;go get&lt;/code&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;, so that &lt;/span&gt;&lt;code&gt;go get&lt;/code&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt; will work correctly when you decide to push up to github.&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br /&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;font-family: Helvetica Neue, Arial, Helvetica, sans-serif; TRACE&#34;&gt;(updated to mention using go get after git clone)&lt;/span&gt;&lt;br /&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;line-height: 17.804800033569336px;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Go Tips for Newbie Gophers</title>
-      <link>https://npf.io/2014/03/go-tips-for-newbie-gophers/</link>
-      <pubDate>Sat, 15 Mar 2014 09:00:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2014/03/go-tips-for-newbie-gophers/</guid>
-      <description>&lt;p&gt;This is just a collection of tips that would have saved me a lot of time if I had known about them when I was a newbie:&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Build or test everything under the current directory and subdirectories:&lt;/b&gt;&lt;br /&gt;&lt;b&gt;&lt;br /&gt;&lt;/b&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;go build ./&amp;hellip;&lt;br /&gt;go test ./&amp;hellip;&lt;/pre&gt;&lt;span style=&#34;font-family: inherit;&#34;&gt;Technically, both commands take a pattern to match the name of one or more packages, and the &amp;hellip; specifier is a wildcard, so you could do &amp;hellip;/foo/&amp;hellip; to match all packages under GOPATH with foo in their path.&amp;nbsp;&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Have an io.Writer that writes to an in-memory data structure:&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;&lt;div&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;b := &amp;amp;bytes.Buffer{}&lt;br /&gt;thing.WriteTo(b)&lt;/pre&gt;&lt;b&gt;Have an io.Reader read from a string (useful when you want to use a string as the input data for something):&lt;/b&gt;&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;r := strings.NewReader(myString)&lt;br /&gt;thing.ReadFrom(r)&lt;/pre&gt;&lt;b&gt;Copy data from a reader to a writer:&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;io.Copy(toWriter, fromReader)&lt;/pre&gt;&lt;b&gt;Timeout waiting on a channel:&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;select {&lt;br/&gt;&amp;nbsp; &amp;nbsp;case val := &amp;lt;- ch&lt;br/&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;// use val&lt;br/&gt;&amp;nbsp; &amp;nbsp;case &amp;lt;-time.After(time.Second*5)&lt;br /&gt;}&lt;/pre&gt;&lt;b&gt;Convert a slice of bytes to a string:&lt;/b&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;var b []byte = getData()&lt;br/&gt;s := string(b)&lt;/pre&gt;&lt;b&gt;Passing a nil pointer into an interface does not result in a nil interface:&lt;/b&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;func isNil(i interface{}) bool {&lt;br/&gt;&amp;nbsp; &amp;nbsp; return i == nil&lt;br/&gt;}&lt;br/&gt;var f *foo = nil&lt;br /&gt;fmt.Println(isNil(f)) &amp;nbsp;// prints false&lt;/pre&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;The only way to get a nil interface is to pass the keyword nil:&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;pre style=&#34;tab-size: 4;&#34;&gt;var f *foo = nil&lt;br/&gt;if f == nil {&lt;br /&gt;&amp;nbsp; &amp;nbsp; fmt.Println(isNil(nil)) &amp;nbsp;// prints true&lt;br/&gt;}&lt;/pre&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;How to remember where the arrow goes for channels:&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;The arrow points in the direction of data flow, either into or out of the channel, and always points left.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;The above is generalizable to anything where you have a source and destination, or reading and writing, or assigning.&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;br /&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;Data is taken from the right and assigned to the left, just as it is with a := b. &amp;nbsp;So, like io.Copy, you know that the reader (source) is on the right, the writer (destination) is on the left: &amp;nbsp;io.Copy(dest, src).&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;If you ever think &amp;ldquo;man, someone should have made a helper function to do this!&amp;rdquo;, chances are they have, and it&amp;rsquo;s in the std lib somewhere.&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;&lt;/p&gt;
 </description>
     </item>
     
