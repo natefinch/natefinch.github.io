@@ -7,7 +7,97 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
-    <updated>Sat, 10 Oct 2015 00:00:19 EDT</updated>
+    <updated>Wed, 02 Dec 2015 00:00:19 -0400</updated>
+    
+    
+    <item>
+      <title>To Enum or Not To Enum</title>
+      <link>https://npf.io/2015/12/enums/</link>
+      <pubDate>Wed, 02 Dec 2015 00:00:19 -0400</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2015/12/enums/</guid>
+      <description>&lt;p&gt;Enum-like values have come up in my reviews of other people&amp;rsquo;s code a few times, and I&amp;rsquo;d like to nail down what we feel is best practice.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve seen many places what in other languages would be an enum, i.e. a bounded list of known values that encompass every value that should ever exist.&lt;/p&gt;
+
+&lt;p&gt;The code I have been critical of simply calls these values strings, and creates a few well-known values, thusly:
+package tool&lt;/p&gt;
+
+&lt;p&gt;// types of tools
+const (
+    ScrewdriverType = &amp;ldquo;screwdriver&amp;rdquo;
+    HammerType = &amp;ldquo;hammer&amp;rdquo;
+   // &amp;hellip;
+)&lt;/p&gt;
+
+&lt;p&gt;type Tool struct {
+    typ string
+}&lt;/p&gt;
+
+&lt;p&gt;func NewTool(tooltype string) (Tool, error) {
+    switch tooltype{
+        case ScrewdriverType, HammerType:
+            return Tool{typ:tooltype}, nil
+        default:
+            return Tool{}, errors.New(&amp;ldquo;invalid type&amp;rdquo;)
+    }
+}
+The problem with this is that there&amp;rsquo;s nothing stopping you from doing something totally wrong like this:
+name := user.Name()&lt;/p&gt;
+
+&lt;p&gt;// &amp;hellip; some other stuff&lt;/p&gt;
+
+&lt;p&gt;a := NewTool(name)
+That would fail only at runtime, which kind of defeats the purpose of having a compiler.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not sure why we don&amp;rsquo;t at least define the tool type as a named type of string, i.e.
+package tool&lt;/p&gt;
+
+&lt;p&gt;type ToolType string&lt;/p&gt;
+
+&lt;p&gt;const (
+    Screwdriver ToolType = &amp;ldquo;screwdriver&amp;rdquo;
+    Hammer = &amp;ldquo;hammer&amp;rdquo;
+   // &amp;hellip;
+)&lt;/p&gt;
+
+&lt;p&gt;type Tool struct {
+    typ ToolType
+}&lt;/p&gt;
+
+&lt;p&gt;func NewTool(tooltype ToolType) Tool {
+        return Tool{typ:tooltype}
+}
+Note that now we can drop the error checking in NewTool because the compiler does it for us.  The ToolType still works in all ways like a string, so it&amp;rsquo;s trivial to convert for printing, serialization, etc.&lt;/p&gt;
+
+&lt;p&gt;However, this still lets you do something which is wrong but might not always look wrong:
+a := NewTool(&amp;ldquo;drill&amp;rdquo;)
+Because of how Go constants work, this will get converted to a ToolType, even though it&amp;rsquo;s not one of the ones we have defined.&lt;/p&gt;
+
+&lt;p&gt;The final revision, which is the one I&amp;rsquo;d propose, removes even this possibility, by not using a string at all (it also uses a lot less memory and creates less garbage):
+package tool&lt;/p&gt;
+
+&lt;p&gt;type ToolType int&lt;/p&gt;
+
+&lt;p&gt;const (
+    Screwdriver ToolType = iota
+    Hammer
+   // &amp;hellip;
+)&lt;/p&gt;
+
+&lt;p&gt;type Tool struct {
+    typ ToolType
+}&lt;/p&gt;
+
+&lt;p&gt;func NewTool(tooltype ToolType) Tool {
+        return Tool{typ:tooltype}
+}
+This now prevents passing in a constant string that looks like it might be right. You can pass in a constant number, but NewTool(5) is a hell of a lot more obviously wrong than NewTool(&amp;ldquo;drill&amp;rdquo;), IMO.&lt;/p&gt;
+
+&lt;p&gt;The push back I&amp;rsquo;ve heard about this is that then you have to manually write the String() function to make human-readable strings&amp;hellip; but there are code generators that already do this for you in extremely optimized ways (see &lt;a href=&#34;https://github.com/golang/tools/blob/master/cmd/stringer/stringer.go&#34;&gt;https://github.com/golang/tools/blob/master/cmd/stringer/stringer.go&lt;/a&gt;)&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -1066,18 +1156,6 @@ that error:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;_ = fmt.Printf // this counts as using the package
 &lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Go and Github</title>
-      <link>https://npf.io/2014/03/go-and-github/</link>
-      <pubDate>Fri, 21 Mar 2014 06:29:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2014/03/go-and-github/</guid>
-      <description>&lt;p&gt;&lt;span class=&#34;fullname js-action-profile-name show-popup-with-id&#34; style=&#34;background-color: white; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 16px; text-decoration: none;&#34;&gt;Francesc Campoy&amp;nbsp;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;a href=&#34;http://blog.campoy.cat/2014/03/github-and-go-forking-pull-requests-and.html&#34; target=&#34;_blank&#34;&gt;recently posted&lt;/a&gt; about how to work on someone else&amp;rsquo;s Go repo from github. &amp;nbsp;His description was correct, but I think there&amp;rsquo;s an easier way, and also one that might be slightly less confusing.&lt;/span&gt;&lt;/span&gt;&lt;br /&gt;&lt;span class=&#34;fullname js-action-profile-name show-popup-with-id&#34; style=&#34;background-color: white; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 16px; text-decoration: none;&#34;&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;background-color: white; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;Let&amp;rsquo;s say you want to work on your own branch of github.com/natefinch/gocog - here&amp;rsquo;s the easiest way to do it:&lt;/span&gt;&lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;ol&gt;&lt;li&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;Fork&amp;nbsp;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;github.com/natefinch/gocog on github&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;mkdir -p $GOPATH/src/github.com/natefinch/gocog&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;cd&amp;nbsp;&lt;/span&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;$GOPATH/src/github.com/natefinch/gocog&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;git clone https://&lt;/span&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;github.com/YOURNAME/gocog .&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&#34;background-color: white; color: #292f33; font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;(optional) go get github.com/natefinch/gocog&lt;/span&gt;&lt;/li&gt;&lt;/ol&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;That&amp;rsquo;s it. &amp;nbsp;Now you can work on the code, push/pull etc from your github repo as normal, and submit a pull request when you&amp;rsquo;re done.&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;code&gt;go get&lt;/code&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt; is useful for getting code that you want to &lt;/span&gt;&lt;i style=&#34;font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif;&#34;&gt;use,&lt;/i&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&amp;nbsp;but it&amp;rsquo;s not very useful for getting code that you want to &lt;i&gt;work on&lt;/i&gt;. &amp;nbsp;It doesn&amp;rsquo;t set up source control. &amp;nbsp;&lt;/span&gt;&lt;code&gt;git clone&lt;/code&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt; does. &amp;nbsp;What go get is handy for is getting the dependencies of a project, which is what step 5 does (only needed if the project relies on outside repos you don&amp;rsquo;t already have). &amp;nbsp;(thanks to a post on G+ for reminding me that git clone won&amp;rsquo;t get the dependencies)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;Also note,&lt;b&gt; the path on disk is the same as the original repo&amp;rsquo;s URL, not your branch&amp;rsquo;s URL&lt;/b&gt;. &amp;nbsp;That&amp;rsquo;s intentional, and it&amp;rsquo;s the key to making this work. &amp;nbsp;&lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Courier New, Courier, monospace; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;go get&lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt; is the only thing that actually cares if the repo URL is the same as the path on disk. &amp;nbsp;Once the code is on disk, &lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Courier New, Courier, monospace; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;go build&lt;/span&gt;&lt;span style=&#34;color: #292f33; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 14.399999618530273px; line-height: 16px;&#34;&gt; etc just expects import paths to be directories under $GOPATH. &amp;nbsp;The code expects to be under $GOPATH/src/github.com/natefinch/gocog because that&amp;rsquo;s what the import statements say it should be. &amp;nbsp;There&amp;rsquo;s no need to change import paths or anything wacky like that (though it does mean that you can&amp;rsquo;t have both the original version of the code and your branch coexisting in the same $GOPATH).&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;Note that this is actually &lt;i&gt;the same procedure&amp;nbsp;&lt;/i&gt;that you&amp;rsquo;d use to work on your own code from github, you just change step 1 to &amp;ldquo;create the repo in github&amp;rdquo;. &amp;nbsp;I prefer making the repo in github first because it lets me set up the license, the readme, and the .gitignore with just a few checkboxes, though obviously that&amp;rsquo;s optional if you want to hack locally first. &amp;nbsp;In that case, just make sure to set up the path under gopath where it &lt;i&gt;would go&lt;/i&gt; if you used &lt;/span&gt;&lt;code&gt;go get&lt;/code&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;, so that &lt;/span&gt;&lt;code&gt;go get&lt;/code&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt; will work correctly when you decide to push up to github.&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br /&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;font-size: 14.399999618530273px; line-height: 16px;&#34;&gt;&lt;span style=&#34;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;&#34;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;font-family: Helvetica Neue, Arial, Helvetica, sans-serif; TRACE&#34;&gt;(updated to mention using go get after git clone)&lt;/span&gt;&lt;br /&gt;&lt;span style=&#34;color: #292f33;&#34;&gt;&lt;span style=&#34;line-height: 17.804800033569336px;&#34;&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/p&gt;
 </description>
     </item>
     

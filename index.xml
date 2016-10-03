@@ -6,8 +6,100 @@
     <link>https://npf.io/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
-    <copyright>2015 Nate Finch</copyright>
-    <updated>Sat, 10 Oct 2015 00:00:19 EDT</updated>
+    <copyright>2016 Nate Finch</copyright>
+    <updated>Sun, 02 Oct 2016 23:00:00 UTC</updated>
+    
+    
+    
+    
+    <item>
+      <title>To Enum or Not To Enum</title>
+      <link>https://npf.io/2015/12/enums/</link>
+      <pubDate>Wed, 02 Dec 2015 00:00:19 -0400</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2015/12/enums/</guid>
+      <description>&lt;p&gt;Enum-like values have come up in my reviews of other people&amp;rsquo;s code a few times, and I&amp;rsquo;d like to nail down what we feel is best practice.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve seen many places what in other languages would be an enum, i.e. a bounded list of known values that encompass every value that should ever exist.&lt;/p&gt;
+
+&lt;p&gt;The code I have been critical of simply calls these values strings, and creates a few well-known values, thusly:
+package tool&lt;/p&gt;
+
+&lt;p&gt;// types of tools
+const (
+    ScrewdriverType = &amp;ldquo;screwdriver&amp;rdquo;
+    HammerType = &amp;ldquo;hammer&amp;rdquo;
+   // &amp;hellip;
+)&lt;/p&gt;
+
+&lt;p&gt;type Tool struct {
+    typ string
+}&lt;/p&gt;
+
+&lt;p&gt;func NewTool(tooltype string) (Tool, error) {
+    switch tooltype{
+        case ScrewdriverType, HammerType:
+            return Tool{typ:tooltype}, nil
+        default:
+            return Tool{}, errors.New(&amp;ldquo;invalid type&amp;rdquo;)
+    }
+}
+The problem with this is that there&amp;rsquo;s nothing stopping you from doing something totally wrong like this:
+name := user.Name()&lt;/p&gt;
+
+&lt;p&gt;// &amp;hellip; some other stuff&lt;/p&gt;
+
+&lt;p&gt;a := NewTool(name)
+That would fail only at runtime, which kind of defeats the purpose of having a compiler.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not sure why we don&amp;rsquo;t at least define the tool type as a named type of string, i.e.
+package tool&lt;/p&gt;
+
+&lt;p&gt;type ToolType string&lt;/p&gt;
+
+&lt;p&gt;const (
+    Screwdriver ToolType = &amp;ldquo;screwdriver&amp;rdquo;
+    Hammer = &amp;ldquo;hammer&amp;rdquo;
+   // &amp;hellip;
+)&lt;/p&gt;
+
+&lt;p&gt;type Tool struct {
+    typ ToolType
+}&lt;/p&gt;
+
+&lt;p&gt;func NewTool(tooltype ToolType) Tool {
+        return Tool{typ:tooltype}
+}
+Note that now we can drop the error checking in NewTool because the compiler does it for us.  The ToolType still works in all ways like a string, so it&amp;rsquo;s trivial to convert for printing, serialization, etc.&lt;/p&gt;
+
+&lt;p&gt;However, this still lets you do something which is wrong but might not always look wrong:
+a := NewTool(&amp;ldquo;drill&amp;rdquo;)
+Because of how Go constants work, this will get converted to a ToolType, even though it&amp;rsquo;s not one of the ones we have defined.&lt;/p&gt;
+
+&lt;p&gt;The final revision, which is the one I&amp;rsquo;d propose, removes even this possibility, by not using a string at all (it also uses a lot less memory and creates less garbage):
+package tool&lt;/p&gt;
+
+&lt;p&gt;type ToolType int&lt;/p&gt;
+
+&lt;p&gt;const (
+    Screwdriver ToolType = iota
+    Hammer
+   // &amp;hellip;
+)&lt;/p&gt;
+
+&lt;p&gt;type Tool struct {
+    typ ToolType
+}&lt;/p&gt;
+
+&lt;p&gt;func NewTool(tooltype ToolType) Tool {
+        return Tool{typ:tooltype}
+}
+This now prevents passing in a constant string that looks like it might be right. You can pass in a constant number, but NewTool(5) is a hell of a lot more obviously wrong than NewTool(&amp;ldquo;drill&amp;rdquo;), IMO.&lt;/p&gt;
+
+&lt;p&gt;The push back I&amp;rsquo;ve heard about this is that then you have to manually write the String() function to make human-readable strings&amp;hellip; but there are code generators that already do this for you in extremely optimized ways (see &lt;a href=&#34;https://github.com/golang/tools/blob/master/cmd/stringer/stringer.go&#34;&gt;https://github.com/golang/tools/blob/master/cmd/stringer/stringer.go&lt;/a&gt;)&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -1211,83 +1303,6 @@ regardless of the name, will get the nice list of posts at the bottom for that
 series.&lt;/p&gt;
 </description>
     </item>
-    
-    
-    
-    <item>
-      <title>Hugo: Beyond the Defaults</title>
-      <link>https://npf.io/2014/08/hugo-beyond-the-defaults/</link>
-      <pubDate>Fri, 08 Aug 2014 10:07:46 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2014/08/hugo-beyond-the-defaults/</guid>
-      <description>&lt;p&gt;In my last post, I had deployed what is almost the most basic Hugo site
-possible.  The only reason it took more than 10 minutes is because I wanted to
-tweak the theme.  However, there were a few things that immediately annoyed me.&lt;/p&gt;
-
-&lt;p&gt;I didn&amp;rsquo;t like having to type &lt;code&gt;hugo -t hyde&lt;/code&gt; all the time.  Well, turns out
-that&amp;rsquo;s not necessary.  You can just put  &lt;code&gt;theme = &amp;quot;hyde&amp;quot;&lt;/code&gt; in your site
-config, and never need to type it again.  Sweet.  Now to run the local server, I
-can just run &lt;code&gt;hugo server -w&lt;/code&gt;, and for final generation, I can just run &lt;code&gt;hugo&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Next is that my posts were under npf.io/post/postname &amp;hellip; which is not the end
-of the world, but I really like seeing the date in post URLs, so that it&amp;rsquo;s easy
-to tell if I&amp;rsquo;m looking at something really, really old.  So, I went about
-looking at how to do that.  Turns out, it&amp;rsquo;s trivial.  Hugo has a feature called
-&lt;a href=&#34;http://hugo.spf13.com/extras/permalinks&#34;&gt;permalinks&lt;/a&gt;, where you can define the
-format of the url for a section (a section is a top level division of your site,
-denoted by a top level folder under content/).  So, all you have to do is, in
-your site&amp;rsquo;s config file, put some config that looks like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[permalinks]
-    post = &amp;quot;/:year/:month/:filename/&amp;quot;
-    code = &amp;quot;/:filename/&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;While we&amp;rsquo;re at it, I had been putting my code in the top level content
-directory, because I wanted it available at npf.io/projectname  &amp;hellip;. however
-there&amp;rsquo;s no need to do that, I can put the code under the code directory and just
-give it a permalink to show at the top level of the site.  Bam, awesome, done.&lt;/p&gt;
-
-&lt;p&gt;One note: Don&amp;rsquo;t forget the slash at the end of the permalink.&lt;/p&gt;
-
-&lt;p&gt;But wait, this will move my &amp;ldquo;Hugo is Friggin&amp;rsquo; Awesome&amp;rdquo; post to a different URL,
-and Steve Francia already tweeted about it with the old URL.  I don&amp;rsquo;t want that
-url to send people to a 404 page!
-&lt;a href=&#34;http://hugo.spf13.com/extras/aliases&#34;&gt;Aliases&lt;/a&gt; to the rescue.  Aliases are just
-a way to make redirects from old URLs to new ones.  So I just put &lt;code&gt;aliases =
-[&amp;quot;/post/hugo-is-awesome/&amp;quot;]&lt;/code&gt; in the metadata at the top of that post, and now
-links to there will redirect to the new location.  Awesome.&lt;/p&gt;
-
-&lt;p&gt;Ok, so cool&amp;hellip; except that I don&amp;rsquo;t really want the content for my blog posts
-under content/post/ &amp;hellip; I&amp;rsquo;d prefer them under content/blog, but still be of type
-&amp;ldquo;post&amp;rdquo;.  So let&amp;rsquo;s change that too.  This is pretty easy, just rename the folder
-from post to blog, and then set up an
-&lt;a href=&#34;http://hugo.spf13.com/content/archetypes&#34;&gt;archetype&lt;/a&gt; to default the metadata
-under /blog/ to type = &amp;ldquo;post&amp;rdquo;.  Archetypes are default metadata for a section,
-so in this case, I make a file archetypes/blog.md and add type= &amp;ldquo;post&amp;rdquo; to the
-archetype&amp;rsquo;s metadata, and now all my content created with &lt;code&gt;hugo new
-blog/foo.md&lt;/code&gt; will be prepopulated as type &amp;ldquo;post&amp;rdquo;.  (does it matter if the type
-is post vs. blog?  no.  But it matters to me ;)&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://twitter.com/mlafeldt&#34;&gt;@mlafeldt&lt;/a&gt; on Twitter pointed out my RSS feed was
-wonky&amp;hellip;. wait, I have an RSS feed?  Yes, Hugo &lt;a href=&#34;http://hugo.spf13.com/templates/rss&#34;&gt;has that
-too&lt;/a&gt;.  There are feed XML files
-automatically output for most listing directories&amp;hellip; and the base feed for the
-site is a list of recent content.  So, I looked at what Hugo had made for me
-(index.xml in the root output directory)&amp;hellip; this is not too bad, but I don&amp;rsquo;t
-really like the title, and it&amp;rsquo;s including my code content in the feed as well as
-posts, which I don&amp;rsquo;t really want.  Luckily, this is trivial to fix.  The RSS xml
-file is output using a Go template just like everything else in the output.
-It&amp;rsquo;s trivial to adjust the template so that it only lists content of type
-&amp;ldquo;post&amp;rdquo;, and tweak the feed name, etc.&lt;/p&gt;
-
-&lt;p&gt;I was going to write about how I got the series stuff at the bottom of this
-page, but this post is long enough already, so I&amp;rsquo;ll just make that into its own
-post, as the next post in the series! :)&lt;/p&gt;
-</description>
-    </item>
-    
-    
     
     
   </channel>
