@@ -90,7 +90,7 @@
 
     <div class="content container">
   <div class="post">
-    <h1 class="post-title">Gorram
+    <h1 class="post-title"><a href="https://github.com/natefinch/gorram">Gorram</a>
     
     <span class="badges">
     
@@ -115,7 +115,7 @@
 
 <p>Pretty print JSON:</p>
 
-<pre><code>$ echo '{ &quot;foo&quot; : &quot;bar&quot; }' | gorram encoding/json.Indent &quot;&quot; $'\t'
+<pre><code>$ echo '{ &quot;foo&quot; : &quot;bar&quot; }' | gorram encoding/json Indent &quot;&quot; $'\t'
 {
     &quot;foo&quot; : &quot;bar&quot;
 }
@@ -123,7 +123,7 @@
 
 <p>Calculate a sha256 sum:</p>
 
-<pre><code>$ gorram crypto/sha256.Sum256 foo.gz
+<pre><code>$ gorram crypto/sha256 Sum256 foo.gz
 abcdef012345678
 </code></pre>
 
@@ -145,9 +145,9 @@ go idioms.</p>
 <p>For example:</p>
 
 <pre><code>usage:
-$ cat foo.zip | gorram crypto/sha1.Sum
+$ cat foo.zip | gorram crypto/sha1 Sum
 or
-$ gorram crypto/sha1.Sum foo.zip
+$ gorram crypto/sha1 Sum foo.zip
 
 function:
 // crypto/sha1
@@ -163,9 +163,9 @@ printed with fmt&rsquo;s %x, so that you get <code>2c37424d58</code> instead of 
 88]</code>.</p>
 
 <pre><code>usage:
-$ gorram encoding/json.Indent foo.json &quot;&quot; $'\t'
+$ gorram encoding/json Indent foo.json &quot;&quot; $'\t'
 or
-$ cat foo.json | gorram encoding/json.Indent &quot;&quot; $'\t'
+$ cat foo.json | gorram encoding/json Indent &quot;&quot; $'\t'
 
 function:
 // encoding/json
@@ -185,7 +185,7 @@ nothing is written to stdout.</p>
 specified in the command line.</p>
 
 <pre><code>usage:
-$ gorram math.Cos 25
+$ gorram math Cos 25
 
 function:
 // math
@@ -196,7 +196,7 @@ func Cos(x float64) float64
 functions, and will print outputs with <code>fmt.Printf(&quot;%v\n&quot;, val)</code>.</p>
 
 <pre><code>usage:
-$ echo 12345 | gorram encoding/base64.StdEncoding.EncodeToString
+$ echo 12345 | gorram encoding/base64 StdEncoding.EncodeToString
 MTIzNDU2Cg==
 
 function:
