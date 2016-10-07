@@ -7,7 +7,9 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2016 Nate Finch</copyright>
-    <updated>Sun, 02 Oct 2016 23:00:00 UTC</updated>
+    <updated>Thu, 06 Oct 2016 23:00:00 UTC</updated>
+    
+    
     
     
     
@@ -1189,120 +1191,6 @@ look at TOML.  I think your users will thank you.&lt;/p&gt;
     </item>
     
     
-    
-    
-    
-    <item>
-      <title>Making It a Series</title>
-      <link>https://npf.io/2014/08/making-it-a-series/</link>
-      <pubDate>Fri, 08 Aug 2014 11:12:44 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2014/08/making-it-a-series/</guid>
-      <description>&lt;p&gt;I obviously have a lot to talk about with Hugo, so I decided I wanted to make
-this into a series of posts, and have links at the bottom of each post
-automatically populated with the other posts in the series.  This turned out to
-be somewhat of a challenge, but doable with some effort&amp;hellip; hopefully someone
-else can learn from my work.&lt;/p&gt;
-
-&lt;p&gt;This now brings us to &lt;a href=&#34;http://hugo.spf13.com/taxonomies/overview&#34;&gt;Taxonomies&lt;/a&gt;.
-Taxonomies are basically just like tags, except that you can have any number of
-different types of tags.  So you might have &amp;ldquo;Tags&amp;rdquo; as a taxonomy, and thus you
-can give a content tags with values of &amp;ldquo;go&amp;rdquo; and &amp;ldquo;programming&amp;rdquo;.  You can also
-have a taxonomy of &amp;ldquo;series&amp;rdquo; and give content a series of &amp;ldquo;Hugo 101&amp;rdquo;.&lt;/p&gt;
-
-&lt;p&gt;Taxonomy is sort of like relatable metadata to gather multiple pieces of content
-together in a structured way&amp;hellip; it&amp;rsquo;s almost like a minimal relational database.
-Taxonomies are listed in your site&amp;rsquo;s metadata, and consist of a list of keys.
-Each piece of content can specify one or more values for those keys (the Hugo
-documentation calls the values &amp;ldquo;Terms&amp;rdquo;).  The values are completely ad-hoc, and
-don&amp;rsquo;t need to be pre-defined anywhere.  Hugo automatically creates pages where
-you can view all content based on Taxonomies and see how the various values are
-cross-referenced against other content.  This is a way to implement tags on
-posts, or series of posts.&lt;/p&gt;
-
-&lt;p&gt;So, for my example, we add a Taxonomy to my site config called &amp;ldquo;series&amp;rdquo;.  Then
-in this post, the &amp;ldquo;Hugo: Beyond the Defaults&amp;rdquo; post, and the &amp;ldquo;Hugo is Friggin&amp;rsquo;
-Awesome&amp;rdquo; post, I just add &lt;code&gt;series = [&amp;quot;Hugo 101&amp;quot;]&lt;/code&gt;  (note the brackets - the
-values for the taxonomy are actually a list, even if you only have one value).
-Now all these posts are magically related together under a taxonomy called
-&amp;ldquo;series&amp;rdquo;.  And Hugo automatically generates a listing for this taxonomy value
-at &lt;a href=&#34;http://npf.io/series/hugo-101&#34;&gt;/series/hugo-101&lt;/a&gt; (the taxonomy value gets
-url-ized).  Any other series I make will be under a similar directory.&lt;/p&gt;
-
-&lt;p&gt;This is fine and dandy and pretty aweomse out of the box&amp;hellip; but I really want to
-automatically generate a list of posts in the series at the bottom of each post
-in the series.  This is where things get tricky, but that&amp;rsquo;s also where things
-get interesting.&lt;/p&gt;
-
-&lt;p&gt;The examples for &lt;a href=&#34;http://hugo.spf13.com/taxonomies/displaying&#34;&gt;displaying
-Taxonomies&lt;/a&gt; all &amp;ldquo;hard code&amp;rdquo; the
-taxonomy value in the template&amp;hellip; this works great if you know ahead of time
-what value you want to display, like &amp;ldquo;all posts with tag = &amp;lsquo;featured&amp;rsquo;&amp;rdquo;.
-However, it doesn&amp;rsquo;t work if you don&amp;rsquo;t know ahead of time what the taxonomy value
-will be (like the series on the current post).&lt;/p&gt;
-
-&lt;p&gt;This is doable, but it&amp;rsquo;s a little more complicated.&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;ll give you a dump of the relevant portion of my post template and then talk
-about how I got there:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;{{ if .Params.series }}
-    {{ $name := index .Params.series 0 }}
-    &amp;lt;hr/&amp;gt;
-	&amp;lt;p&amp;gt;&amp;lt;a href=&amp;quot;&amp;quot; id=&amp;quot;series&amp;quot;&amp;gt;&amp;lt;/a&amp;gt;This is a post in the 
-	&amp;lt;b&amp;gt;{{$name}}&amp;lt;/b&amp;gt; series.&amp;lt;br/&amp;gt;
-	Other posts in this series:&amp;lt;/p&amp;gt;
-
-    {{ $name := $name | urlize }}
-    {{ $series := index .Site.Taxonomies.series $name }}
-    &amp;lt;ul class=&amp;quot;series&amp;quot;&amp;gt;
-    {{ range $series.Pages }}
-    	&amp;lt;li&amp;gt;{{.Date.Format &amp;quot;Jan 02, 2006&amp;quot;}} -
-    	&amp;lt;a href=&amp;quot;{{.Permalink}}&amp;quot;&amp;gt;{{.LinkTitle}}&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-    {{end}}
-    &amp;lt;/ul&amp;gt;
-{{end}} 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;So we start off defining this part of the template to only be used if the post
-has a series.  Right, sure, move on.&lt;/p&gt;
-
-&lt;p&gt;Now, the tricky part&amp;hellip; the taxonomy values for the current page resides in the
-.Params values, just like any other custom metadata you assign to the page.&lt;/p&gt;
-
-&lt;p&gt;Taxonomy values are always a list (so you can give things multiple tags etc),
-but I know that I&amp;rsquo;ll never give something more than one series, so I can just
-grab the first item from the list.  To do that, I use the index function, which
-is just like calling series[0] and assign it to the $name variable.&lt;/p&gt;
-
-&lt;p&gt;Now another tricky part&amp;hellip; the series in the metadata is in the pretty form you
-put into the metadata, but the list of Taxonomies in .Site.Taxonomies is in the
-urlized form&amp;hellip;  How did I figure that out?  Printf
-debugging.  Hugo&amp;rsquo;s auto-reloading makes it really easy to use the template
-itself to figure out what&amp;rsquo;s going on with the template and the data.&lt;/p&gt;
-
-&lt;p&gt;When I started writing this template, I just put &lt;code&gt;{{$name}}&lt;/code&gt; in my post template
-after the line where I got the name, and I could see it rendered on webpage of
-my post that the name was &amp;ldquo;Hugo 101&amp;rdquo;.  Then I put &lt;code&gt;{{.Site.Taxonomies.series}}&lt;/code&gt;
-and I saw something like &lt;code&gt;map[hugo-101:[{0 0xc20823e000} {0 0xc208048580} {0
-0xc208372000}]]&lt;/code&gt;  which is ugly, but it showed me that the value in the map is
-&amp;ldquo;hugo-101&amp;rdquo;&amp;hellip; and I realized it was using the urlized version, so I used the
-pre-defined hugo function &lt;code&gt;urlize&lt;/code&gt; to convert the pretty series.&lt;/p&gt;
-
-&lt;p&gt;And from there it&amp;rsquo;s just a matter of using &lt;code&gt;index&lt;/code&gt; again, this time to use
-&lt;code&gt;$name&lt;/code&gt; as a key in the map of series&amp;hellip;.  .Site.Taxonomies is a map
-(dictionary) of Taxonomy names (like &amp;ldquo;series&amp;rdquo;) to maps of Taxonomy values (like
-&amp;ldquo;hugo-101&amp;rdquo;) to lists of pages.  So, .Site.Taxonomies.series reutrns a map of
-series names to lists of pages&amp;hellip; index that by the current series names, and
-bam, list of pages.&lt;/p&gt;
-
-&lt;p&gt;And then it&amp;rsquo;s just a matter of iterating over the pages and displaying them
-nicely. And what&amp;rsquo;s great is that this is now all automatic&amp;hellip; all old posts get
-updated with links to the new posts in the series, and any new series I make,
-regardless of the name, will get the nice list of posts at the bottom for that
-series.&lt;/p&gt;
-</description>
-    </item>
     
     
   </channel>
