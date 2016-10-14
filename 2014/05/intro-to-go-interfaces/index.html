@@ -65,11 +65,11 @@
         
           <li><a href="/gorram/">Gorram </a></li>
         
-          <li><a href="/lumberjack.v2/">Lumberjack </a></li>
+          <li><a href="/lumberjack/">Lumberjack </a></li>
         
           <li><a href="/pie/">Pie </a></li>
         
-          <li><a href="/npipe.v2/">npipe </a></li>
+          <li><a href="/npipe/">npipe </a></li>
         
       
     </ul>
@@ -93,7 +93,7 @@
     
     
 
-<h3 id="standard-interface-intro:9f8207e5f3f66a5b9890a1aedbe72d3e">Standard Interface Intro</h3>
+<h3 id="standard-interface-intro">Standard Interface Intro</h3>
 
 <p>Go’s interfaces are one of it’s best features, but they’re also one of the most confusing for newbies.  This post will try to give you the understanding you need to use Go’s interfaces and not get frustrated when things don’t work the way you expect.  It’s a little long, but a bunch of that is just code examples.</p>
 
@@ -137,7 +137,7 @@ In fact, Camel and Walker can live in totally different packages and never know
 about one another, and this will still work if a third package decides to make a
 Camel and pass it into LongWalk.</p>
 
-<h3 id="non-standard-continuation:9f8207e5f3f66a5b9890a1aedbe72d3e">Non-Standard Continuation</h3>
+<h3 id="non-standard-continuation">Non-Standard Continuation</h3>
 
 <p>This is where most tutorials stop, and where most questions and problems begin.
 The problem is that you still don’t know how the interfaces actually work, and
@@ -195,7 +195,7 @@ copied into the interface value’s Type.valtype field.  The actual data in the
 value of c is copied into a new place in memory, and w’s Data field points at
 that memory location.</p>
 
-<h3 id="implications-of-the-implementation:9f8207e5f3f66a5b9890a1aedbe72d3e">Implications of the Implementation</h3>
+<h3 id="implications-of-the-implementation">Implications of the Implementation</h3>
 
 <p>Now, let’s look at the implications of this code.  First, interface values are
 very small - just two pointers.  When you assign a value to an interface, that
@@ -207,7 +207,7 @@ they’re small anyway, so you don’t have to worry about copying the memory, p
 they hold your data in a pointer, so changes to the data will travel with the
 interface.</p>
 
-<h3 id="interfaces-are-types:9f8207e5f3f66a5b9890a1aedbe72d3e">Interfaces Are Types</h3>
+<h3 id="interfaces-are-types">Interfaces Are Types</h3>
 
 <p>Let’s look at Walker again, this is important:</p>
 
@@ -304,7 +304,7 @@ value into an interface.  The reason is that the value in an interface is in a
 hidden memory location, and so the compiler can’t automatically get a pointer to
 that memory for you (in Go parlance, this is known as being “not addressable”).</p>
 
-<h3 id="nil-pointers-and-nil-interfaces:9f8207e5f3f66a5b9890a1aedbe72d3e">Nil Pointers and Nil Interfaces</h3>
+<h3 id="nil-pointers-and-nil-interfaces">Nil Pointers and Nil Interfaces</h3>
 
 <p>The interaction between nil interfaces and nil pointers is where nearly everyone
 gets tripped up when they first start with Go.</p>
@@ -422,7 +422,7 @@ c.Walk(500)
 
 <p><a href="http://play.golang.org/p/4EfyV21at9">http://play.golang.org/p/4EfyV21at9</a></p>
 
-<h3 id="outro:9f8207e5f3f66a5b9890a1aedbe72d3e">Outro</h3>
+<h3 id="outro">Outro</h3>
 
 <p>I hope this article helps you better understand how interfaces works, and helps
 you avoid some of the common pitfalls and misconceptions newbies have about how

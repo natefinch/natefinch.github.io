@@ -4,7 +4,6 @@
   <url>
     <loc>https://npf.io/</loc>
     <lastmod>2016-10-06T23:00:00+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -93,7 +92,7 @@
   </url>
   
   <url>
-    <loc>https://npf.io/npipe.v2/</loc>
+    <loc>https://npf.io/npipe/</loc>
     <lastmod>2014-08-01T10:15:15+00:00</lastmod>
   </url>
   
@@ -108,7 +107,7 @@
   </url>
   
   <url>
-    <loc>https://npf.io/lumberjack.v2/</loc>
+    <loc>https://npf.io/lumberjack/</loc>
     <lastmod>2014-07-28T11:28:15+00:00</lastmod>
   </url>
   

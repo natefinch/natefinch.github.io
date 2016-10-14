@@ -65,11 +65,11 @@
         
           <li><a href="/gorram/">Gorram </a></li>
         
-          <li><a href="/lumberjack.v2/">Lumberjack </a></li>
+          <li><a href="/lumberjack/">Lumberjack </a></li>
         
           <li><a href="/pie/">Pie </a></li>
         
-          <li><a href="/npipe.v2/">npipe </a></li>
+          <li><a href="/npipe/">npipe </a></li>
         
       
     </ul>
@@ -109,7 +109,7 @@ it?)&hellip; but I also knew I didn&rsquo;t want to have to try to spell lieuten
 correctly every time I used the package.  So that&rsquo;s why it&rsquo;s called deputy.
 He&rsquo;s the guy who&rsquo;s not in charge, but does all the work.</p>
 
-<h3 id="errors:c6ab1c3501e7e929f514472ad514e06f">Errors</h3>
+<h3 id="errors">Errors</h3>
 
 <p>At <a href="https://github.com/juju/juju">Juju</a>, we run a lot of external processes
 using os/exec. However, the default functionality of an exec.Cmd object is kind
@@ -133,7 +133,7 @@ such image or container: bar&rdquo; to stderr, then the error&rsquo;s Error() te
 look like &ldquo;exit status 1: Error: No such image or container: bar&rdquo;.  Bam, the
 errors from commands you run are infinitely more useful.</p>
 
-<h3 id="logging:c6ab1c3501e7e929f514472ad514e06f">Logging</h3>
+<h3 id="logging">Logging</h3>
 
 <p>Another idiom we use is to pipe some of the output from a command to our logs. This can be super useful for debugging purposes.  With deputy, this is again easy:</p>
 
@@ -150,7 +150,7 @@ errors from commands you run are infinitely more useful.</p>
 <p>That&rsquo;s it.  Now every line written to stdout by the process will be piped as a
 log message to your log.</p>
 
-<h3 id="timeouts:c6ab1c3501e7e929f514472ad514e06f">Timeouts</h3>
+<h3 id="timeouts">Timeouts</h3>
 
 <p>Finally, an idiom we don&rsquo;t use often enough, but should, is to add a timeout to
 command execution.  What happens if you run a command as part of your pipeline

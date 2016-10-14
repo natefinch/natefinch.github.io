@@ -3,11 +3,11 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>https://npf.io/tags/golang/</link>
+    <link>https://npf.io/tags/golang/index.xml</link>
     <language>en-us</language>
     <author>Nate Finch</author>
-    <copyright>2015 Nate Finch</copyright>
-    <updated>Wed, 02 Dec 2015 00:00:19 -0400</updated>
+    <copyright>0001 Nate Finch</copyright>
+    <updated>Mon, 01 Jan 0001 00:00:00 UTC</updated>
     
     
     <item>
@@ -238,7 +238,7 @@ it?)&amp;hellip; but I also knew I didn&amp;rsquo;t want to have to try to spell
 correctly every time I used the package.  So that&amp;rsquo;s why it&amp;rsquo;s called deputy.
 He&amp;rsquo;s the guy who&amp;rsquo;s not in charge, but does all the work.&lt;/p&gt;
 
-&lt;h3 id=&#34;errors:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Errors&lt;/h3&gt;
+&lt;h3 id=&#34;errors&#34;&gt;Errors&lt;/h3&gt;
 
 &lt;p&gt;At &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we run a lot of external processes
 using os/exec. However, the default functionality of an exec.Cmd object is kind
@@ -262,7 +262,7 @@ such image or container: bar&amp;rdquo; to stderr, then the error&amp;rsquo;s Er
 look like &amp;ldquo;exit status 1: Error: No such image or container: bar&amp;rdquo;.  Bam, the
 errors from commands you run are infinitely more useful.&lt;/p&gt;
 
-&lt;h3 id=&#34;logging:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Logging&lt;/h3&gt;
+&lt;h3 id=&#34;logging&#34;&gt;Logging&lt;/h3&gt;
 
 &lt;p&gt;Another idiom we use is to pipe some of the output from a command to our logs. This can be super useful for debugging purposes.  With deputy, this is again easy:&lt;/p&gt;
 
@@ -279,7 +279,7 @@ errors from commands you run are infinitely more useful.&lt;/p&gt;
 &lt;p&gt;That&amp;rsquo;s it.  Now every line written to stdout by the process will be piped as a
 log message to your log.&lt;/p&gt;
 
-&lt;h3 id=&#34;timeouts:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Timeouts&lt;/h3&gt;
+&lt;h3 id=&#34;timeouts&#34;&gt;Timeouts&lt;/h3&gt;
 
 &lt;p&gt;Finally, an idiom we don&amp;rsquo;t use often enough, but should, is to add a timeout to
 command execution.  What happens if you run a command as part of your pipeline
@@ -493,7 +493,7 @@ runs into CLI parsing issues and requires runnnig a new process for every
 request.  The last option people think of is using RPC to an external process,
 which may also seem cumbersome, but it doesn&amp;rsquo;t have to be.&lt;/p&gt;
 
-&lt;h3 id=&#34;serving-up-some-pie:786534216edb3831c5addeda1aa68cd4&#34;&gt;Serving up some pie&lt;/h3&gt;
+&lt;h3 id=&#34;serving-up-some-pie&#34;&gt;Serving up some pie&lt;/h3&gt;
 
 &lt;p&gt;I&amp;rsquo;d like to introduce you to &lt;a href=&#34;https://github.com/natefinch/pie&#34;&gt;https://github.com/natefinch/pie&lt;/a&gt; - this is a Go
 package which contains a toolkit for writing plugins in Go.  It uses processes
@@ -518,7 +518,7 @@ RPC.&lt;/p&gt;
 no need to worry about negotiating ports, it&amp;rsquo;s easily cross platform compatible,
 and it&amp;rsquo;s very secure.&lt;/p&gt;
 
-&lt;h3 id=&#34;orthogonality:786534216edb3831c5addeda1aa68cd4&#34;&gt;Orthogonality&lt;/h3&gt;
+&lt;h3 id=&#34;orthogonality&#34;&gt;Orthogonality&lt;/h3&gt;
 
 &lt;p&gt;Pie is written to be a very simple set of functions that help you set up
 communication between your process and a plugin process.  Once you make a couple
@@ -526,7 +526,7 @@ calls to pie, you then need to work out your own way to use the RPC connection
 created.  Pie does not attempt to be an all-in-one plugin framework, though you
 could certainly use it as the basis for one.&lt;/p&gt;
 
-&lt;h3 id=&#34;why-is-it-called-pie:786534216edb3831c5addeda1aa68cd4&#34;&gt;Why is it called pie?&lt;/h3&gt;
+&lt;h3 id=&#34;why-is-it-called-pie&#34;&gt;Why is it called pie?&lt;/h3&gt;
 
 &lt;p&gt;Because if you pronounce API like &amp;ldquo;a pie&amp;rdquo;, then all this consuming and serving
 of APIs becomes a lot more palatable.  Also, pies are the ultimate pluggable
@@ -534,7 +534,7 @@ interface - depending on what&amp;rsquo;s inside, you can get dinner, dessert, a
 even breakfast.  Plus, then I get to say that plugins in Go are as easy as&amp;hellip;
 well, you know.&lt;/p&gt;
 
-&lt;h3 id=&#34;conclusion:786534216edb3831c5addeda1aa68cd4&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
 
 &lt;p&gt;I plan to be using pie in one of my own side projects.  Take it out for a spin
 in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
@@ -701,7 +701,7 @@ anyone I offended.&lt;/p&gt;
       <guid>https://npf.io/2014/05/intro-to-go-interfaces/</guid>
       <description>
 
-&lt;h3 id=&#34;standard-interface-intro:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Standard Interface Intro&lt;/h3&gt;
+&lt;h3 id=&#34;standard-interface-intro&#34;&gt;Standard Interface Intro&lt;/h3&gt;
 
 &lt;p&gt;Go’s interfaces are one of it’s best features, but they’re also one of the most confusing for newbies.  This post will try to give you the understanding you need to use Go’s interfaces and not get frustrated when things don’t work the way you expect.  It’s a little long, but a bunch of that is just code examples.&lt;/p&gt;
 
@@ -745,7 +745,7 @@ In fact, Camel and Walker can live in totally different packages and never know
 about one another, and this will still work if a third package decides to make a
 Camel and pass it into LongWalk.&lt;/p&gt;
 
-&lt;h3 id=&#34;non-standard-continuation:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Non-Standard Continuation&lt;/h3&gt;
+&lt;h3 id=&#34;non-standard-continuation&#34;&gt;Non-Standard Continuation&lt;/h3&gt;
 
 &lt;p&gt;This is where most tutorials stop, and where most questions and problems begin.
 The problem is that you still don’t know how the interfaces actually work, and
@@ -803,7 +803,7 @@ copied into the interface value’s Type.valtype field.  The actual data in the
 value of c is copied into a new place in memory, and w’s Data field points at
 that memory location.&lt;/p&gt;
 
-&lt;h3 id=&#34;implications-of-the-implementation:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Implications of the Implementation&lt;/h3&gt;
+&lt;h3 id=&#34;implications-of-the-implementation&#34;&gt;Implications of the Implementation&lt;/h3&gt;
 
 &lt;p&gt;Now, let’s look at the implications of this code.  First, interface values are
 very small - just two pointers.  When you assign a value to an interface, that
@@ -815,7 +815,7 @@ they’re small anyway, so you don’t have to worry about copying the memory, p
 they hold your data in a pointer, so changes to the data will travel with the
 interface.&lt;/p&gt;
 
-&lt;h3 id=&#34;interfaces-are-types:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Interfaces Are Types&lt;/h3&gt;
+&lt;h3 id=&#34;interfaces-are-types&#34;&gt;Interfaces Are Types&lt;/h3&gt;
 
 &lt;p&gt;Let’s look at Walker again, this is important:&lt;/p&gt;
 
@@ -912,7 +912,7 @@ value into an interface.  The reason is that the value in an interface is in a
 hidden memory location, and so the compiler can’t automatically get a pointer to
 that memory for you (in Go parlance, this is known as being “not addressable”).&lt;/p&gt;
 
-&lt;h3 id=&#34;nil-pointers-and-nil-interfaces:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Nil Pointers and Nil Interfaces&lt;/h3&gt;
+&lt;h3 id=&#34;nil-pointers-and-nil-interfaces&#34;&gt;Nil Pointers and Nil Interfaces&lt;/h3&gt;
 
 &lt;p&gt;The interaction between nil interfaces and nil pointers is where nearly everyone
 gets tripped up when they first start with Go.&lt;/p&gt;
@@ -1030,7 +1030,7 @@ c.Walk(500)
 
 &lt;p&gt;&lt;a href=&#34;http://play.golang.org/p/4EfyV21at9&#34;&gt;http://play.golang.org/p/4EfyV21at9&lt;/a&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;outro:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Outro&lt;/h3&gt;
+&lt;h3 id=&#34;outro&#34;&gt;Outro&lt;/h3&gt;
 
 &lt;p&gt;I hope this article helps you better understand how interfaces works, and helps
 you avoid some of the common pitfalls and misconceptions newbies have about how

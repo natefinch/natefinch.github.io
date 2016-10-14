@@ -3,11 +3,11 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>https://npf.io/tags/package/</link>
+    <link>https://npf.io/tags/package/index.xml</link>
     <language>en-us</language>
     <author>Nate Finch</author>
-    <copyright>2015 Nate Finch</copyright>
-    <updated>Tue, 30 Jun 2015 12:44:29 EDT</updated>
+    <copyright>0001 Nate Finch</copyright>
+    <updated>Mon, 01 Jan 0001 00:00:00 UTC</updated>
     
     
     <item>
@@ -34,7 +34,7 @@ it?)&amp;hellip; but I also knew I didn&amp;rsquo;t want to have to try to spell
 correctly every time I used the package.  So that&amp;rsquo;s why it&amp;rsquo;s called deputy.
 He&amp;rsquo;s the guy who&amp;rsquo;s not in charge, but does all the work.&lt;/p&gt;
 
-&lt;h3 id=&#34;errors:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Errors&lt;/h3&gt;
+&lt;h3 id=&#34;errors&#34;&gt;Errors&lt;/h3&gt;
 
 &lt;p&gt;At &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we run a lot of external processes
 using os/exec. However, the default functionality of an exec.Cmd object is kind
@@ -58,7 +58,7 @@ such image or container: bar&amp;rdquo; to stderr, then the error&amp;rsquo;s Er
 look like &amp;ldquo;exit status 1: Error: No such image or container: bar&amp;rdquo;.  Bam, the
 errors from commands you run are infinitely more useful.&lt;/p&gt;
 
-&lt;h3 id=&#34;logging:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Logging&lt;/h3&gt;
+&lt;h3 id=&#34;logging&#34;&gt;Logging&lt;/h3&gt;
 
 &lt;p&gt;Another idiom we use is to pipe some of the output from a command to our logs. This can be super useful for debugging purposes.  With deputy, this is again easy:&lt;/p&gt;
 
@@ -75,7 +75,7 @@ errors from commands you run are infinitely more useful.&lt;/p&gt;
 &lt;p&gt;That&amp;rsquo;s it.  Now every line written to stdout by the process will be piped as a
 log message to your log.&lt;/p&gt;
 
-&lt;h3 id=&#34;timeouts:c6ab1c3501e7e929f514472ad514e06f&#34;&gt;Timeouts&lt;/h3&gt;
+&lt;h3 id=&#34;timeouts&#34;&gt;Timeouts&lt;/h3&gt;
 
 &lt;p&gt;Finally, an idiom we don&amp;rsquo;t use often enough, but should, is to add a timeout to
 command execution.  What happens if you run a command as part of your pipeline

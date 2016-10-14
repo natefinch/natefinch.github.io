@@ -69,11 +69,11 @@
         
           <li><a href="/gorram/">Gorram </a></li>
         
-          <li><a href="/lumberjack.v2/">Lumberjack </a></li>
+          <li><a href="/lumberjack/">Lumberjack </a></li>
         
           <li><a href="/pie/">Pie </a></li>
         
-          <li><a href="/npipe.v2/">npipe </a></li>
+          <li><a href="/npipe/">npipe </a></li>
         
       
     </ul>
@@ -111,7 +111,7 @@
 
 <p><sup><sub>image: creative commons, &copy; <a href="http://matsurd.deviantart.com/art/Paper53-Deputy-Stubbs-342123485">MatsuRD</a></sub></sup></p>
 
-<h2 id="example:c6ab1c3501e7e929f514472ad514e06f">Example</h2>
+<h2 id="example">Example</h2>
 
 <pre><code class="language-go">// Make a new deputy that'll return the data written to stderr as the error
 // message, log everything written to stdout to this application's log,  and
@@ -132,7 +132,7 @@ if err := d.Run(exec.Command(&quot;foo&quot;)); err != nil {
 }
 </code></pre>
 
-<h2 id="type-deputy:c6ab1c3501e7e929f514472ad514e06f">type Deputy</h2>
+<h2 id="type-deputy">type Deputy</h2>
 
 <pre><code class="language-go">type Deputy struct {
 	// Cancel, when closed, will cause the command to close.
@@ -152,7 +152,7 @@ if err := d.Run(exec.Command(&quot;foo&quot;)); err != nil {
 <p>Deputy is a type that runs Commands with advanced options not available from
 os/exec.  See the comments on field values for details.</p>
 
-<h3 id="func-deputy-run:c6ab1c3501e7e929f514472ad514e06f">func (Deputy) Run</h3>
+<h3 id="func-deputy-run">func (Deputy) Run</h3>
 
 <pre><code class="language-go">func (d Deputy) Run(cmd *exec.Cmd) error
 </code></pre>
@@ -163,7 +163,7 @@ conforms to the Options passed to it at construction time.</p>
 <p>Note that, like cmd.Run, Deputy.Run should not be used with
 StdoutPipe or StderrPipe.</p>
 
-<h2 id="type-errorhandling:c6ab1c3501e7e929f514472ad514e06f">type ErrorHandling</h2>
+<h2 id="type-errorhandling">type ErrorHandling</h2>
 
 <pre><code class="language-go">type ErrorHandling int
 </code></pre>

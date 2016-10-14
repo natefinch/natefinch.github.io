@@ -3,11 +3,11 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>https://npf.io/tags/programming/</link>
+    <link>https://npf.io/tags/programming/index.xml</link>
     <language>en-us</language>
     <author>Nate Finch</author>
-    <copyright>2014 Nate Finch</copyright>
-    <updated>Tue, 14 Oct 2014 10:46:28 EDT</updated>
+    <copyright>0001 Nate Finch</copyright>
+    <updated>Mon, 01 Jan 0001 00:00:00 UTC</updated>
     
     
     <item>
@@ -124,7 +124,7 @@ anyone I offended.&lt;/p&gt;
 vaguely similar to YAML or property lists, but far, far better.  But before we
 get into it in detail, let&amp;rsquo;s look back at what came before.&lt;/p&gt;
 
-&lt;h3 id=&#34;long-ago-in-a-galaxy-far-far-away:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Long Ago, In A Galaxy Far, Far Away&lt;/h3&gt;
+&lt;h3 id=&#34;long-ago-in-a-galaxy-far-far-away&#34;&gt;Long Ago, In A Galaxy Far, Far Away&lt;/h3&gt;
 
 &lt;p&gt;Since the beginning of computing, people have needed a way to configure
 their software.  On Linux, this generally is done in text files.  For simple
@@ -136,7 +136,7 @@ parsed as a number instead of a string?  How do you namespace related
 configuration values so you don&amp;rsquo;t need ridiculously long names to prevent
 collisions?&lt;/p&gt;
 
-&lt;h3 id=&#34;the-dark-ages:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;The Dark Ages&lt;/h3&gt;
+&lt;h3 id=&#34;the-dark-ages&#34;&gt;The Dark Ages&lt;/h3&gt;
 
 &lt;p&gt;In the 90&amp;rsquo;s, we used XML.  And it sucked.  XML is verbose, it&amp;rsquo;s hard for humans
 to read and write, and it still doesn&amp;rsquo;t solve a lot of the problems above (like
@@ -144,7 +144,7 @@ how to specify the type of a value).  In addition, the XML spec is huge,
 processing is very complicated, and all the extra features invite abuse and
 overcomplication.&lt;/p&gt;
 
-&lt;h3 id=&#34;enlightenment:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Enlightenment&lt;/h3&gt;
+&lt;h3 id=&#34;enlightenment&#34;&gt;Enlightenment&lt;/h3&gt;
 
 &lt;p&gt;In the mid 2000&amp;rsquo;s, JSON came to popularity as a data exchange format, and it was
 so much better than XML.  It had real types, it was easy for programs to
@@ -156,7 +156,7 @@ compact data format turns into a nested mess of curly braces.  Also, JSON is not
 without its problems&amp;hellip; for example, there&amp;rsquo;s no date type, there&amp;rsquo;s no support
 for comments, and all numbers are floats.&lt;/p&gt;
 
-&lt;h3 id=&#34;a-false-start:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;A False Start&lt;/h3&gt;
+&lt;h3 id=&#34;a-false-start&#34;&gt;A False Start&lt;/h3&gt;
 
 &lt;p&gt;YAML came to popularity some time after JSON as a more human-readable format,
 and its &lt;code&gt;key: value&lt;/code&gt; syntax and pretty indentation is definitely a lot easier on
@@ -170,7 +170,7 @@ difficult to write.  Writing YAML by hand is a ridden with landmines of corner
 cases where your choice of names or values happens to hit a reserved word or
 special marker.  It does support comments, though.&lt;/p&gt;
 
-&lt;h3 id=&#34;the-savior:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;The Savior&lt;/h3&gt;
+&lt;h3 id=&#34;the-savior&#34;&gt;The Savior&lt;/h3&gt;
 
 &lt;p&gt;On February 23, 2013, Tom Preston-Werner (former CEO of GitHub) made his first
 commit to &lt;a href=&#34;https://github.com/toml-lang/toml&#34;&gt;https://github.com/toml-lang/toml&lt;/a&gt;.  TOML stands for Tom&amp;rsquo;s Obvious,
@@ -185,7 +185,7 @@ whitespace, without requiring a ton of delimiters.&lt;/p&gt;
 
 &lt;p&gt;Let&amp;rsquo;s dive in.&lt;/p&gt;
 
-&lt;h3 id=&#34;the-basics:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;The Basics&lt;/h3&gt;
+&lt;h3 id=&#34;the-basics&#34;&gt;The Basics&lt;/h3&gt;
 
 &lt;p&gt;The basic form is key = value&lt;/p&gt;
 
@@ -221,7 +221,7 @@ and our posterity, do ordain and establish this Constitution for the United
 States of America.&amp;quot;&amp;quot;&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;lists:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Lists&lt;/h3&gt;
+&lt;h3 id=&#34;lists&#34;&gt;Lists&lt;/h3&gt;
 
 &lt;p&gt;Lists (arrays) are signified with brackets and delimited with commas.  Only
 primitives are allowed in this form, though you may have nested lists.  The
@@ -241,7 +241,7 @@ nested = [[ &amp;quot;a&amp;quot;, &amp;quot;b&amp;quot;], [1, 2]]
 that the arrays are all of a single type, but allowing mixed types of sub-arrays
 bugs the heck out of me.&lt;/p&gt;
 
-&lt;h3 id=&#34;now-we-get-crazy:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Now we get crazy&lt;/h3&gt;
+&lt;h3 id=&#34;now-we-get-crazy&#34;&gt;Now we get crazy&lt;/h3&gt;
 
 &lt;p&gt;What&amp;rsquo;s left?  In JSON there are objects, in YAML there are associative arrays&amp;hellip;
 in common parlance they are maps or dictionaries or hash tables.  Named
@@ -328,7 +328,7 @@ bat = &amp;quot;hi&amp;quot;
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;last-but-not-least:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Last but not least&lt;/h3&gt;
+&lt;h3 id=&#34;last-but-not-least&#34;&gt;Last but not least&lt;/h3&gt;
 
 &lt;p&gt;The last thing is arrays of tables, which are declared with double brackets
 thusly:&lt;/p&gt;
@@ -385,7 +385,7 @@ text = &amp;quot;Love it!&amp;quot;
 fashion, but it&amp;rsquo;s nice that you can&amp;rsquo;t shoot yourself in the foot if you reorder
 things &amp;ldquo;incorrectly&amp;rdquo;.&lt;/p&gt;
 
-&lt;h3 id=&#34;conclusion:e2600f20c5cda367beec1116d4d8e23c&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
 
 &lt;p&gt;That&amp;rsquo;s TOML.  It&amp;rsquo;s pretty awesome.&lt;/p&gt;
 
@@ -459,7 +459,7 @@ look at TOML.  I think your users will thank you.&lt;/p&gt;
       <guid>https://npf.io/2014/05/intro-to-go-interfaces/</guid>
       <description>
 
-&lt;h3 id=&#34;standard-interface-intro:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Standard Interface Intro&lt;/h3&gt;
+&lt;h3 id=&#34;standard-interface-intro&#34;&gt;Standard Interface Intro&lt;/h3&gt;
 
 &lt;p&gt;Go’s interfaces are one of it’s best features, but they’re also one of the most confusing for newbies.  This post will try to give you the understanding you need to use Go’s interfaces and not get frustrated when things don’t work the way you expect.  It’s a little long, but a bunch of that is just code examples.&lt;/p&gt;
 
@@ -503,7 +503,7 @@ In fact, Camel and Walker can live in totally different packages and never know
 about one another, and this will still work if a third package decides to make a
 Camel and pass it into LongWalk.&lt;/p&gt;
 
-&lt;h3 id=&#34;non-standard-continuation:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Non-Standard Continuation&lt;/h3&gt;
+&lt;h3 id=&#34;non-standard-continuation&#34;&gt;Non-Standard Continuation&lt;/h3&gt;
 
 &lt;p&gt;This is where most tutorials stop, and where most questions and problems begin.
 The problem is that you still don’t know how the interfaces actually work, and
@@ -561,7 +561,7 @@ copied into the interface value’s Type.valtype field.  The actual data in the
 value of c is copied into a new place in memory, and w’s Data field points at
 that memory location.&lt;/p&gt;
 
-&lt;h3 id=&#34;implications-of-the-implementation:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Implications of the Implementation&lt;/h3&gt;
+&lt;h3 id=&#34;implications-of-the-implementation&#34;&gt;Implications of the Implementation&lt;/h3&gt;
 
 &lt;p&gt;Now, let’s look at the implications of this code.  First, interface values are
 very small - just two pointers.  When you assign a value to an interface, that
@@ -573,7 +573,7 @@ they’re small anyway, so you don’t have to worry about copying the memory, p
 they hold your data in a pointer, so changes to the data will travel with the
 interface.&lt;/p&gt;
 
-&lt;h3 id=&#34;interfaces-are-types:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Interfaces Are Types&lt;/h3&gt;
+&lt;h3 id=&#34;interfaces-are-types&#34;&gt;Interfaces Are Types&lt;/h3&gt;
 
 &lt;p&gt;Let’s look at Walker again, this is important:&lt;/p&gt;
 
@@ -670,7 +670,7 @@ value into an interface.  The reason is that the value in an interface is in a
 hidden memory location, and so the compiler can’t automatically get a pointer to
 that memory for you (in Go parlance, this is known as being “not addressable”).&lt;/p&gt;
 
-&lt;h3 id=&#34;nil-pointers-and-nil-interfaces:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Nil Pointers and Nil Interfaces&lt;/h3&gt;
+&lt;h3 id=&#34;nil-pointers-and-nil-interfaces&#34;&gt;Nil Pointers and Nil Interfaces&lt;/h3&gt;
 
 &lt;p&gt;The interaction between nil interfaces and nil pointers is where nearly everyone
 gets tripped up when they first start with Go.&lt;/p&gt;
@@ -788,7 +788,7 @@ c.Walk(500)
 
 &lt;p&gt;&lt;a href=&#34;http://play.golang.org/p/4EfyV21at9&#34;&gt;http://play.golang.org/p/4EfyV21at9&lt;/a&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;outro:9f8207e5f3f66a5b9890a1aedbe72d3e&#34;&gt;Outro&lt;/h3&gt;
+&lt;h3 id=&#34;outro&#34;&gt;Outro&lt;/h3&gt;
 
 &lt;p&gt;I hope this article helps you better understand how interfaces works, and helps
 you avoid some of the common pitfalls and misconceptions newbies have about how

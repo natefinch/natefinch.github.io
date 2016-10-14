@@ -69,11 +69,11 @@
         
           <li><a href="/gorram/">Gorram </a></li>
         
-          <li><a href="/lumberjack.v2/">Lumberjack </a></li>
+          <li><a href="/lumberjack/">Lumberjack </a></li>
         
           <li><a href="/pie/">Pie </a></li>
         
-          <li><a href="/npipe.v2/">npipe </a></li>
+          <li><a href="/npipe/">npipe </a></li>
         
       
     </ul>
@@ -114,7 +114,7 @@ a Go function.</p>
 
 <p><em>Sometimes, magic is just someone spending more time on something than anyone else might reasonably expect.</em> -Teller</p>
 
-<h2 id="installation:64b8d3d82c701efd6c6d8d7470456e55">Installation</h2>
+<h2 id="installation">Installation</h2>
 
 <pre><code>go get -u npf.io/gorram
 </code></pre>
@@ -122,7 +122,7 @@ a Go function.</p>
 <p>Note: gorram depends on having a working go environment to function, since it
 dynamically analyzes go code in the stdlib and in your GOPATH.</p>
 
-<h2 id="usage:64b8d3d82c701efd6c6d8d7470456e55">Usage</h2>
+<h2 id="usage">Usage</h2>
 
 <pre><code>Usage: gorram [OPTION] &lt;pkg&gt; &lt;func | var.method&gt; [args...]
 
@@ -159,7 +159,7 @@ file, otherwise it is reused.
 
 </code></pre>
 
-<h2 id="examples:64b8d3d82c701efd6c6d8d7470456e55">Examples</h2>
+<h2 id="examples">Examples</h2>
 
 <p>Pretty print JSON:</p>
 
@@ -175,7 +175,7 @@ file, otherwise it is reused.
 abcdef012345678
 </code></pre>
 
-<h2 id="how-it-works:64b8d3d82c701efd6c6d8d7470456e55">How it works</h2>
+<h2 id="how-it-works">How it works</h2>
 
 <p>The first time you run Gorram with a specific function name, Gorram analyzes the
 package function and generates a file for use with <code>go run</code>.  Gorram
@@ -183,7 +183,7 @@ intelligently converts stdin and/or cli arguments into arguments for the
 function. Output is converted similarly to stdout.  The code is cached in a
 local directory so that later runs don&rsquo;t incur the generation overhead.</p>
 
-<h2 id="heuristics:64b8d3d82c701efd6c6d8d7470456e55">Heuristics</h2>
+<h2 id="heuristics">Heuristics</h2>
 
 <p>By default, Gorram just turns CLI args into function args and prints out the
 return value of a function using fmt&rsquo;s %v.  However, there are some special
@@ -269,12 +269,12 @@ the struct is an io.Reader, then it will output the contents of that reader.<br 
 (if there are no contents or it&rsquo;s nil, the result value will be printed with
 %v).</p>
 
-<h2 id="development:64b8d3d82c701efd6c6d8d7470456e55">Development</h2>
+<h2 id="development">Development</h2>
 
 <p>See the <a href="https://github.com/natefinch/gorram/projects/1">project page</a> for what&rsquo;s
 being worked on now.</p>
 
-<h2 id="hacking:64b8d3d82c701efd6c6d8d7470456e55">Hacking</h2>
+<h2 id="hacking">Hacking</h2>
 
 <p>Gorram requires go 1.7 to run the tests (thank you subtests!)  But only requires
 it builds with earlier versions (at least 1.6, I haven&rsquo;t tried earlier ones, but
