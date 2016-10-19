@@ -7,13 +7,171 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2016 Nate Finch</copyright>
-    <updated>Wed, 26 Oct 2016 00:01:00 UTC</updated>
+    <updated>Tue, 18 Oct 2016 22:08:09 EDT</updated>
+    
+    
+    <item>
+      <title>Writing Go Applications with Reusable Logic</title>
+      <link>https://npf.io/2016/10/reusable-commands/</link>
+      <pubDate>Tue, 18 Oct 2016 22:08:09 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2016/10/reusable-commands/</guid>
+      <description>
+
+&lt;p&gt;Writing libraries in Go is a relatively well-covered topic, I think&amp;hellip; but I see
+a lot fewer posts about writing commands.  When it comes down to it, all Go code
+ends up in a command.  So let&amp;rsquo;s talk about it!  This will be the first in a
+series, since I ended up having a lot more to say than I realized.&lt;/p&gt;
+
+&lt;p&gt;Today I&amp;rsquo;m going to focus on basic project layout, with the aims of optimizing
+for reusability and testability.&lt;/p&gt;
+
+&lt;p&gt;There are three unique bits about commands that influence how I structure my
+code when writing a command rather than a library:&lt;/p&gt;
+
+&lt;h2 id=&#34;package-main&#34;&gt;Package main&lt;/h2&gt;
+
+&lt;p&gt;This is the only package a go program must have.  However, aside from telling
+the go tool to produce a binary, there&amp;rsquo;s one other unique thing about package
+main - no one can import code from it.  That means that any code you put in
+package main can not be used directly by another project, and that makes the OSS
+gods sad.  Since one of the main reasons I write open source code is so that
+other developers may use it, this goes directly against my desires.&lt;/p&gt;
+
+&lt;p&gt;There have been many times when I&amp;rsquo;ve thought &amp;ldquo;I&amp;rsquo;d love to use the logic behind X
+Go binary as a part of my code&amp;rdquo;.  If that logic is in package main, you can&amp;rsquo;t.&lt;/p&gt;
+
+&lt;h2 id=&#34;os-exit&#34;&gt;os.Exit&lt;/h2&gt;
+
+&lt;p&gt;If you care about producing a binary that does what users expect, then you
+should care about what exit code your binary exits with.  The only way to do
+that is to call os.Exit (or call something that calls os.Exit, like log.Fatal).&lt;/p&gt;
+
+&lt;p&gt;However, you can&amp;rsquo;t test a function that calls os.Exit.  Why?  Because calling
+os.Exit during a test &lt;em&gt;exits the test executable&lt;/em&gt;.  This is quite hard to figure
+out if you end up doing it by accident (which I know from personal experience).
+When running tests, no tests actually fail, the tests just exit sooner than they
+should, and you&amp;rsquo;re left scratching your head.&lt;/p&gt;
+
+&lt;p&gt;The easiest thing to do is &lt;em&gt;don&amp;rsquo;t call os.Exit&lt;/em&gt;.  Most of your code shouldn&amp;rsquo;t be
+calling os.Exit anyway&amp;hellip; someone&amp;rsquo;s going to get real mad if they import your
+library and it randomly causes their application to terminate under some
+conditions.&lt;/p&gt;
+
+&lt;p&gt;So, only call os.Exit in exactly one place, as near to the &amp;ldquo;exterior&amp;rdquo; of your
+application as you can get, with minimal entry points.  Speaking of which&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;func-main&#34;&gt;func main()&lt;/h2&gt;
+
+&lt;p&gt;It&amp;rsquo;s is the one function all go commands must have.  You&amp;rsquo;d think that
+everyone&amp;rsquo;s func main would be different, after all, everyone&amp;rsquo;s application is
+different, right?  Well, it turns out, if you really want to make your code
+testable and reusable, there&amp;rsquo;s really only approximately one right answer to
+&amp;ldquo;what&amp;rsquo;s in your main function?&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;In fact, I&amp;rsquo;ll go one step further, I think there&amp;rsquo;s only approximately one right
+answer to &amp;ldquo;what&amp;rsquo;s in your package main?&amp;rdquo; and that&amp;rsquo;s this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// command main documentation here.
+package main
+
+import (
+    &amp;quot;os&amp;quot;
+
+    &amp;quot;github.com/you/proj/cli&amp;quot;
+)
+func main{
+    os.Exit(cli.Run())
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s it.  This is approximately the most minimal code you can have in a useful
+package main, thereby wasting no effort on code that others can&amp;rsquo;t reuse.  We
+isolated os.Exit to a single line function that is the very exterior of our
+project, and effectively needs no testing.&lt;/p&gt;
+
+&lt;h2 id=&#34;project-layout&#34;&gt;Project Layout&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s get a look at the total package layout:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/home/you/src/github.com/you/proj $ tree
+.
+├── cli
+│   ├── parse.go
+│   ├── parse_test.go
+│   └── run.go
+├── LICENSE
+├── main.go
+├── README.md
+└── run
+    ├── command.go
+    └── command_test.go
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We know what&amp;rsquo;s in main.go&amp;hellip; and in fact, main.go is the only go file in the
+main package. LICENSE and README.md should be self-explanatory. (Always
+use a license!  Otherwise many people won&amp;rsquo;t be able to use your code.)&lt;/p&gt;
+
+&lt;p&gt;Now we come to the two subdirectories, run and cli.&lt;/p&gt;
+
+&lt;h3 id=&#34;cli&#34;&gt;CLI&lt;/h3&gt;
+
+&lt;p&gt;The cli package contains the command line parsing logic.  This is where you
+define the UI for your binary.  It contains flag parsing, arg parsing, help
+text, etc.&lt;/p&gt;
+
+&lt;p&gt;It also contains the code that returns the exit code to func main (which gets
+sent to os.Exit).  Thus, you can test exit codes returned from those functions,
+instead of trying to test exit codes your binary as a whole produces.&lt;/p&gt;
+
+&lt;h3 id=&#34;run&#34;&gt;Run&lt;/h3&gt;
+
+&lt;p&gt;The run package contains the meat of the logic of your binary.  You should write
+this package as if it were a standalone library.  It should be far removed from
+any thoughts of CLI, flags, etc.  It should take in structured data and return
+errors.  Pretend it might get called by some other library, or a web service, or
+someone else&amp;rsquo;s binary.  Make as few assumptions as possible about how it&amp;rsquo;ll be
+used, just as you would a generic library.&lt;/p&gt;
+
+&lt;p&gt;Now, obviously, larger projects will require more than one directory.  In fact,
+you may want to split out your logic into a separate repo.  This kind of depends
+on how likely you think it&amp;rsquo;ll be that people want to reuse your logic.  If you
+think it&amp;rsquo;s highly likely, I recommend making the logic a separate directory. In
+my mind, a separate directory for the logic shows a stronger committment to
+quaity and stability than some random directory nestled deep in a repo
+somewhere.&lt;/p&gt;
+
+&lt;h2 id=&#34;putting-it-together&#34;&gt;Putting it together&lt;/h2&gt;
+
+&lt;p&gt;The cli package forms a command line frontend for the logic in the run package.
+If someone else comes along, sees your binary, and wants to use the logic behind
+it for a web API, they can just import the run package and use that logic
+directly.  Likewise, if they don&amp;rsquo;t like your CLI options, they can easily write
+their own CLI parser and use it as a frontend to the run package.&lt;/p&gt;
+
+&lt;p&gt;This is what I mean about reusable code.  I never want someone to have to hack
+apart my code to get more use out of it.  And the best way to do that is to
+separate the UI from the logic.  This is the key part.  &lt;strong&gt;Don&amp;rsquo;t let your UI
+(CLI) concepts leak into your logic.&lt;/strong&gt;  This is the best way to keep your logic
+generic, and your UI manageable.&lt;/p&gt;
+
+&lt;h3 id=&#34;larger-projects&#34;&gt;Larger Projects&lt;/h3&gt;
+
+&lt;p&gt;This layout is good for small to medium projects.  There&amp;rsquo;s a single binary that
+is in the root of the repo, so it&amp;rsquo;s easier to go-get than if it&amp;rsquo;s under multiple
+subdirectories.  Larger projects pretty much throw everything out the window.
+They may have multiple binaries, in which case they can&amp;rsquo;t all be in the root of
+the repo.  However, such projects usually also have custom build steps and
+require more than just go-get (which I&amp;rsquo;ll talk about later).&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
       <title>Vanity Imports with Hugo</title>
       <link>https://npf.io/2016/10/vanity-imports-with-hugo/</link>
-      <pubDate>Wed, 26 Oct 2016 00:01:00 UTC</pubDate>
+      <pubDate>Sun, 16 Oct 2016 00:01:00 UTC</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2016/10/vanity-imports-with-hugo/</guid>
       <description>&lt;p&gt;When working on &lt;a href=&#34;https://github.com/natefinch/gorram&#34;&gt;Gorram&lt;/a&gt;, I decided I
@@ -1341,8 +1499,6 @@ works just like the built-in parsers.&lt;/p&gt;
 look at TOML.  I think your users will thank you.&lt;/p&gt;
 </description>
     </item>
-    
-    
     
     
   </channel>

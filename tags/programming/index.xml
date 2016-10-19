@@ -11,6 +11,164 @@
     
     
     <item>
+      <title>Writing Go Applications with Reusable Logic</title>
+      <link>https://npf.io/2016/10/reusable-commands/</link>
+      <pubDate>Tue, 18 Oct 2016 22:08:09 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2016/10/reusable-commands/</guid>
+      <description>
+
+&lt;p&gt;Writing libraries in Go is a relatively well-covered topic, I think&amp;hellip; but I see
+a lot fewer posts about writing commands.  When it comes down to it, all Go code
+ends up in a command.  So let&amp;rsquo;s talk about it!  This will be the first in a
+series, since I ended up having a lot more to say than I realized.&lt;/p&gt;
+
+&lt;p&gt;Today I&amp;rsquo;m going to focus on basic project layout, with the aims of optimizing
+for reusability and testability.&lt;/p&gt;
+
+&lt;p&gt;There are three unique bits about commands that influence how I structure my
+code when writing a command rather than a library:&lt;/p&gt;
+
+&lt;h2 id=&#34;package-main&#34;&gt;Package main&lt;/h2&gt;
+
+&lt;p&gt;This is the only package a go program must have.  However, aside from telling
+the go tool to produce a binary, there&amp;rsquo;s one other unique thing about package
+main - no one can import code from it.  That means that any code you put in
+package main can not be used directly by another project, and that makes the OSS
+gods sad.  Since one of the main reasons I write open source code is so that
+other developers may use it, this goes directly against my desires.&lt;/p&gt;
+
+&lt;p&gt;There have been many times when I&amp;rsquo;ve thought &amp;ldquo;I&amp;rsquo;d love to use the logic behind X
+Go binary as a part of my code&amp;rdquo;.  If that logic is in package main, you can&amp;rsquo;t.&lt;/p&gt;
+
+&lt;h2 id=&#34;os-exit&#34;&gt;os.Exit&lt;/h2&gt;
+
+&lt;p&gt;If you care about producing a binary that does what users expect, then you
+should care about what exit code your binary exits with.  The only way to do
+that is to call os.Exit (or call something that calls os.Exit, like log.Fatal).&lt;/p&gt;
+
+&lt;p&gt;However, you can&amp;rsquo;t test a function that calls os.Exit.  Why?  Because calling
+os.Exit during a test &lt;em&gt;exits the test executable&lt;/em&gt;.  This is quite hard to figure
+out if you end up doing it by accident (which I know from personal experience).
+When running tests, no tests actually fail, the tests just exit sooner than they
+should, and you&amp;rsquo;re left scratching your head.&lt;/p&gt;
+
+&lt;p&gt;The easiest thing to do is &lt;em&gt;don&amp;rsquo;t call os.Exit&lt;/em&gt;.  Most of your code shouldn&amp;rsquo;t be
+calling os.Exit anyway&amp;hellip; someone&amp;rsquo;s going to get real mad if they import your
+library and it randomly causes their application to terminate under some
+conditions.&lt;/p&gt;
+
+&lt;p&gt;So, only call os.Exit in exactly one place, as near to the &amp;ldquo;exterior&amp;rdquo; of your
+application as you can get, with minimal entry points.  Speaking of which&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;func-main&#34;&gt;func main()&lt;/h2&gt;
+
+&lt;p&gt;It&amp;rsquo;s is the one function all go commands must have.  You&amp;rsquo;d think that
+everyone&amp;rsquo;s func main would be different, after all, everyone&amp;rsquo;s application is
+different, right?  Well, it turns out, if you really want to make your code
+testable and reusable, there&amp;rsquo;s really only approximately one right answer to
+&amp;ldquo;what&amp;rsquo;s in your main function?&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;In fact, I&amp;rsquo;ll go one step further, I think there&amp;rsquo;s only approximately one right
+answer to &amp;ldquo;what&amp;rsquo;s in your package main?&amp;rdquo; and that&amp;rsquo;s this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;// command main documentation here.
+package main
+
+import (
+    &amp;quot;os&amp;quot;
+
+    &amp;quot;github.com/you/proj/cli&amp;quot;
+)
+func main{
+    os.Exit(cli.Run())
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s it.  This is approximately the most minimal code you can have in a useful
+package main, thereby wasting no effort on code that others can&amp;rsquo;t reuse.  We
+isolated os.Exit to a single line function that is the very exterior of our
+project, and effectively needs no testing.&lt;/p&gt;
+
+&lt;h2 id=&#34;project-layout&#34;&gt;Project Layout&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s get a look at the total package layout:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/home/you/src/github.com/you/proj $ tree
+.
+├── cli
+│   ├── parse.go
+│   ├── parse_test.go
+│   └── run.go
+├── LICENSE
+├── main.go
+├── README.md
+└── run
+    ├── command.go
+    └── command_test.go
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We know what&amp;rsquo;s in main.go&amp;hellip; and in fact, main.go is the only go file in the
+main package. LICENSE and README.md should be self-explanatory. (Always
+use a license!  Otherwise many people won&amp;rsquo;t be able to use your code.)&lt;/p&gt;
+
+&lt;p&gt;Now we come to the two subdirectories, run and cli.&lt;/p&gt;
+
+&lt;h3 id=&#34;cli&#34;&gt;CLI&lt;/h3&gt;
+
+&lt;p&gt;The cli package contains the command line parsing logic.  This is where you
+define the UI for your binary.  It contains flag parsing, arg parsing, help
+text, etc.&lt;/p&gt;
+
+&lt;p&gt;It also contains the code that returns the exit code to func main (which gets
+sent to os.Exit).  Thus, you can test exit codes returned from those functions,
+instead of trying to test exit codes your binary as a whole produces.&lt;/p&gt;
+
+&lt;h3 id=&#34;run&#34;&gt;Run&lt;/h3&gt;
+
+&lt;p&gt;The run package contains the meat of the logic of your binary.  You should write
+this package as if it were a standalone library.  It should be far removed from
+any thoughts of CLI, flags, etc.  It should take in structured data and return
+errors.  Pretend it might get called by some other library, or a web service, or
+someone else&amp;rsquo;s binary.  Make as few assumptions as possible about how it&amp;rsquo;ll be
+used, just as you would a generic library.&lt;/p&gt;
+
+&lt;p&gt;Now, obviously, larger projects will require more than one directory.  In fact,
+you may want to split out your logic into a separate repo.  This kind of depends
+on how likely you think it&amp;rsquo;ll be that people want to reuse your logic.  If you
+think it&amp;rsquo;s highly likely, I recommend making the logic a separate directory. In
+my mind, a separate directory for the logic shows a stronger committment to
+quaity and stability than some random directory nestled deep in a repo
+somewhere.&lt;/p&gt;
+
+&lt;h2 id=&#34;putting-it-together&#34;&gt;Putting it together&lt;/h2&gt;
+
+&lt;p&gt;The cli package forms a command line frontend for the logic in the run package.
+If someone else comes along, sees your binary, and wants to use the logic behind
+it for a web API, they can just import the run package and use that logic
+directly.  Likewise, if they don&amp;rsquo;t like your CLI options, they can easily write
+their own CLI parser and use it as a frontend to the run package.&lt;/p&gt;
+
+&lt;p&gt;This is what I mean about reusable code.  I never want someone to have to hack
+apart my code to get more use out of it.  And the best way to do that is to
+separate the UI from the logic.  This is the key part.  &lt;strong&gt;Don&amp;rsquo;t let your UI
+(CLI) concepts leak into your logic.&lt;/strong&gt;  This is the best way to keep your logic
+generic, and your UI manageable.&lt;/p&gt;
+
+&lt;h3 id=&#34;larger-projects&#34;&gt;Larger Projects&lt;/h3&gt;
+
+&lt;p&gt;This layout is good for small to medium projects.  There&amp;rsquo;s a single binary that
+is in the root of the repo, so it&amp;rsquo;s easier to go-get than if it&amp;rsquo;s under multiple
+subdirectories.  Larger projects pretty much throw everything out the window.
+They may have multiple binaries, in which case they can&amp;rsquo;t all be in the root of
+the repo.  However, such projects usually also have custom build steps and
+require more than just go-get (which I&amp;rsquo;ll talk about later).&lt;/p&gt;
+</description>
+    </item>
+    
+    
+    
+    <item>
       <title>Why Everyone Hates Go</title>
       <link>https://npf.io/2014/10/why-everyone-hates-go/</link>
       <pubDate>Tue, 14 Oct 2014 10:46:28 EDT</pubDate>
@@ -962,18 +1120,6 @@ that error:&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>https://npf.io/2013/01/go-is-for-open-source/</guid>
       <description>&lt;p&gt;The Go programming language is built from the ground up to implicitly encourage Go projects to be open source. If you want your project not only to contribute to open source, but to encourage other people to write open source code, Go is a great language to choose.&lt;br /&gt;&lt;br /&gt;Let&amp;rsquo;s look at how Go does this. These first two points are overly obvious, but we should get them out of the way.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;The language is open source&lt;/h3&gt;You can go look at the &lt;a href=&#34;https://code.google.com/p/go/source/browse/&#34; target=&#34;_blank&#34;&gt;source code&lt;/a&gt;&amp;nbsp;for the language, the compilers, and the build tools for the language. It&amp;rsquo;s a fully open source project. Even though a lot of the work is being done by Google engineers, there are hundreds of names on the &lt;a href=&#34;https://code.google.com/p/go/source/browse/CONTRIBUTORS&#34; target=&#34;_blank&#34;&gt;list of contributors&lt;/a&gt; of people who are not Google employees.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;The standard library is open source&lt;/h3&gt;&lt;div&gt;Want to see high quality example code? Look at the code in the standard library. It has been carefully reviewed to be of the best quality, and in canonical Go style. Reading the standard library is a great way to learn the best ways to use and write Go.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;span style=&#34;color: red;&#34;&gt;Ok, that&amp;rsquo;s great, but what about all the code that isn&amp;rsquo;t part of Go itself?&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;The design of Go really shows its embrace of open source in how third party code is used in day to day projects.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Go makes it trivial to use someone&amp;nbsp;else&amp;rsquo;s code in your project&lt;/h3&gt;&lt;div&gt;Go has distributed version control built-in from the ground up. If you want to use a package from github, for example, you just specify the URL in the imports, as if it were a local package:&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;pre class=&#34;brush: go; gutter: false&#34;&gt;import (&lt;br /&gt;    &amp;ldquo;bytes&amp;rdquo; // std lib package&lt;br /&gt;    &amp;ldquo;github.com/fake/foo&amp;rdquo; // 3rd party package&lt;br /&gt;)&lt;/pre&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;You don&amp;rsquo;t have to go find and download fake/foo from github and put it in a special directory or anything. Just run &amp;ldquo;go get github.com/fake/foo&amp;rdquo;. Go will then download, build, and install the code, so that you can reference it&amp;hellip; nicely stored in a directory defined by the URL, in this case $GOPATH/src/github.com/fake/foo. Go will even figure out what source control system is used on the other side so you don&amp;rsquo;t have to (support for git, svn, mercurial, and bazaar).&lt;br /&gt;&lt;br /&gt;What&amp;rsquo;s even better is that the auto-download happens for anyone who calls &amp;ldquo;go get&amp;rdquo; on&amp;nbsp;&lt;i&gt;your&lt;/i&gt;&amp;nbsp;code repository. No more giving long drawn-out installation instructions about getting half a dozen 3rd party libraries first. If someone wants your code, they type &amp;ldquo;go get path.to/your/code&amp;rdquo;, and Go will download your code, and any remote imports you have (like the one for github above), any remote imports &lt;i&gt;that&lt;/i&gt; code has, etc, and then builds everything.&lt;br /&gt;&lt;br /&gt;The fact that this is available from the command line tools that come with the language makes it the de facto standard for how all Go code is written. There&amp;rsquo;s no fragmentation in the community about how packages are stored, accessed, used, etc. This means zero overhead for using third party code, it&amp;rsquo;s as easy to use as if it were built into the Go standard library.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Sharing code is the default&lt;/h3&gt;&lt;/div&gt;&lt;div&gt;Like most scripting languages (and unlike many compiled languages), using source code from another project is the default way to use third party code in Go. Go creates a monolithic executable during its build, so there are no DLLs to create and distribute in the way you often see with other compiled languages. In theory you could distribute the compiled .a files from your project for other people to link to in their project, but this is not encouraged by the tooling, and I&amp;rsquo;ve personally never seen anyone do it.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;All Go code uses the same style&lt;/h3&gt;&lt;div&gt;Have you ever gone to read the source for a project you&amp;rsquo;d like to contribute to, and had your eyes cross over at the bizarre formatting the authors used? That almost never happens with Go. Go comes with a code formatting tool called gofmt that automatically formats Go code to the same style. The use of gofmt is strongly encouraged in the Go community, and nearly everyone uses it. Most text editors have an extension to automatically format your code with gofmt on save, so you don&amp;rsquo;t even have to think about it. You never have to worry about having a poorly formatted library to work with&amp;hellip; and in the very rare situation where you do, you can just run it through gofmt and you&amp;rsquo;re good to go.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Easy cross platform support&lt;/h3&gt;&lt;div&gt;Go makes it easy to support multiple platforms. The tooling &lt;a href=&#34;http://dave.cheney.net/2012/09/08/an-introduction-to-cross-compilation-with-go&#34; target=&#34;_blank&#34;&gt;can create native binaries&lt;/a&gt; for any popular operating system from the same source on a single machine. If you need platform-specific code, it&amp;rsquo;s easy to specify code that only gets compiled for a single platform, by simply appending _&amp;lt;os&amp;gt; to a file name &lt;i&gt;.e.g&lt;/i&gt;&amp;nbsp;path_windows.go will only be compiled for builds targeting Windows.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Built-in documentation and testing&lt;/h3&gt;&lt;div&gt;Go comes with a documentation generator that spits generates HTML or plain text from minimally formatted comments in the code. It also comes with a standard testing package that can run unit tests, performance benchmarks, and runnable example code. Because this is all available in the standard library and with the standard tools, nearly everyone uses it&amp;hellip; which means it&amp;rsquo;s easy to look at the documentation for any random Go package, and easy check if the tests pass, without having to go install some third party support tool. Because it&amp;rsquo;s all standardized, several popular websites have popped up to &lt;a href=&#34;http://godoc.org/&#34; target=&#34;_blank&#34;&gt;automate generating&lt;/a&gt;&amp;nbsp;(and hosting) the documentation for your project, and you can easily run &lt;a href=&#34;http://about.travis-ci.org/docs/user/languages/go/&#34; target=&#34;_blank&#34;&gt;continuous integration&lt;/a&gt; on your package, with only a single line in the setup script - &amp;ldquo;language: go&amp;rdquo;.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Conclusion&lt;/h3&gt;&lt;div&gt;Everything about Go encourages standardization and openness&amp;hellip; which not only makes it &lt;i&gt;possible &lt;/i&gt;to use other people&amp;rsquo;s code, it makes it &lt;b&gt;easy&lt;/b&gt;&lt;i&gt;&amp;nbsp;&lt;/i&gt;to use other people&amp;rsquo;s code. I hope to see Go blossom as a language embraced by the open source community, as they discover the strengths that make it uniquely qualified for open source projects.&lt;/div&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>What I love about Go</title>
-      <link>https://npf.io/2013/01/what-i-love-about-go/</link>
-      <pubDate>Fri, 25 Jan 2013 08:49:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2013/01/what-i-love-about-go/</guid>
-      <description>&lt;p&gt;&lt;h2&gt;&lt;span style=&#34;font-weight: normal;&#34;&gt;The best things about Go have nothing to do with the language.&lt;/span&gt;&lt;/h2&gt;&lt;h3&gt;Single Executable Output&lt;/h3&gt;Go compiles into a single executable that runs natively on the target OS. No more needing to install java, .net, mono, python, ruby, whatever. Here&amp;rsquo;s your executable, feel free to run it like a normal person. &amp;nbsp;And you can target builds for any major OS (windows, linux, OSX, BSD).&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;One True Coding Style&lt;/h3&gt;GoFmt is a build tool that formats your source code in the standard Go format. No more arguing about spacing or brace matching or whatever. There is one true format, and now we can all move on&amp;hellip; and even better, many editors integrate GoFmt so that your code can be automatically formatted whenever you save.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Integrated Testing&lt;/h3&gt;Testing is integrated into the language. Name a file with the suffix _test.go and it&amp;rsquo;ll only build under test. You run tests simply by running &amp;ldquo;go test&amp;rdquo; in the directory. You can also define runnable example code with output that is checked at test time. &amp;nbsp;This example code is then included in the documentation (see below)&amp;hellip; now you&amp;rsquo;ll never have examples in documentation with errors in them. &amp;nbsp;Finally, you can have built-in benchmarks that are controlled by the go tool to automatically run enough iterations to get a significant result, displayed in number of operations per second.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Integrated Documentation&lt;/h3&gt;HTML documentation is built into the language. No need for ugly HTML in your source or weirdly formatted comments. Plaintext comments are turned into very legible documentation, and see above for examples that actually run and can have their output tested as a part of the tests.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;DVCS&lt;/h3&gt;Support for distributed version control is built into the language. Want to reference code from a project on github? &amp;nbsp;Just use the url of the project as the import path in your code, &lt;i&gt;e.g.&lt;/i&gt; import &amp;ldquo;github.com/jsmith/foo&amp;rdquo; &amp;nbsp; When you build your code it&amp;rsquo;ll get downloaded and built automatically.&lt;br /&gt;&lt;br /&gt;Want to get a tool written in go? &amp;nbsp;From the command line type &amp;ldquo;go get github.com/jsmith/bar&amp;rdquo; - go will download the source, build it, and install the executable in your path. &amp;nbsp;Now you can run bar.&lt;br /&gt;&lt;br /&gt;Any git, SVN, mercurial, or bazaar repository will work, but all the major public source code sites are supported out of the box - github, bitbucket, google code, and launchpad.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Other Cool Stuff&lt;/h3&gt;&lt;div&gt;Debugging with gdb&lt;br /&gt;Integrated profiling tools&lt;br /&gt;Easy to define custom includes per targeted OS/architecture (simple _windows will only build if targetting windows)&lt;br /&gt;Integrated code parsers and lexers.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h4&gt;Do you even care about the actual language anymore? &amp;nbsp;I wouldn&amp;rsquo;t. &amp;nbsp;But just in case:&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;C-like&lt;/li&gt;&lt;li&gt;Garbage Collected&lt;/li&gt;&lt;li&gt;Statically typed&lt;/li&gt;&lt;li&gt;&amp;hellip;but with type inference so you&amp;rsquo;re not typing boilerplate all the time: a := &amp;ldquo;my string&amp;rdquo;&lt;/li&gt;&lt;li&gt;Implicit interfaces - if a type has the methods of an interface, it implements the interface&lt;/li&gt;&lt;li&gt;Pointers but no pointer arithmetic (thank god)&lt;/li&gt;&lt;li&gt;First class functions&lt;/li&gt;&lt;li&gt;No exceptions&lt;/li&gt;&lt;li&gt;&amp;hellip;but multiple returns from a single function so you don&amp;rsquo;t have to overload return types&lt;/li&gt;&lt;li&gt;Everything is UTF8 (both strings and source code.. yes you can have Θ as a variable name now)&lt;/li&gt;&lt;li&gt;Highly performant asynchronous code that is trivial to write&lt;/li&gt;&lt;li&gt;A deep standard library that does most of the boring stuff for you&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;/p&gt;
 </description>
     </item>
     
