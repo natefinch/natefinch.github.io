@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+
+  <title> Writing Go Applications with Reusable Logic  &middot; npf.io </title>
+
+  
+  <link rel="stylesheet" href="https://npf.io/css/poole.css">
+  <link rel="stylesheet" href="https://npf.io/css/syntax.css">
+  <link rel="stylesheet" href="https://npf.io/css/hyde.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="npf.io" />
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+  <link href='https://fonts.googleapis.com/css?family=Raleway:400,300' rel='stylesheet' type='text/css'>
+
+  <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Raleway']
+      }
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1 class="brand"><a href="https://npf.io">npf.io</a></h1>
+      <p class="lead">
+       code by Nate Finch 
+      </p>
+    </div>
+
+
+
+    <ul class="sidebar-nav">
+      <li><a href="https://npf.io/blog">Posts</a></li>
+      
+        <li><a href="/about/">About </a></li>
+      
+      <br/>
+      <li>Code:</li>
+        
+        
+        <li><a href="https://github.com/natefinch/deputy">Deputy </a></li>
+        
+        <li><a href="https://github.com/natefinch/gorram">Gorram </a></li>
+        
+        
+        
+        
+        
+        
+        <li><a href="https://github.com/natefinch/pie">Pie </a></li>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <li><a href="https://github.com/natefinch/npipe">NPipe </a></li>
+        
+        
+        
+        <li><a href="https://github.com/natefinch/lumberjack">Lumberjack </a></li>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      
+    </ul>
+      <a href="https://twitter.com/natethefinch"><i class="fa fa-twitter-square"></i></a>&nbsp;&nbsp;
+      
+      
+      <a href="https://github.com/natefinch"><i class="fa fa-github-square"></i></a>&nbsp;&nbsp;
+      <a href="https://plus.google.com/&#43;NateFinch"><i class="fa fa-google-plus"></i></a>
+
+    <p class="footnote">powered by <a href="http://hugo.spf13.com">Hugo</a> <br/>
+    &copy; 2016 Nate Finch. All rights reserved.</p>
+    
+  </div>
+</div>
+
+
+  <div class="content container">
+    <div class="post">
+    <h1 class="post-title">Writing Go Applications with Reusable Logic</h1>
+    <span class="post-date">Oct 18, 2016</span>
+    
+	    
+    	<p class="seriesname">Series: <a href="https://npf.io/series/writing-go-applications">Writing Go Applications</a></p>
+    
+    
+
+<p>Writing libraries in Go is a relatively well-covered topic, I think&hellip; but I see
+a lot fewer posts about writing commands.  When it comes down to it, all Go code
+ends up in a command.  So let&rsquo;s talk about it!  This will be the first in a
+series, since I ended up having a lot more to say than I realized.</p>
+
+<p>Today I&rsquo;m going to focus on basic project layout, with the aims of optimizing
+for reusability and testability.</p>
+
+<p>There are three unique bits about commands that influence how I structure my
+code when writing a command rather than a library:</p>
+
+<h2 id="package-main">Package main</h2>
+
+<p>This is the only package a go program must have.  However, aside from telling
+the go tool to produce a binary, there&rsquo;s one other unique thing about package
+main - no one can import code from it.  That means that any code you put in
+package main can not be used directly by another project, and that makes the OSS
+gods sad.  Since one of the main reasons I write open source code is so that
+other developers may use it, this goes directly against my desires.</p>
+
+<p>There have been many times when I&rsquo;ve thought &ldquo;I&rsquo;d love to use the logic behind X
+Go binary as a part of my code&rdquo;.  If that logic is in package main, you can&rsquo;t.</p>
+
+<h2 id="os-exit">os.Exit</h2>
+
+<p>If you care about producing a binary that does what users expect, then you
+should care about what exit code your binary exits with.  The only way to do
+that is to call os.Exit (or call something that calls os.Exit, like log.Fatal).</p>
+
+<p>However, you can&rsquo;t test a function that calls os.Exit.  Why?  Because calling
+os.Exit during a test <em>exits the test executable</em>.  This is quite hard to figure
+out if you end up doing it by accident (which I know from personal experience).
+When running tests, no tests actually fail, the tests just exit sooner than they
+should, and you&rsquo;re left scratching your head.</p>
+
+<p>The easiest thing to do is <em>don&rsquo;t call os.Exit</em>.  Most of your code shouldn&rsquo;t be
+calling os.Exit anyway&hellip; someone&rsquo;s going to get real mad if they import your
+library and it randomly causes their application to terminate under some
+conditions.</p>
+
+<p>So, only call os.Exit in exactly one place, as near to the &ldquo;exterior&rdquo; of your
+application as you can get, with minimal entry points.  Speaking of which&hellip;</p>
+
+<h2 id="func-main">func main()</h2>
+
+<p>It&rsquo;s is the one function all go commands must have.  You&rsquo;d think that
+everyone&rsquo;s func main would be different, after all, everyone&rsquo;s application is
+different, right?  Well, it turns out, if you really want to make your code
+testable and reusable, there&rsquo;s really only approximately one right answer to
+&ldquo;what&rsquo;s in your main function?&rdquo;</p>
+
+<p>In fact, I&rsquo;ll go one step further, I think there&rsquo;s only approximately one right
+answer to &ldquo;what&rsquo;s in your package main?&rdquo; and that&rsquo;s this:</p>
+
+<pre><code class="language-go">// command main documentation here.
+package main
+
+import (
+    &quot;os&quot;
+
+    &quot;github.com/you/proj/cli&quot;
+)
+func main{
+    os.Exit(cli.Run())
+}
+</code></pre>
+
+<p>That&rsquo;s it.  This is approximately the most minimal code you can have in a useful
+package main, thereby wasting no effort on code that others can&rsquo;t reuse.  We
+isolated os.Exit to a single line function that is the very exterior of our
+project, and effectively needs no testing.</p>
+
+<h2 id="project-layout">Project Layout</h2>
+
+<p>Let&rsquo;s get a look at the total package layout:</p>
+
+<pre><code>/home/you/src/github.com/you/proj $ tree
+.
+├── cli
+│   ├── parse.go
+│   ├── parse_test.go
+│   └── run.go
+├── LICENSE
+├── main.go
+├── README.md
+└── run
+    ├── command.go
+    └── command_test.go
+</code></pre>
+
+<p>We know what&rsquo;s in main.go&hellip; and in fact, main.go is the only go file in the
+main package. LICENSE and README.md should be self-explanatory. (Always
+use a license!  Otherwise many people won&rsquo;t be able to use your code.)</p>
+
+<p>Now we come to the two subdirectories, run and cli.</p>
+
+<h3 id="cli">CLI</h3>
+
+<p>The cli package contains the command line parsing logic.  This is where you
+define the UI for your binary.  It contains flag parsing, arg parsing, help
+text, etc.</p>
+
+<p>It also contains the code that returns the exit code to func main (which gets
+sent to os.Exit).  Thus, you can test exit codes returned from those functions,
+instead of trying to test exit codes your binary as a whole produces.</p>
+
+<h3 id="run">Run</h3>
+
+<p>The run package contains the meat of the logic of your binary.  You should write
+this package as if it were a standalone library.  It should be far removed from
+any thoughts of CLI, flags, etc.  It should take in structured data and return
+errors.  Pretend it might get called by some other library, or a web service, or
+someone else&rsquo;s binary.  Make as few assumptions as possible about how it&rsquo;ll be
+used, just as you would a generic library.</p>
+
+<p>Now, obviously, larger projects will require more than one directory.  In fact,
+you may want to split out your logic into a separate repo.  This kind of depends
+on how likely you think it&rsquo;ll be that people want to reuse your logic.  If you
+think it&rsquo;s highly likely, I recommend making the logic a separate directory. In
+my mind, a separate directory for the logic shows a stronger committment to
+quaity and stability than some random directory nestled deep in a repo
+somewhere.</p>
+
+<h2 id="putting-it-together">Putting it together</h2>
+
+<p>The cli package forms a command line frontend for the logic in the run package.
+If someone else comes along, sees your binary, and wants to use the logic behind
+it for a web API, they can just import the run package and use that logic
+directly.  Likewise, if they don&rsquo;t like your CLI options, they can easily write
+their own CLI parser and use it as a frontend to the run package.</p>
+
+<p>This is what I mean about reusable code.  I never want someone to have to hack
+apart my code to get more use out of it.  And the best way to do that is to
+separate the UI from the logic.  This is the key part.  <strong>Don&rsquo;t let your UI
+(CLI) concepts leak into your logic.</strong>  This is the best way to keep your logic
+generic, and your UI manageable.</p>
+
+<h3 id="larger-projects">Larger Projects</h3>
+
+<p>This layout is good for small to medium projects.  There&rsquo;s a single binary that
+is in the root of the repo, so it&rsquo;s easier to go-get than if it&rsquo;s under multiple
+subdirectories.  Larger projects pretty much throw everything out the window.
+They may have multiple binaries, in which case they can&rsquo;t all be in the root of
+the repo.  However, such projects usually also have custom build steps and
+require more than just go-get (which I&rsquo;ll talk about later).</p>
+
+    
+
+    
+        
+	    
+	    <hr/>
+    	<p><a href="" id="series"></a>This is a post in the <b>Writing Go Applications</b> series.<br/>
+    	Other posts in this series:</p>
+        
+        
+        <ul class="series">
+        
+            <li>Oct 18, 2016 - 
+            
+                Writing Go Applications with Reusable Logic
+            
+            </li>
+        
+        </ul>
+	 
+	
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") 
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'npfio';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by <a href="http://disqus.com/?ref_noscript">Disqus.</a></noscript>
+</div>
+</div> 
+
+</body>w
+</html>
