@@ -725,7 +725,7 @@ func TestRunDocker(t *testing.T) {
 }
 
 func TestHelperProcess(t *testing.T){
-    if os.GetEnv(&amp;quot;GO_WANT_HELPER_PROCESS&amp;quot;) != &amp;quot;1&amp;quot; {
+    if os.Getenv(&amp;quot;GO_WANT_HELPER_PROCESS&amp;quot;) != &amp;quot;1&amp;quot; {
         return
     }
     // some code here to check arguments perhaps?
