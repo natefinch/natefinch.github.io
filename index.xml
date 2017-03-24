@@ -776,7 +776,7 @@ the opportunity to add context to the error, and so people calling your code
 have to do some mental gymnastics (and/or look at the implementation) to
 understand what an error really means.&lt;/p&gt;
 
-&lt;p&gt;A further problem for both these cases is that when debuging, you lose all
+&lt;p&gt;A further problem for both these cases is that when debugging, you lose all
 knowledge of where an error came from.  There&amp;rsquo;s no stack trace, there&amp;rsquo;s not even
 a file and line number of where the error originated.  This can make debugging
 errors fairly difficult, unless you&amp;rsquo;re careful to make your error messages easy
