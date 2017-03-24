@@ -2,8 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://npf.io/</loc>
-    <lastmod>2016-10-18T22:08:09-04:00</lastmod>
+    <loc>https://npf.io/2017/03/3.5yrs-500k-lines-of-go/</loc>
+    <lastmod>2017-03-24T08:01:00+00:00</lastmod>
   </url>
   
   <url>
@@ -97,7 +97,7 @@
   </url>
   
   <url>
-    <loc>https://npf.io/npipe/</loc>
+    <loc>https://npf.io/npipe.v2/</loc>
     <lastmod>2014-08-01T10:15:15+00:00</lastmod>
   </url>
   
@@ -112,7 +112,7 @@
   </url>
   
   <url>
-    <loc>https://npf.io/lumberjack/</loc>
+    <loc>https://npf.io/lumberjack.v2/</loc>
     <lastmod>2014-07-28T11:28:15+00:00</lastmod>
   </url>
   
@@ -204,6 +204,171 @@
   <url>
     <loc>https://npf.io/2012/11/go-win-stuff/</loc>
     <lastmod>2012-11-16T11:01:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/beyond-compare/</loc>
+    <lastmod>2014-05-14T13:09:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/blog/</loc>
+    <lastmod>2017-03-24T08:01:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/code/</loc>
+    <lastmod>2016-10-06T23:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/desc/</loc>
+    <lastmod>2014-08-12T11:09:35+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/diff/</loc>
+    <lastmod>2014-05-14T13:09:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/discourse/</loc>
+    <lastmod>2014-10-01T06:31:49-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/enums/</loc>
+    <lastmod>2015-12-02T00:00:19-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/error-handling/</loc>
+    <lastmod>2015-10-10T00:00:19-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/errors/</loc>
+    <lastmod>2015-10-10T00:00:19-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/executables/</loc>
+    <lastmod>2015-06-30T12:44:29-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/go/</loc>
+    <lastmod>2016-10-18T22:08:09-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/godoc/</loc>
+    <lastmod>2015-06-11T07:37:00-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/golang/</loc>
+    <lastmod>2016-10-18T22:08:09-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/hugo/</loc>
+    <lastmod>2016-10-16T00:01:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/series-desc/hugo-101/</loc>
+    <lastmod>2014-08-12T11:09:35+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/series/hugo-101/</loc>
+    <lastmod>2014-08-08T11:12:44+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/juju/</loc>
+    <lastmod>2014-10-01T06:31:49-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/open-source/</loc>
+    <lastmod>2013-01-29T07:45:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/package/</loc>
+    <lastmod>2015-06-30T12:44:29-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/persistence/</loc>
+    <lastmod>2014-07-07T08:25:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/plugins/</loc>
+    <lastmod>2015-05-25T22:44:32-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/programming/</loc>
+    <lastmod>2016-10-18T22:08:09-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/series/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/series-desc/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/tags/testing/</loc>
+    <lastmod>2015-06-26T06:41:56-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/series/writing-go-applications/</loc>
+    <lastmod>2016-10-18T22:08:09-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://npf.io/</loc>
+    <lastmod>2017-03-24T08:01:00+00:00</lastmod>
+    <priority>0</priority>
   </url>
   
 </urlset>
