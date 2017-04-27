@@ -9,7 +9,7 @@
 
   
 
-  <title> Go Plugins are as Easy as Pie  &middot; npf.io </title>
+  <title> 3.5 Years, 500k Lines of Go (Part 2)  &middot; npf.io </title>
 
   
   <link rel="stylesheet" href="https://npf.io/css/poole.css">
@@ -152,70 +152,87 @@
 
   <div class="content container">
     <div class="post">
-    <h1 class="post-title">Go Plugins are as Easy as Pie</h1>
-    <span class="post-date">May 25, 2015</span>
+    <h1 class="post-title">3.5 Years, 500k Lines of Go (Part 2)</h1>
+    <span class="post-date">Apr 19, 2017</span>
+    
+	    
+    	<p class="seriesname">Series: <a href="https://npf.io/series/3.5-years-of-go">3.5 Years of Go</a></p>
     
     
 
-<p>When people hear that Go only supports static linking, one of the things they
-eventually realize is that they can&rsquo;t have traditional plugins via dlls/libs (in
-compiled languages) or scripts (in interpreted languages).  However, that
-doesn&rsquo;t mean that you can&rsquo;t have plugins.  Some people suggest doing &ldquo;compiled-
-in&rdquo; plugins - but to me, that&rsquo;s not a plugin, that&rsquo;s just code.  Some people
-suggest just running sub processes and sending messages via their CLI, but that
-runs into CLI parsing issues and requires runnnig a new process for every
-request.  The last option people think of is using RPC to an external process,
-which may also seem cumbersome, but it doesn&rsquo;t have to be.</p>
+<p>This is a second installment of my takeaways working on
+<a href="https://github.com/juju/juju">Juju</a> at Canonical.  See <a href="/2017/03/3.5yrs-500k-lines-of-go/">Part
+1</a> for the full intro.</p>
 
-<h3 id="serving-up-some-pie">Serving up some pie</h3>
+<p>At the end of the last post, I promised to talk about APIs, versioning, the
+database, refactoring, logging, idioms, and code reviews.  So let&rsquo;s get started.</p>
 
-<p>I&rsquo;d like to introduce you to <a href="https://github.com/natefinch/pie">https://github.com/natefinch/pie</a> - this is a Go
-package which contains a toolkit for writing plugins in Go.  It uses processes
-external to the main program as the plugins, and communicates with them via RPC
-over the plugin&rsquo;s stdin and stout.  Having the plugin as an external process can
-actually has several benefits:</p>
+<h2 id="apis">APIs</h2>
 
-<ul>
-<li>If the plugin crashes, it won&rsquo;t crash your process.</li>
-<li>The plugin is not in your process&rsquo; memory space, so it can&rsquo;t do anything nasty.</li>
-<li>The plugin can be written in any language, not just Go.</li>
-</ul>
+<h3 id="api-technology">API Technology</h3>
 
-<p>I think this last point is actually the most valuable.  One of the nicest things
-about Go applications is that they&rsquo;re just copy-and-run.  No one even needs to
-know they were written in Go.  With plugins as external processes, this remains
-true.  People wanting to extend your application can do so in the language of
-their choice, so long as it supports the codec your application has chosen for
-RPC.</p>
+<p>Juju uses JSON RPC over websockets for communication, both server to server and
+client to server.  This was a very good choice for us, in my opinion.</p>
 
-<p>The fact that the communication occurs over stdin and stdout means that there is
-no need to worry about negotiating ports, it&rsquo;s easily cross platform compatible,
-and it&rsquo;s very secure.</p>
+<p>REST may be popular with web developers, but I find its resource-oriented
+approach to be entirely too limiting for basically any application more than a
+simple storage server.  You start having to bend over backwards to make actions
+look like CRUD. The classic case in REST is transferring money from one bank
+account to another. The answer in REST is to make this into a Create of a
+&ldquo;Transfer&rdquo; value that has a debit account and a credit account values.  Which is
+horrible.</p>
 
-<h3 id="orthogonality">Orthogonality</h3>
+<p>Writing code is 99% calling functions.  And RPC is just calling functions <em>over
+there</em>. This is really what everyone wants to do, so how about we just let
+people do it.</p>
 
-<p>Pie is written to be a very simple set of functions that help you set up
-communication between your process and a plugin process.  Once you make a couple
-calls to pie, you then need to work out your own way to use the RPC connection
-created.  Pie does not attempt to be an all-in-one plugin framework, though you
-could certainly use it as the basis for one.</p>
+<h3 id="api-versioning">API Versioning</h3>
 
-<h3 id="why-is-it-called-pie">Why is it called pie?</h3>
+<p>When I joined Juju I learned that they intended the Juju API to be <strong>both</strong>
+backward compatible and forward compatible.  At first, this seemed like a big
+mistake.  Surely such restrictions would strangle innovation and make change
+impossible.  Turns out this was not such a terrible idea.</p>
 
-<p>Because if you pronounce API like &ldquo;a pie&rdquo;, then all this consuming and serving
-of APIs becomes a lot more palatable.  Also, pies are the ultimate pluggable
-interface - depending on what&rsquo;s inside, you can get dinner, dessert, a snack, or
-even breakfast.  Plus, then I get to say that plugins in Go are as easy as&hellip;
-well, you know.</p>
+<p>As a product requirement, it makes sense for Juju.  Many users of Juju may have
+multiple deployments of Juju running different versions.  Maybe you have some
+really stable infrastructure on an older version that runs just fine.  You don&rsquo;t
+want to touch it because there&rsquo;s really not reason.  And maybe you have some new
+environments that you really want to be able to leverage the newest and best
+features of Juju.  No one wants to have to keep a different CLI binary around
+for each remote environment, what a pain.</p>
 
-<h3 id="conclusion">Conclusion</h3>
-
-<p>I plan to be using pie in one of my own side projects.  Take it out for a spin
-in one of your projects and let me know what you think.  Happy eating!</p>
+<p>Because we&rsquo;re running json RPC, it&rsquo;s fairly easy to keep backwards and forwards
+compatibility.  Older versions of APIs will drop unknown fields in structs on
+the floor when they unmarshal API values.  Thus, if you design new features
+around new fields in a struct, then you can gracefully degrade functionality
+when talking to an older server.  Maybe</p>
 
     
 
-     
+    
+        
+	    
+	    <hr/>
+    	<p><a href="" id="series"></a>This is a post in the <b>3.5 Years of Go</b> series.<br/>
+    	Other posts in this series:</p>
+        
+        
+        <ul class="series">
+        
+            <li>Apr 19, 2017 - 
+            
+                3.5 Years, 500k Lines of Go (Part 2)
+            
+            </li>
+        
+            <li>Mar 24, 2017 - 
+            
+                <a href="https://npf.io/2017/03/3.5yrs-500k-lines-of-go/">3.5 Years, 500k Lines of Go (Part 1) </a>
+            
+            </li>
+        
+        </ul>
+	 
 	
     <div id="disqus_thread"></div>
 <script type="text/javascript">

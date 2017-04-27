@@ -7,7 +7,66 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2017 Nate Finch</copyright>
-    <updated>Fri, 24 Mar 2017 08:01:00 UTC</updated>
+    <updated>Wed, 19 Apr 2017 19:01:00 UTC</updated>
+    
+    
+    <item>
+      <title>3.5 Years, 500k Lines of Go (Part 2)</title>
+      <link>https://npf.io/2017/04/3.5yrs-500k-lines-of-go-part2/</link>
+      <pubDate>Wed, 19 Apr 2017 19:01:00 UTC</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2017/04/3.5yrs-500k-lines-of-go-part2/</guid>
+      <description>
+
+&lt;p&gt;This is a second installment of my takeaways working on
+&lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt; at Canonical.  See &lt;a href=&#34;https://npf.io/2017/03/3.5yrs-500k-lines-of-go/&#34;&gt;Part
+1&lt;/a&gt; for the full intro.&lt;/p&gt;
+
+&lt;p&gt;At the end of the last post, I promised to talk about APIs, versioning, the
+database, refactoring, logging, idioms, and code reviews.  So let&amp;rsquo;s get started.&lt;/p&gt;
+
+&lt;h2 id=&#34;apis&#34;&gt;APIs&lt;/h2&gt;
+
+&lt;h3 id=&#34;api-technology&#34;&gt;API Technology&lt;/h3&gt;
+
+&lt;p&gt;Juju uses JSON RPC over websockets for communication, both server to server and
+client to server.  This was a very good choice for us, in my opinion.&lt;/p&gt;
+
+&lt;p&gt;REST may be popular with web developers, but I find its resource-oriented
+approach to be entirely too limiting for basically any application more than a
+simple storage server.  You start having to bend over backwards to make actions
+look like CRUD. The classic case in REST is transferring money from one bank
+account to another. The answer in REST is to make this into a Create of a
+&amp;ldquo;Transfer&amp;rdquo; value that has a debit account and a credit account values.  Which is
+horrible.&lt;/p&gt;
+
+&lt;p&gt;Writing code is 99% calling functions.  And RPC is just calling functions &lt;em&gt;over
+there&lt;/em&gt;. This is really what everyone wants to do, so how about we just let
+people do it.&lt;/p&gt;
+
+&lt;h3 id=&#34;api-versioning&#34;&gt;API Versioning&lt;/h3&gt;
+
+&lt;p&gt;When I joined Juju I learned that they intended the Juju API to be &lt;strong&gt;both&lt;/strong&gt;
+backward compatible and forward compatible.  At first, this seemed like a big
+mistake.  Surely such restrictions would strangle innovation and make change
+impossible.  Turns out this was not such a terrible idea.&lt;/p&gt;
+
+&lt;p&gt;As a product requirement, it makes sense for Juju.  Many users of Juju may have
+multiple deployments of Juju running different versions.  Maybe you have some
+really stable infrastructure on an older version that runs just fine.  You don&amp;rsquo;t
+want to touch it because there&amp;rsquo;s really not reason.  And maybe you have some new
+environments that you really want to be able to leverage the newest and best
+features of Juju.  No one wants to have to keep a different CLI binary around
+for each remote environment, what a pain.&lt;/p&gt;
+
+&lt;p&gt;Because we&amp;rsquo;re running json RPC, it&amp;rsquo;s fairly easy to keep backwards and forwards
+compatibility.  Older versions of APIs will drop unknown fields in structs on
+the floor when they unmarshal API values.  Thus, if you design new features
+around new fields in a struct, then you can gracefully degrade functionality
+when talking to an older server.  Maybe&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -1914,81 +1973,6 @@ nicely. And what&amp;rsquo;s great is that this is now all automatic&amp;hellip;
 updated with links to the new posts in the series, and any new series I make,
 regardless of the name, will get the nice list of posts at the bottom for that
 series.&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Hugo: Beyond the Defaults</title>
-      <link>https://npf.io/2014/08/hugo-beyond-the-defaults/</link>
-      <pubDate>Fri, 08 Aug 2014 10:07:46 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2014/08/hugo-beyond-the-defaults/</guid>
-      <description>&lt;p&gt;In my last post, I had deployed what is almost the most basic Hugo site
-possible.  The only reason it took more than 10 minutes is because I wanted to
-tweak the theme.  However, there were a few things that immediately annoyed me.&lt;/p&gt;
-
-&lt;p&gt;I didn&amp;rsquo;t like having to type &lt;code&gt;hugo -t hyde&lt;/code&gt; all the time.  Well, turns out
-that&amp;rsquo;s not necessary.  You can just put  &lt;code&gt;theme = &amp;quot;hyde&amp;quot;&lt;/code&gt; in your site
-config, and never need to type it again.  Sweet.  Now to run the local server, I
-can just run &lt;code&gt;hugo server -w&lt;/code&gt;, and for final generation, I can just run &lt;code&gt;hugo&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Next is that my posts were under npf.io/post/postname &amp;hellip; which is not the end
-of the world, but I really like seeing the date in post URLs, so that it&amp;rsquo;s easy
-to tell if I&amp;rsquo;m looking at something really, really old.  So, I went about
-looking at how to do that.  Turns out, it&amp;rsquo;s trivial.  Hugo has a feature called
-&lt;a href=&#34;http://hugo.spf13.com/extras/permalinks&#34;&gt;permalinks&lt;/a&gt;, where you can define the
-format of the url for a section (a section is a top level division of your site,
-denoted by a top level folder under content/).  So, all you have to do is, in
-your site&amp;rsquo;s config file, put some config that looks like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[permalinks]
-    post = &amp;quot;/:year/:month/:filename/&amp;quot;
-    code = &amp;quot;/:filename/&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;While we&amp;rsquo;re at it, I had been putting my code in the top level content
-directory, because I wanted it available at npf.io/projectname  &amp;hellip;. however
-there&amp;rsquo;s no need to do that, I can put the code under the code directory and just
-give it a permalink to show at the top level of the site.  Bam, awesome, done.&lt;/p&gt;
-
-&lt;p&gt;One note: Don&amp;rsquo;t forget the slash at the end of the permalink.&lt;/p&gt;
-
-&lt;p&gt;But wait, this will move my &amp;ldquo;Hugo is Friggin&amp;rsquo; Awesome&amp;rdquo; post to a different URL,
-and Steve Francia already tweeted about it with the old URL.  I don&amp;rsquo;t want that
-url to send people to a 404 page!
-&lt;a href=&#34;http://hugo.spf13.com/extras/aliases&#34;&gt;Aliases&lt;/a&gt; to the rescue.  Aliases are just
-a way to make redirects from old URLs to new ones.  So I just put &lt;code&gt;aliases =
-[&amp;quot;/post/hugo-is-awesome/&amp;quot;]&lt;/code&gt; in the metadata at the top of that post, and now
-links to there will redirect to the new location.  Awesome.&lt;/p&gt;
-
-&lt;p&gt;Ok, so cool&amp;hellip; except that I don&amp;rsquo;t really want the content for my blog posts
-under content/post/ &amp;hellip; I&amp;rsquo;d prefer them under content/blog, but still be of type
-&amp;ldquo;post&amp;rdquo;.  So let&amp;rsquo;s change that too.  This is pretty easy, just rename the folder
-from post to blog, and then set up an
-&lt;a href=&#34;http://hugo.spf13.com/content/archetypes&#34;&gt;archetype&lt;/a&gt; to default the metadata
-under /blog/ to type = &amp;ldquo;post&amp;rdquo;.  Archetypes are default metadata for a section,
-so in this case, I make a file archetypes/blog.md and add type= &amp;ldquo;post&amp;rdquo; to the
-archetype&amp;rsquo;s metadata, and now all my content created with &lt;code&gt;hugo new
-blog/foo.md&lt;/code&gt; will be prepopulated as type &amp;ldquo;post&amp;rdquo;.  (does it matter if the type
-is post vs. blog?  no.  But it matters to me ;)&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://twitter.com/mlafeldt&#34;&gt;@mlafeldt&lt;/a&gt; on Twitter pointed out my RSS feed was
-wonky&amp;hellip;. wait, I have an RSS feed?  Yes, Hugo &lt;a href=&#34;http://hugo.spf13.com/templates/rss&#34;&gt;has that
-too&lt;/a&gt;.  There are feed XML files
-automatically output for most listing directories&amp;hellip; and the base feed for the
-site is a list of recent content.  So, I looked at what Hugo had made for me
-(index.xml in the root output directory)&amp;hellip; this is not too bad, but I don&amp;rsquo;t
-really like the title, and it&amp;rsquo;s including my code content in the feed as well as
-posts, which I don&amp;rsquo;t really want.  Luckily, this is trivial to fix.  The RSS xml
-file is output using a Go template just like everything else in the output.
-It&amp;rsquo;s trivial to adjust the template so that it only lists content of type
-&amp;ldquo;post&amp;rdquo;, and tweak the feed name, etc.&lt;/p&gt;
-
-&lt;p&gt;I was going to write about how I got the series stuff at the bottom of this
-page, but this post is long enough already, so I&amp;rsquo;ll just make that into its own
-post, as the next post in the series! :)&lt;/p&gt;
 </description>
     </item>
     
