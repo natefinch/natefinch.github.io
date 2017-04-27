@@ -19,8 +19,12 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
 
   
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
 
   
   <link href="https://npf.io/index.xml" rel="alternate" type="application/rss+xml" title="npf.io" />
@@ -58,7 +62,6 @@
       
       <br/> 
       <li>Code:</li>
-       
        
        
        
@@ -155,74 +158,6 @@
 <div class="posts">
 
       
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="https://npf.io/2017/04/3.5yrs-500k-lines-of-go-part2/">
-        3.5 Years, 500k Lines of Go (Part 2)
-      </a>
-    </h1>
-
-    <span class="post-date">Apr 19, 2017</span>
-
-    
-      
-      <p class="seriesname">Series: <a href="https://npf.io/series/3.5-years-of-go">3.5 Years of Go</a></p>
-    
-
-
-    
-
-<p>This is a second installment of my takeaways working on
-<a href="https://github.com/juju/juju">Juju</a> at Canonical.  See <a href="/2017/03/3.5yrs-500k-lines-of-go/">Part
-1</a> for the full intro.</p>
-
-<p>At the end of the last post, I promised to talk about APIs, versioning, the
-database, refactoring, logging, idioms, and code reviews.  So let&rsquo;s get started.</p>
-
-<h2 id="apis">APIs</h2>
-
-<h3 id="api-technology">API Technology</h3>
-
-<p>Juju uses JSON RPC over websockets for communication, both server to server and
-client to server.  This was a very good choice for us, in my opinion.</p>
-
-<p>REST may be popular with web developers, but I find its resource-oriented
-approach to be entirely too limiting for basically any application more than a
-simple storage server.  You start having to bend over backwards to make actions
-look like CRUD. The classic case in REST is transferring money from one bank
-account to another. The answer in REST is to make this into a Create of a
-&ldquo;Transfer&rdquo; value that has a debit account and a credit account values.  Which is
-horrible.</p>
-
-<p>Writing code is 99% calling functions.  And RPC is just calling functions <em>over
-there</em>. This is really what everyone wants to do, so how about we just let
-people do it.</p>
-
-<h3 id="api-versioning">API Versioning</h3>
-
-<p>When I joined Juju I learned that they intended the Juju API to be <strong>both</strong>
-backward compatible and forward compatible.  At first, this seemed like a big
-mistake.  Surely such restrictions would strangle innovation and make change
-impossible.  Turns out this was not such a terrible idea.</p>
-
-<p>As a product requirement, it makes sense for Juju.  Many users of Juju may have
-multiple deployments of Juju running different versions.  Maybe you have some
-really stable infrastructure on an older version that runs just fine.  You don&rsquo;t
-want to touch it because there&rsquo;s really not reason.  And maybe you have some new
-environments that you really want to be able to leverage the newest and best
-features of Juju.  No one wants to have to keep a different CLI binary around
-for each remote environment, what a pain.</p>
-
-<p>Because we&rsquo;re running json RPC, it&rsquo;s fairly easy to keep backwards and forwards
-compatibility.  Older versions of APIs will drop unknown fields in structs on
-the floor when they unmarshal API values.  Thus, if you design new features
-around new fields in a struct, then you can gracefully degrade functionality
-when talking to an older server.  Maybe</p>
-
-  </div>
-  
-  
   
   <div class="post">
     <h1 class="post-title">

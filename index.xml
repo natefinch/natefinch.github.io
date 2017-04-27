@@ -7,66 +7,7 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2017 Nate Finch</copyright>
-    <updated>Wed, 19 Apr 2017 19:01:00 UTC</updated>
-    
-    
-    <item>
-      <title>3.5 Years, 500k Lines of Go (Part 2)</title>
-      <link>https://npf.io/2017/04/3.5yrs-500k-lines-of-go-part2/</link>
-      <pubDate>Wed, 19 Apr 2017 19:01:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2017/04/3.5yrs-500k-lines-of-go-part2/</guid>
-      <description>
-
-&lt;p&gt;This is a second installment of my takeaways working on
-&lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt; at Canonical.  See &lt;a href=&#34;https://npf.io/2017/03/3.5yrs-500k-lines-of-go/&#34;&gt;Part
-1&lt;/a&gt; for the full intro.&lt;/p&gt;
-
-&lt;p&gt;At the end of the last post, I promised to talk about APIs, versioning, the
-database, refactoring, logging, idioms, and code reviews.  So let&amp;rsquo;s get started.&lt;/p&gt;
-
-&lt;h2 id=&#34;apis&#34;&gt;APIs&lt;/h2&gt;
-
-&lt;h3 id=&#34;api-technology&#34;&gt;API Technology&lt;/h3&gt;
-
-&lt;p&gt;Juju uses JSON RPC over websockets for communication, both server to server and
-client to server.  This was a very good choice for us, in my opinion.&lt;/p&gt;
-
-&lt;p&gt;REST may be popular with web developers, but I find its resource-oriented
-approach to be entirely too limiting for basically any application more than a
-simple storage server.  You start having to bend over backwards to make actions
-look like CRUD. The classic case in REST is transferring money from one bank
-account to another. The answer in REST is to make this into a Create of a
-&amp;ldquo;Transfer&amp;rdquo; value that has a debit account and a credit account values.  Which is
-horrible.&lt;/p&gt;
-
-&lt;p&gt;Writing code is 99% calling functions.  And RPC is just calling functions &lt;em&gt;over
-there&lt;/em&gt;. This is really what everyone wants to do, so how about we just let
-people do it.&lt;/p&gt;
-
-&lt;h3 id=&#34;api-versioning&#34;&gt;API Versioning&lt;/h3&gt;
-
-&lt;p&gt;When I joined Juju I learned that they intended the Juju API to be &lt;strong&gt;both&lt;/strong&gt;
-backward compatible and forward compatible.  At first, this seemed like a big
-mistake.  Surely such restrictions would strangle innovation and make change
-impossible.  Turns out this was not such a terrible idea.&lt;/p&gt;
-
-&lt;p&gt;As a product requirement, it makes sense for Juju.  Many users of Juju may have
-multiple deployments of Juju running different versions.  Maybe you have some
-really stable infrastructure on an older version that runs just fine.  You don&amp;rsquo;t
-want to touch it because there&amp;rsquo;s really not reason.  And maybe you have some new
-environments that you really want to be able to leverage the newest and best
-features of Juju.  No one wants to have to keep a different CLI binary around
-for each remote environment, what a pain.&lt;/p&gt;
-
-&lt;p&gt;Because we&amp;rsquo;re running json RPC, it&amp;rsquo;s fairly easy to keep backwards and forwards
-compatibility.  Older versions of APIs will drop unknown fields in structs on
-the floor when they unmarshal API values.  Thus, if you design new features
-around new fields in a struct, then you can gracefully degrade functionality
-when talking to an older server.  Maybe&lt;/p&gt;
-</description>
-    </item>
-    
+    <updated>Fri, 24 Mar 2017 08:01:00 UTC</updated>
     
     
     <item>
@@ -1303,6 +1244,108 @@ b := &amp;amp;a
 &lt;p&gt;Someone on the twitter discussion mentioned he couldn&amp;rsquo;t think of anything he disliked about C#, which just about made me spit my coffee across the room.  I programmed in C# for ~9 years, starting out porting some 1.1 code to 2.0, and leaving as 5.0 came out.  The list of features in C# as of 5.0 is gigantic.  Even being a developer writing in it 40+ hours a week for 9 years, there was still stuff I had to look up to remember how it worked.&lt;/p&gt;
 
 &lt;p&gt;I feel like my mastery of Go after a year of side projects was about equivalent to my mastery of C# after 9 years of full time development.  If we assume 1:1 correlation between time to master and size of the language, an order of magnitude sounds about right.&lt;/p&gt;
+</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Why Everyone Hates Go</title>
+      <link>https://npf.io/2014/10/why-everyone-hates-go/</link>
+      <pubDate>Tue, 14 Oct 2014 10:46:28 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2014/10/why-everyone-hates-go/</guid>
+      <description>&lt;p&gt;Obviously, not &lt;em&gt;everyone&lt;/em&gt; hates Go.  But there was a &lt;a href=&#34;https://www.quora.com/Why-does-Go-seem-to-be-the-most-heavily-
+criticised-among-the-newer-programming-languages?srid=uCiY&amp;amp;share=1&#34;&gt;quora
+question&lt;/a&gt; recently
+about why everyone criticizes Go so much. (sorry, I don&amp;rsquo;t normally post links to
+Quora, but it was the motivator for this post) Even before I saw the answers to
+the question, I knew what they&amp;rsquo;d consist of:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Go is a language stuck in the 70&amp;rsquo;s.&lt;/li&gt;
+&lt;li&gt;Go ignores 40 years of programming language research.&lt;/li&gt;
+&lt;li&gt;Go is a language for blue collar (mediocre) developers.&lt;/li&gt;
+&lt;li&gt;Gophers are ok with working in Java 1.0.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Unfortunately, the answers to the questions were more concerned with explaining
+why Go is &amp;ldquo;bad&amp;rdquo;, rather than why this gets under so many people&amp;rsquo;s skin.&lt;/p&gt;
+
+&lt;p&gt;When reading the answers I had a eureka moment, and I realized why it is. So
+here&amp;rsquo;s my answer to the same question. This is why Go is so heavily criticized,
+not why Go is &amp;ldquo;bad&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;s two awesome posts that inform my answer: Paul Graham&amp;rsquo;s
+&lt;a href=&#34;http://www.paulgraham.com/identity.html&#34;&gt;post&lt;/a&gt; about keeping your identity
+small, and Kathy Sierra&amp;rsquo;s &lt;a href=&#34;http://seriouspony.com/trouble-at-the-koolaid-
+point&#34;&gt;post&lt;/a&gt; about the Koolaid point. I encourage you to read those two posts, as
+they&amp;rsquo;re both very informative.  I hesitate to compare the horrific things that
+happen to women online with the pedantry of flamewars about programming
+languages, but the Koolaid Point is such a valid metaphor that I wanted to link
+to the article.&lt;/p&gt;
+
+&lt;p&gt;Paul says&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;people can never have a fruitful argument about
+something that&amp;rsquo;s part of their identity&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;em&gt;i.e.&lt;/em&gt; the subject hits too close to home,
+and their response becomes emotional rather than logical.&lt;/p&gt;
+
+&lt;p&gt;Kathy says&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;the hate wasn’t so much about the product/brand but that &lt;em&gt;other people were falling for it&lt;/em&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;em&gt;i.e.&lt;/em&gt; they&amp;rsquo;d drunk the kool-aid.&lt;/p&gt;
+
+&lt;p&gt;Go is the only recent language that takes the aforementioned 40 years of
+programming language research and tosses it out the window. Other new languages
+at least try to keep up with the Jones - Clojure, Scala, Rust - all try to
+incorporate &amp;ldquo;modern programming theory&amp;rdquo; into their design. Go actively tries
+not to. There is no pattern matching, there&amp;rsquo;s no borrowing, there&amp;rsquo;s no pure
+functional programming, there&amp;rsquo;s no immutable variables, there&amp;rsquo;s no option types,
+there&amp;rsquo;s no exceptions, there&amp;rsquo;s no classes, there&amp;rsquo;s no generics&amp;hellip;. there&amp;rsquo;s a lot
+Go doesn&amp;rsquo;t have. And in the beginning this was enough to merely earn it scorn.
+Even I am guilty of this. When I first heard about Go, I thought &amp;ldquo;What? No
+exceptions? Pass.&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;But then something happened - people started &lt;em&gt;using&lt;/em&gt; it. And liking it. And
+building big projects with it. This is the Koolaid-point - where people have
+started to drink the Koolaid and get fooled into thinking Go is a good
+language. And this is where the scorn turns into derision and attacks on the
+character of the people using it.&lt;/p&gt;
+
+&lt;p&gt;The most vocal Go detractors are those developers who write in ML-derived
+languages (Haskell, Rust, Scala, &lt;em&gt;et al&lt;/em&gt;) who have tied their preferred
+programming language into their identity. The mere existence of Go says
+&amp;ldquo;your views on what makes a good programming language are wrong&amp;rdquo;. And the more
+people that use and like Go, the more strongly they feel that they&amp;rsquo;re being told
+their choice of programming language - and therefore their identity - is wrong.&lt;/p&gt;
+
+&lt;p&gt;Note that basically no one in the Go community actually says this. But the Go
+philosophy of simplicity and pragmatism above all else is the polar opposite of
+what those languages espouse (in which complexity in the language is ok because
+it enforces correctness in the code). This is insulting to the people who tie
+their identity to that language. Whenever a post on Go makes it to the front
+page of Hacker News, it is an affront to everything they hold dear, and so you
+get comments like Go developers are stuck in the 70&amp;rsquo;s, or is only for blue-collar devs.&lt;/p&gt;
+
+&lt;p&gt;So, this is why I think people are so much more vocal about their dislike of Go:
+because it challenges their identity, and other people are falling for it. This
+is also why these posts so often mention Google and how the language would have
+died without them. Google is now the koolaid dispenser. The fact that they
+are otherwise generally thought of as a very talented pool of developers means
+that it is simultaneously more outrageous that they are fooling people and more
+insulting that their language flies in the face of ML-derived languages.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt;  I removed the &amp;ldquo;panties in a bunch&amp;rdquo; comment, since I was (correctly)
+scolded for being sexist, not to mention unprofessional.  My apologies to
+anyone I offended.&lt;/p&gt;
 </description>
     </item>
     
