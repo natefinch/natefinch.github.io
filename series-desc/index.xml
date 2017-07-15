@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+      <title>npf.io</title>
+      <generator uri="https://hugo.spf13.com">Hugo</generator>
+    <link>https://npf.io/series-desc/</link>
+    <language>en-us</language>
+    <author>Nate Finch</author>
+    <copyright>2016 Nate Finch</copyright>
+    <updated>Wed, 24 Aug 2016 11:09:35 UTC</updated>
+    
+    
+    
+    
+    
+  </channel>
+</rss>
