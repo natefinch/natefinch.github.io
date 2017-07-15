@@ -3,11 +3,81 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>https://npf.io/index.xml</link>
+    <link>https://npf.io/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2017 Nate Finch</copyright>
-    <updated>Fri, 24 Mar 2017 08:01:00 UTC</updated>
+    <updated>Sat, 15 Jul 2017 15:55:43 &#43;0100</updated>
+    
+    
+    <item>
+      <title>Adapting Functions</title>
+      <link>https://npf.io/2017/07/adapting-funcs/</link>
+      <pubDate>Sat, 15 Jul 2017 15:55:43 &#43;0100</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2017/07/adapting-funcs/</guid>
+      <description>&lt;p&gt;A question came up at Gophercon about using functions as arguments, and what to
+do when you have a function that you want to use that doesn&amp;rsquo;t quite match the
+signature.  Here&amp;rsquo;s an example:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type Translator func(string) string
+
+func RunTwice(translate Translator, input string) string {
+    return translate(translate(input))
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, what if you want to use RunTwice with a function that needs more inputs
+than just a string?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func Append(orig, suffix string) string {
+    return orig + suffix
+}
+
+func do() {
+    orig := &amp;quot;awesome&amp;quot;
+    bang := &amp;quot;!&amp;quot;
+    s := RunTwice(Append(orig, )) // wait, that won&#39;t work
+    fmt.Println(s)
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The answer is the magic of closures. Closures are anonymous functions that
+&amp;ldquo;close over&amp;rdquo; or save copies of all local variables so they can be used later.
+You can write a closure that captures the bang, and returns a function that&amp;rsquo;ll
+have the Translator signature.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func do() string {
+    orig := &amp;quot;awesome&amp;quot;
+    bang := &amp;quot;!&amp;quot;
+    bangit := func(s string) string {
+        return Append(s, bang)
+    }
+    return RunTwice(bangit(orig))
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Yay, that works.  But it&amp;rsquo;s not reusable outside the do function.  That may be
+fine, it may not. If you want to do it in a reusable way (like, a lot of people
+may want to adapt Append to return a Translator, you can make a dedicated
+function for it like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func AppendTranslator(suffix string) Translator {
+    return func(s string) string {
+        return Append(s, suffix)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In AppendTranslator, we return a closure that captures the suffix, and returns a
+function that, when called, will append that suffix to the string passed to the
+Translator.&lt;/p&gt;
+
+&lt;p&gt;And now you can use AppendTranslator with RunTwice.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -320,7 +390,7 @@ database, refactoring, logging, idioms, code reviews, etc.&lt;/p&gt;
     <item>
       <title>Writing Go Applications with Reusable Logic</title>
       <link>https://npf.io/2016/10/reusable-commands/</link>
-      <pubDate>Tue, 18 Oct 2016 22:08:09 EDT</pubDate>
+      <pubDate>Tue, 18 Oct 2016 22:08:09 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2016/10/reusable-commands/</guid>
       <description>
@@ -730,7 +800,7 @@ This now prevents passing in a constant string that looks like it might be right
     <item>
       <title>Returning Errors</title>
       <link>https://npf.io/2015/10/errors/</link>
-      <pubDate>Sat, 10 Oct 2015 00:00:19 EDT</pubDate>
+      <pubDate>Sat, 10 Oct 2015 00:00:19 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/10/errors/</guid>
       <description>&lt;p&gt;There are basically two ways to return errors in Go:&lt;/p&gt;
@@ -844,7 +914,7 @@ more difficult down the road.&lt;/p&gt;
     <item>
       <title>Take control of your commands with Deputy</title>
       <link>https://npf.io/2015/06/deputy/</link>
-      <pubDate>Tue, 30 Jun 2015 12:44:29 EDT</pubDate>
+      <pubDate>Tue, 30 Jun 2015 12:44:29 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/deputy/</guid>
       <description>
@@ -938,7 +1008,7 @@ not finished, it will be killed and an error returned.&lt;/p&gt;
     <item>
       <title>Testing os/exec.Command</title>
       <link>https://npf.io/2015/06/testing-exec-command/</link>
-      <pubDate>Fri, 26 Jun 2015 06:41:56 EDT</pubDate>
+      <pubDate>Fri, 26 Jun 2015 06:41:56 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/testing-exec-command/</guid>
       <description>&lt;p&gt;In &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we often have code that needs to run external
@@ -1060,7 +1130,7 @@ not testing your code at all).&lt;/p&gt;
     <item>
       <title>Sharing Godoc of a WIP Branch</title>
       <link>https://npf.io/2015/06/wip-godoc/</link>
-      <pubDate>Thu, 11 Jun 2015 07:37:00 EDT</pubDate>
+      <pubDate>Thu, 11 Jun 2015 07:37:00 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/wip-godoc/</guid>
       <description>&lt;p&gt;I had a problem yesterday - I wanted to use the excellent godoc.org to show
@@ -1107,7 +1177,7 @@ feedback on architecture before I dive into the reeds of the implementation.&lt;
     <item>
       <title>Go Plugins are as Easy as Pie</title>
       <link>https://npf.io/2015/05/pie/</link>
-      <pubDate>Mon, 25 May 2015 22:44:32 EDT</pubDate>
+      <pubDate>Mon, 25 May 2015 22:44:32 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/05/pie/</guid>
       <description>
@@ -1175,7 +1245,7 @@ in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
     <item>
       <title>Go Nitpicks</title>
       <link>https://npf.io/2014/10/go-nitpicks/</link>
-      <pubDate>Tue, 28 Oct 2014 06:17:21 EDT</pubDate>
+      <pubDate>Tue, 28 Oct 2014 06:17:21 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2014/10/go-nitpicks/</guid>
       <description>
@@ -1244,108 +1314,6 @@ b := &amp;amp;a
 &lt;p&gt;Someone on the twitter discussion mentioned he couldn&amp;rsquo;t think of anything he disliked about C#, which just about made me spit my coffee across the room.  I programmed in C# for ~9 years, starting out porting some 1.1 code to 2.0, and leaving as 5.0 came out.  The list of features in C# as of 5.0 is gigantic.  Even being a developer writing in it 40+ hours a week for 9 years, there was still stuff I had to look up to remember how it worked.&lt;/p&gt;
 
 &lt;p&gt;I feel like my mastery of Go after a year of side projects was about equivalent to my mastery of C# after 9 years of full time development.  If we assume 1:1 correlation between time to master and size of the language, an order of magnitude sounds about right.&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Why Everyone Hates Go</title>
-      <link>https://npf.io/2014/10/why-everyone-hates-go/</link>
-      <pubDate>Tue, 14 Oct 2014 10:46:28 EDT</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2014/10/why-everyone-hates-go/</guid>
-      <description>&lt;p&gt;Obviously, not &lt;em&gt;everyone&lt;/em&gt; hates Go.  But there was a &lt;a href=&#34;https://www.quora.com/Why-does-Go-seem-to-be-the-most-heavily-
-criticised-among-the-newer-programming-languages?srid=uCiY&amp;amp;share=1&#34;&gt;quora
-question&lt;/a&gt; recently
-about why everyone criticizes Go so much. (sorry, I don&amp;rsquo;t normally post links to
-Quora, but it was the motivator for this post) Even before I saw the answers to
-the question, I knew what they&amp;rsquo;d consist of:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Go is a language stuck in the 70&amp;rsquo;s.&lt;/li&gt;
-&lt;li&gt;Go ignores 40 years of programming language research.&lt;/li&gt;
-&lt;li&gt;Go is a language for blue collar (mediocre) developers.&lt;/li&gt;
-&lt;li&gt;Gophers are ok with working in Java 1.0.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Unfortunately, the answers to the questions were more concerned with explaining
-why Go is &amp;ldquo;bad&amp;rdquo;, rather than why this gets under so many people&amp;rsquo;s skin.&lt;/p&gt;
-
-&lt;p&gt;When reading the answers I had a eureka moment, and I realized why it is. So
-here&amp;rsquo;s my answer to the same question. This is why Go is so heavily criticized,
-not why Go is &amp;ldquo;bad&amp;rdquo;.&lt;/p&gt;
-
-&lt;p&gt;There&amp;rsquo;s two awesome posts that inform my answer: Paul Graham&amp;rsquo;s
-&lt;a href=&#34;http://www.paulgraham.com/identity.html&#34;&gt;post&lt;/a&gt; about keeping your identity
-small, and Kathy Sierra&amp;rsquo;s &lt;a href=&#34;http://seriouspony.com/trouble-at-the-koolaid-
-point&#34;&gt;post&lt;/a&gt; about the Koolaid point. I encourage you to read those two posts, as
-they&amp;rsquo;re both very informative.  I hesitate to compare the horrific things that
-happen to women online with the pedantry of flamewars about programming
-languages, but the Koolaid Point is such a valid metaphor that I wanted to link
-to the article.&lt;/p&gt;
-
-&lt;p&gt;Paul says&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;people can never have a fruitful argument about
-something that&amp;rsquo;s part of their identity&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;em&gt;i.e.&lt;/em&gt; the subject hits too close to home,
-and their response becomes emotional rather than logical.&lt;/p&gt;
-
-&lt;p&gt;Kathy says&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;the hate wasn’t so much about the product/brand but that &lt;em&gt;other people were falling for it&lt;/em&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;em&gt;i.e.&lt;/em&gt; they&amp;rsquo;d drunk the kool-aid.&lt;/p&gt;
-
-&lt;p&gt;Go is the only recent language that takes the aforementioned 40 years of
-programming language research and tosses it out the window. Other new languages
-at least try to keep up with the Jones - Clojure, Scala, Rust - all try to
-incorporate &amp;ldquo;modern programming theory&amp;rdquo; into their design. Go actively tries
-not to. There is no pattern matching, there&amp;rsquo;s no borrowing, there&amp;rsquo;s no pure
-functional programming, there&amp;rsquo;s no immutable variables, there&amp;rsquo;s no option types,
-there&amp;rsquo;s no exceptions, there&amp;rsquo;s no classes, there&amp;rsquo;s no generics&amp;hellip;. there&amp;rsquo;s a lot
-Go doesn&amp;rsquo;t have. And in the beginning this was enough to merely earn it scorn.
-Even I am guilty of this. When I first heard about Go, I thought &amp;ldquo;What? No
-exceptions? Pass.&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;But then something happened - people started &lt;em&gt;using&lt;/em&gt; it. And liking it. And
-building big projects with it. This is the Koolaid-point - where people have
-started to drink the Koolaid and get fooled into thinking Go is a good
-language. And this is where the scorn turns into derision and attacks on the
-character of the people using it.&lt;/p&gt;
-
-&lt;p&gt;The most vocal Go detractors are those developers who write in ML-derived
-languages (Haskell, Rust, Scala, &lt;em&gt;et al&lt;/em&gt;) who have tied their preferred
-programming language into their identity. The mere existence of Go says
-&amp;ldquo;your views on what makes a good programming language are wrong&amp;rdquo;. And the more
-people that use and like Go, the more strongly they feel that they&amp;rsquo;re being told
-their choice of programming language - and therefore their identity - is wrong.&lt;/p&gt;
-
-&lt;p&gt;Note that basically no one in the Go community actually says this. But the Go
-philosophy of simplicity and pragmatism above all else is the polar opposite of
-what those languages espouse (in which complexity in the language is ok because
-it enforces correctness in the code). This is insulting to the people who tie
-their identity to that language. Whenever a post on Go makes it to the front
-page of Hacker News, it is an affront to everything they hold dear, and so you
-get comments like Go developers are stuck in the 70&amp;rsquo;s, or is only for blue-collar devs.&lt;/p&gt;
-
-&lt;p&gt;So, this is why I think people are so much more vocal about their dislike of Go:
-because it challenges their identity, and other people are falling for it. This
-is also why these posts so often mention Google and how the language would have
-died without them. Google is now the koolaid dispenser. The fact that they
-are otherwise generally thought of as a very talented pool of developers means
-that it is simultaneously more outrageous that they are fooling people and more
-insulting that their language flies in the face of ML-derived languages.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt;  I removed the &amp;ldquo;panties in a bunch&amp;rdquo; comment, since I was (correctly)
-scolded for being sexist, not to mention unprofessional.  My apologies to
-anyone I offended.&lt;/p&gt;
 </description>
     </item>
     

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://npf.io/2017/07/adapting-funcs/</loc>
+    <lastmod>2017-07-15T15:55:43+01:00</lastmod>
+  </url>
   
   <url>
     <loc>https://npf.io/2017/03/3.5yrs-500k-lines-of-go/</loc>
@@ -212,14 +218,14 @@
   </url>
   
   <url>
-    <loc>https://npf.io/series-desc/3/index.5-years-of-go/</loc>
-    <lastmod>2016-08-24T11:09:35+00:00</lastmod>
+    <loc>https://npf.io/series/3.5-years-of-go/</loc>
+    <lastmod>2017-03-24T08:01:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://npf.io/series/3/index.5-years-of-go/</loc>
-    <lastmod>2017-03-24T08:01:00+00:00</lastmod>
+    <loc>https://npf.io/series-desc/3.5-years-of-go/</loc>
+    <lastmod>2016-08-24T11:09:35+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -231,7 +237,7 @@
   
   <url>
     <loc>https://npf.io/blog/</loc>
-    <lastmod>2017-03-24T08:01:00+00:00</lastmod>
+    <lastmod>2017-07-15T15:55:43+01:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -308,14 +314,14 @@
   </url>
   
   <url>
-    <loc>https://npf.io/series-desc/hugo-101/</loc>
-    <lastmod>2014-08-12T11:09:35+00:00</lastmod>
+    <loc>https://npf.io/series/hugo-101/</loc>
+    <lastmod>2014-08-08T11:12:44+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://npf.io/series/hugo-101/</loc>
-    <lastmod>2014-08-08T11:12:44+00:00</lastmod>
+    <loc>https://npf.io/series-desc/hugo-101/</loc>
+    <lastmod>2014-08-12T11:09:35+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -357,16 +363,19 @@
   
   <url>
     <loc>https://npf.io/series/</loc>
+    <lastmod>2017-03-24T08:01:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://npf.io/series-desc/</loc>
+    <lastmod>2016-08-24T11:09:35+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://npf.io/tags/</loc>
+    <lastmod>2014-05-14T13:09:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -384,7 +393,7 @@
   
   <url>
     <loc>https://npf.io/</loc>
-    <lastmod>2017-03-24T08:01:00+00:00</lastmod>
+    <lastmod>2017-07-15T15:55:43+01:00</lastmod>
     <priority>0</priority>
   </url>
   

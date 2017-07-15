@@ -3,11 +3,81 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>https://npf.io/blog/index.xml</link>
+    <link>https://npf.io/blog/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2017 Nate Finch</copyright>
-    <updated>Fri, 24 Mar 2017 08:01:00 UTC</updated>
+    <updated>Sat, 15 Jul 2017 15:55:43 &#43;0100</updated>
+    
+    
+    <item>
+      <title>Adapting Functions</title>
+      <link>https://npf.io/2017/07/adapting-funcs/</link>
+      <pubDate>Sat, 15 Jul 2017 15:55:43 &#43;0100</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2017/07/adapting-funcs/</guid>
+      <description>&lt;p&gt;A question came up at Gophercon about using functions as arguments, and what to
+do when you have a function that you want to use that doesn&amp;rsquo;t quite match the
+signature.  Here&amp;rsquo;s an example:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;type Translator func(string) string
+
+func RunTwice(translate Translator, input string) string {
+    return translate(translate(input))
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, what if you want to use RunTwice with a function that needs more inputs
+than just a string?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func Append(orig, suffix string) string {
+    return orig + suffix
+}
+
+func do() {
+    orig := &amp;quot;awesome&amp;quot;
+    bang := &amp;quot;!&amp;quot;
+    s := RunTwice(Append(orig, )) // wait, that won&#39;t work
+    fmt.Println(s)
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The answer is the magic of closures. Closures are anonymous functions that
+&amp;ldquo;close over&amp;rdquo; or save copies of all local variables so they can be used later.
+You can write a closure that captures the bang, and returns a function that&amp;rsquo;ll
+have the Translator signature.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func do() string {
+    orig := &amp;quot;awesome&amp;quot;
+    bang := &amp;quot;!&amp;quot;
+    bangit := func(s string) string {
+        return Append(s, bang)
+    }
+    return RunTwice(bangit(orig))
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Yay, that works.  But it&amp;rsquo;s not reusable outside the do function.  That may be
+fine, it may not. If you want to do it in a reusable way (like, a lot of people
+may want to adapt Append to return a Translator, you can make a dedicated
+function for it like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func AppendTranslator(suffix string) Translator {
+    return func(s string) string {
+        return Append(s, suffix)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In AppendTranslator, we return a closure that captures the suffix, and returns a
+function that, when called, will append that suffix to the string passed to the
+Translator.&lt;/p&gt;
+
+&lt;p&gt;And now you can use AppendTranslator with RunTwice.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -320,7 +390,7 @@ database, refactoring, logging, idioms, code reviews, etc.&lt;/p&gt;
     <item>
       <title>Writing Go Applications with Reusable Logic</title>
       <link>https://npf.io/2016/10/reusable-commands/</link>
-      <pubDate>Tue, 18 Oct 2016 22:08:09 EDT</pubDate>
+      <pubDate>Tue, 18 Oct 2016 22:08:09 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2016/10/reusable-commands/</guid>
       <description>
@@ -724,7 +794,7 @@ This now prevents passing in a constant string that looks like it might be right
     <item>
       <title>Returning Errors</title>
       <link>https://npf.io/2015/10/errors/</link>
-      <pubDate>Sat, 10 Oct 2015 00:00:19 EDT</pubDate>
+      <pubDate>Sat, 10 Oct 2015 00:00:19 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/10/errors/</guid>
       <description>&lt;p&gt;There are basically two ways to return errors in Go:&lt;/p&gt;
@@ -838,7 +908,7 @@ more difficult down the road.&lt;/p&gt;
     <item>
       <title>Take control of your commands with Deputy</title>
       <link>https://npf.io/2015/06/deputy/</link>
-      <pubDate>Tue, 30 Jun 2015 12:44:29 EDT</pubDate>
+      <pubDate>Tue, 30 Jun 2015 12:44:29 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/deputy/</guid>
       <description>
@@ -932,7 +1002,7 @@ not finished, it will be killed and an error returned.&lt;/p&gt;
     <item>
       <title>Testing os/exec.Command</title>
       <link>https://npf.io/2015/06/testing-exec-command/</link>
-      <pubDate>Fri, 26 Jun 2015 06:41:56 EDT</pubDate>
+      <pubDate>Fri, 26 Jun 2015 06:41:56 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/testing-exec-command/</guid>
       <description>&lt;p&gt;In &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we often have code that needs to run external
@@ -1054,7 +1124,7 @@ not testing your code at all).&lt;/p&gt;
     <item>
       <title>Sharing Godoc of a WIP Branch</title>
       <link>https://npf.io/2015/06/wip-godoc/</link>
-      <pubDate>Thu, 11 Jun 2015 07:37:00 EDT</pubDate>
+      <pubDate>Thu, 11 Jun 2015 07:37:00 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/wip-godoc/</guid>
       <description>&lt;p&gt;I had a problem yesterday - I wanted to use the excellent godoc.org to show
@@ -1099,7 +1169,7 @@ feedback on architecture before I dive into the reeds of the implementation.&lt;
     <item>
       <title>Go Plugins are as Easy as Pie</title>
       <link>https://npf.io/2015/05/pie/</link>
-      <pubDate>Mon, 25 May 2015 22:44:32 EDT</pubDate>
+      <pubDate>Mon, 25 May 2015 22:44:32 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/05/pie/</guid>
       <description>
@@ -1167,7 +1237,7 @@ in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
     <item>
       <title>Go Nitpicks</title>
       <link>https://npf.io/2014/10/go-nitpicks/</link>
-      <pubDate>Tue, 28 Oct 2014 06:17:21 EDT</pubDate>
+      <pubDate>Tue, 28 Oct 2014 06:17:21 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2014/10/go-nitpicks/</guid>
       <description>
@@ -1244,7 +1314,7 @@ b := &amp;amp;a
     <item>
       <title>Why Everyone Hates Go</title>
       <link>https://npf.io/2014/10/why-everyone-hates-go/</link>
-      <pubDate>Tue, 14 Oct 2014 10:46:28 EDT</pubDate>
+      <pubDate>Tue, 14 Oct 2014 10:46:28 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2014/10/why-everyone-hates-go/</guid>
       <description>&lt;p&gt;Obviously, not &lt;em&gt;everyone&lt;/em&gt; hates Go.  But there was a &lt;a href=&#34;https://www.quora.com/Why-does-Go-seem-to-be-the-most-heavily-
@@ -1346,7 +1416,7 @@ anyone I offended.&lt;/p&gt;
     <item>
       <title>Deploy Discourse with Juju in 8 minutes</title>
       <link>https://npf.io/2014/10/deploy-discourse-juju/</link>
-      <pubDate>Wed, 01 Oct 2014 06:31:49 EDT</pubDate>
+      <pubDate>Wed, 01 Oct 2014 06:31:49 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2014/10/deploy-discourse-juju/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://stevefrancia.com/&#34;&gt;Steve Francia&lt;/a&gt; asked me to help him get
@@ -1914,81 +1984,6 @@ nicely. And what&amp;rsquo;s great is that this is now all automatic&amp;hellip;
 updated with links to the new posts in the series, and any new series I make,
 regardless of the name, will get the nice list of posts at the bottom for that
 series.&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Hugo: Beyond the Defaults</title>
-      <link>https://npf.io/2014/08/hugo-beyond-the-defaults/</link>
-      <pubDate>Fri, 08 Aug 2014 10:07:46 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2014/08/hugo-beyond-the-defaults/</guid>
-      <description>&lt;p&gt;In my last post, I had deployed what is almost the most basic Hugo site
-possible.  The only reason it took more than 10 minutes is because I wanted to
-tweak the theme.  However, there were a few things that immediately annoyed me.&lt;/p&gt;
-
-&lt;p&gt;I didn&amp;rsquo;t like having to type &lt;code&gt;hugo -t hyde&lt;/code&gt; all the time.  Well, turns out
-that&amp;rsquo;s not necessary.  You can just put  &lt;code&gt;theme = &amp;quot;hyde&amp;quot;&lt;/code&gt; in your site
-config, and never need to type it again.  Sweet.  Now to run the local server, I
-can just run &lt;code&gt;hugo server -w&lt;/code&gt;, and for final generation, I can just run &lt;code&gt;hugo&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Next is that my posts were under npf.io/post/postname &amp;hellip; which is not the end
-of the world, but I really like seeing the date in post URLs, so that it&amp;rsquo;s easy
-to tell if I&amp;rsquo;m looking at something really, really old.  So, I went about
-looking at how to do that.  Turns out, it&amp;rsquo;s trivial.  Hugo has a feature called
-&lt;a href=&#34;http://hugo.spf13.com/extras/permalinks&#34;&gt;permalinks&lt;/a&gt;, where you can define the
-format of the url for a section (a section is a top level division of your site,
-denoted by a top level folder under content/).  So, all you have to do is, in
-your site&amp;rsquo;s config file, put some config that looks like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[permalinks]
-    post = &amp;quot;/:year/:month/:filename/&amp;quot;
-    code = &amp;quot;/:filename/&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;While we&amp;rsquo;re at it, I had been putting my code in the top level content
-directory, because I wanted it available at npf.io/projectname  &amp;hellip;. however
-there&amp;rsquo;s no need to do that, I can put the code under the code directory and just
-give it a permalink to show at the top level of the site.  Bam, awesome, done.&lt;/p&gt;
-
-&lt;p&gt;One note: Don&amp;rsquo;t forget the slash at the end of the permalink.&lt;/p&gt;
-
-&lt;p&gt;But wait, this will move my &amp;ldquo;Hugo is Friggin&amp;rsquo; Awesome&amp;rdquo; post to a different URL,
-and Steve Francia already tweeted about it with the old URL.  I don&amp;rsquo;t want that
-url to send people to a 404 page!
-&lt;a href=&#34;http://hugo.spf13.com/extras/aliases&#34;&gt;Aliases&lt;/a&gt; to the rescue.  Aliases are just
-a way to make redirects from old URLs to new ones.  So I just put &lt;code&gt;aliases =
-[&amp;quot;/post/hugo-is-awesome/&amp;quot;]&lt;/code&gt; in the metadata at the top of that post, and now
-links to there will redirect to the new location.  Awesome.&lt;/p&gt;
-
-&lt;p&gt;Ok, so cool&amp;hellip; except that I don&amp;rsquo;t really want the content for my blog posts
-under content/post/ &amp;hellip; I&amp;rsquo;d prefer them under content/blog, but still be of type
-&amp;ldquo;post&amp;rdquo;.  So let&amp;rsquo;s change that too.  This is pretty easy, just rename the folder
-from post to blog, and then set up an
-&lt;a href=&#34;http://hugo.spf13.com/content/archetypes&#34;&gt;archetype&lt;/a&gt; to default the metadata
-under /blog/ to type = &amp;ldquo;post&amp;rdquo;.  Archetypes are default metadata for a section,
-so in this case, I make a file archetypes/blog.md and add type= &amp;ldquo;post&amp;rdquo; to the
-archetype&amp;rsquo;s metadata, and now all my content created with &lt;code&gt;hugo new
-blog/foo.md&lt;/code&gt; will be prepopulated as type &amp;ldquo;post&amp;rdquo;.  (does it matter if the type
-is post vs. blog?  no.  But it matters to me ;)&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://twitter.com/mlafeldt&#34;&gt;@mlafeldt&lt;/a&gt; on Twitter pointed out my RSS feed was
-wonky&amp;hellip;. wait, I have an RSS feed?  Yes, Hugo &lt;a href=&#34;http://hugo.spf13.com/templates/rss&#34;&gt;has that
-too&lt;/a&gt;.  There are feed XML files
-automatically output for most listing directories&amp;hellip; and the base feed for the
-site is a list of recent content.  So, I looked at what Hugo had made for me
-(index.xml in the root output directory)&amp;hellip; this is not too bad, but I don&amp;rsquo;t
-really like the title, and it&amp;rsquo;s including my code content in the feed as well as
-posts, which I don&amp;rsquo;t really want.  Luckily, this is trivial to fix.  The RSS xml
-file is output using a Go template just like everything else in the output.
-It&amp;rsquo;s trivial to adjust the template so that it only lists content of type
-&amp;ldquo;post&amp;rdquo;, and tweak the feed name, etc.&lt;/p&gt;
-
-&lt;p&gt;I was going to write about how I got the series stuff at the bottom of this
-page, but this post is long enough already, so I&amp;rsquo;ll just make that into its own
-post, as the next post in the series! :)&lt;/p&gt;
 </description>
     </item>
     

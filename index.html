@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
-	<meta name="generator" content="Hugo 0.19-DEV" />
+	<meta name="generator" content="Hugo 0.23-DEV" />
   <link href="https://gmpg.org/xfn/11" rel="profile">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
@@ -28,7 +28,6 @@
 
   
   <link href="https://npf.io/index.xml" rel="alternate" type="application/rss+xml" title="npf.io" />
-
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
   <link href='https://fonts.googleapis.com/css?family=Fira+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -71,6 +70,8 @@
        
        
        
+       
+      <li><a href="">Codes </a></li>
        
        
       <li><a href="https://github.com/natefinch/deputy">Deputy </a></li>
@@ -158,6 +159,82 @@
 <div class="posts">
 
       
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="https://npf.io/2017/07/adapting-funcs/">
+        Adapting Functions
+      </a>
+    </h1>
+
+    <span class="post-date">Jul 15, 2017</span>
+
+    
+
+
+    <p>A question came up at Gophercon about using functions as arguments, and what to
+do when you have a function that you want to use that doesn&rsquo;t quite match the
+signature.  Here&rsquo;s an example:</p>
+
+<pre><code>type Translator func(string) string
+
+func RunTwice(translate Translator, input string) string {
+    return translate(translate(input))
+}
+</code></pre>
+
+<p>Now, what if you want to use RunTwice with a function that needs more inputs
+than just a string?</p>
+
+<pre><code>func Append(orig, suffix string) string {
+    return orig + suffix
+}
+
+func do() {
+    orig := &quot;awesome&quot;
+    bang := &quot;!&quot;
+    s := RunTwice(Append(orig, )) // wait, that won't work
+    fmt.Println(s)
+}
+
+</code></pre>
+
+<p>The answer is the magic of closures. Closures are anonymous functions that
+&ldquo;close over&rdquo; or save copies of all local variables so they can be used later.
+You can write a closure that captures the bang, and returns a function that&rsquo;ll
+have the Translator signature.</p>
+
+<pre><code>func do() string {
+    orig := &quot;awesome&quot;
+    bang := &quot;!&quot;
+    bangit := func(s string) string {
+        return Append(s, bang)
+    }
+    return RunTwice(bangit(orig))
+}
+</code></pre>
+
+<p>Yay, that works.  But it&rsquo;s not reusable outside the do function.  That may be
+fine, it may not. If you want to do it in a reusable way (like, a lot of people
+may want to adapt Append to return a Translator, you can make a dedicated
+function for it like this:</p>
+
+<pre><code>func AppendTranslator(suffix string) Translator {
+    return func(s string) string {
+        return Append(s, suffix)
+    }
+}
+</code></pre>
+
+<p>In AppendTranslator, we return a closure that captures the suffix, and returns a
+function that, when called, will append that suffix to the string passed to the
+Translator.</p>
+
+<p>And now you can use AppendTranslator with RunTwice.</p>
+
+  </div>
+  
+  
   
   <div class="post">
     <h1 class="post-title">

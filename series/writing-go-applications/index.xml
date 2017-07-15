@@ -3,17 +3,17 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>https://npf.io/series/writing-go-applications/index.xml</link>
+    <link>https://npf.io/series/writing-go-applications/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
-    <copyright>0001 Nate Finch</copyright>
-    <updated>Mon, 01 Jan 0001 00:00:00 UTC</updated>
+    <copyright>2016 Nate Finch</copyright>
+    <updated>Tue, 18 Oct 2016 22:08:09 -0400</updated>
     
     
     <item>
       <title>Writing Go Applications with Reusable Logic</title>
       <link>https://npf.io/2016/10/reusable-commands/</link>
-      <pubDate>Tue, 18 Oct 2016 22:08:09 EDT</pubDate>
+      <pubDate>Tue, 18 Oct 2016 22:08:09 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2016/10/reusable-commands/</guid>
       <description>

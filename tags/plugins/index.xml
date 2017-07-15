@@ -3,17 +3,17 @@
   <channel>
       <title>npf.io</title>
       <generator uri="https://hugo.spf13.com">Hugo</generator>
-    <link>https://npf.io/tags/plugins/index.xml</link>
+    <link>https://npf.io/tags/plugins/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
-    <copyright>0001 Nate Finch</copyright>
-    <updated>Mon, 01 Jan 0001 00:00:00 UTC</updated>
+    <copyright>2015 Nate Finch</copyright>
+    <updated>Mon, 25 May 2015 22:44:32 -0400</updated>
     
     
     <item>
       <title>Go Plugins are as Easy as Pie</title>
       <link>https://npf.io/2015/05/pie/</link>
-      <pubDate>Mon, 25 May 2015 22:44:32 EDT</pubDate>
+      <pubDate>Mon, 25 May 2015 22:44:32 -0400</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/05/pie/</guid>
       <description>
