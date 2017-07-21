@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
       <title>npf.io</title>
-      <generator uri="https://hugo.spf13.com">Hugo</generator>
+      <generator uri="https://gohugo.io">Hugo</generator>
     <link>https://npf.io/tags/error-handling/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2015 Nate Finch</copyright>
-    <updated>Sat, 10 Oct 2015 00:00:19 -0400</updated>
+    <updated>Sat, 10 Oct 2015 00:00:19 EDT</updated>
     
     
     <item>
       <title>Returning Errors</title>
       <link>https://npf.io/2015/10/errors/</link>
-      <pubDate>Sat, 10 Oct 2015 00:00:19 -0400</pubDate>
+      <pubDate>Sat, 10 Oct 2015 00:00:19 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/10/errors/</guid>
       <description>&lt;p&gt;There are basically two ways to return errors in Go:&lt;/p&gt;

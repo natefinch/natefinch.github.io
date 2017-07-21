@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
       <title>npf.io</title>
-      <generator uri="https://hugo.spf13.com">Hugo</generator>
+      <generator uri="https://gohugo.io">Hugo</generator>
     <link>https://npf.io/tags/golang/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2016 Nate Finch</copyright>
-    <updated>Tue, 18 Oct 2016 22:08:09 -0400</updated>
+    <updated>Tue, 18 Oct 2016 22:08:09 EDT</updated>
     
     
     <item>
       <title>Writing Go Applications with Reusable Logic</title>
       <link>https://npf.io/2016/10/reusable-commands/</link>
-      <pubDate>Tue, 18 Oct 2016 22:08:09 -0400</pubDate>
+      <pubDate>Tue, 18 Oct 2016 22:08:09 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2016/10/reusable-commands/</guid>
       <description>
@@ -417,7 +417,7 @@ This now prevents passing in a constant string that looks like it might be right
     <item>
       <title>Returning Errors</title>
       <link>https://npf.io/2015/10/errors/</link>
-      <pubDate>Sat, 10 Oct 2015 00:00:19 -0400</pubDate>
+      <pubDate>Sat, 10 Oct 2015 00:00:19 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/10/errors/</guid>
       <description>&lt;p&gt;There are basically two ways to return errors in Go:&lt;/p&gt;
@@ -531,7 +531,7 @@ more difficult down the road.&lt;/p&gt;
     <item>
       <title>Take control of your commands with Deputy</title>
       <link>https://npf.io/2015/06/deputy/</link>
-      <pubDate>Tue, 30 Jun 2015 12:44:29 -0400</pubDate>
+      <pubDate>Tue, 30 Jun 2015 12:44:29 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/deputy/</guid>
       <description>
@@ -625,7 +625,7 @@ not finished, it will be killed and an error returned.&lt;/p&gt;
     <item>
       <title>Testing os/exec.Command</title>
       <link>https://npf.io/2015/06/testing-exec-command/</link>
-      <pubDate>Fri, 26 Jun 2015 06:41:56 -0400</pubDate>
+      <pubDate>Fri, 26 Jun 2015 06:41:56 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/testing-exec-command/</guid>
       <description>&lt;p&gt;In &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we often have code that needs to run external
@@ -747,7 +747,7 @@ not testing your code at all).&lt;/p&gt;
     <item>
       <title>Sharing Godoc of a WIP Branch</title>
       <link>https://npf.io/2015/06/wip-godoc/</link>
-      <pubDate>Thu, 11 Jun 2015 07:37:00 -0400</pubDate>
+      <pubDate>Thu, 11 Jun 2015 07:37:00 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/wip-godoc/</guid>
       <description>&lt;p&gt;I had a problem yesterday - I wanted to use the excellent godoc.org to show
@@ -792,7 +792,7 @@ feedback on architecture before I dive into the reeds of the implementation.&lt;
     <item>
       <title>Go Plugins are as Easy as Pie</title>
       <link>https://npf.io/2015/05/pie/</link>
-      <pubDate>Mon, 25 May 2015 22:44:32 -0400</pubDate>
+      <pubDate>Mon, 25 May 2015 22:44:32 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/05/pie/</guid>
       <description>
@@ -860,7 +860,7 @@ in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
     <item>
       <title>Why Everyone Hates Go</title>
       <link>https://npf.io/2014/10/why-everyone-hates-go/</link>
-      <pubDate>Tue, 14 Oct 2014 10:46:28 -0400</pubDate>
+      <pubDate>Tue, 14 Oct 2014 10:46:28 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2014/10/why-everyone-hates-go/</guid>
       <description>&lt;p&gt;Obviously, not &lt;em&gt;everyone&lt;/em&gt; hates Go.  But there was a &lt;a href=&#34;https://www.quora.com/Why-does-Go-seem-to-be-the-most-heavily-

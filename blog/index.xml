@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
       <title>npf.io</title>
-      <generator uri="https://hugo.spf13.com">Hugo</generator>
+      <generator uri="https://gohugo.io">Hugo</generator>
     <link>https://npf.io/blog/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
@@ -390,7 +390,7 @@ database, refactoring, logging, idioms, code reviews, etc.&lt;/p&gt;
     <item>
       <title>Writing Go Applications with Reusable Logic</title>
       <link>https://npf.io/2016/10/reusable-commands/</link>
-      <pubDate>Tue, 18 Oct 2016 22:08:09 -0400</pubDate>
+      <pubDate>Tue, 18 Oct 2016 22:08:09 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2016/10/reusable-commands/</guid>
       <description>
@@ -794,7 +794,7 @@ This now prevents passing in a constant string that looks like it might be right
     <item>
       <title>Returning Errors</title>
       <link>https://npf.io/2015/10/errors/</link>
-      <pubDate>Sat, 10 Oct 2015 00:00:19 -0400</pubDate>
+      <pubDate>Sat, 10 Oct 2015 00:00:19 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/10/errors/</guid>
       <description>&lt;p&gt;There are basically two ways to return errors in Go:&lt;/p&gt;
@@ -908,7 +908,7 @@ more difficult down the road.&lt;/p&gt;
     <item>
       <title>Take control of your commands with Deputy</title>
       <link>https://npf.io/2015/06/deputy/</link>
-      <pubDate>Tue, 30 Jun 2015 12:44:29 -0400</pubDate>
+      <pubDate>Tue, 30 Jun 2015 12:44:29 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/deputy/</guid>
       <description>
@@ -1002,7 +1002,7 @@ not finished, it will be killed and an error returned.&lt;/p&gt;
     <item>
       <title>Testing os/exec.Command</title>
       <link>https://npf.io/2015/06/testing-exec-command/</link>
-      <pubDate>Fri, 26 Jun 2015 06:41:56 -0400</pubDate>
+      <pubDate>Fri, 26 Jun 2015 06:41:56 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/testing-exec-command/</guid>
       <description>&lt;p&gt;In &lt;a href=&#34;https://github.com/juju/juju&#34;&gt;Juju&lt;/a&gt;, we often have code that needs to run external
@@ -1124,7 +1124,7 @@ not testing your code at all).&lt;/p&gt;
     <item>
       <title>Sharing Godoc of a WIP Branch</title>
       <link>https://npf.io/2015/06/wip-godoc/</link>
-      <pubDate>Thu, 11 Jun 2015 07:37:00 -0400</pubDate>
+      <pubDate>Thu, 11 Jun 2015 07:37:00 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/06/wip-godoc/</guid>
       <description>&lt;p&gt;I had a problem yesterday - I wanted to use the excellent godoc.org to show
@@ -1169,7 +1169,7 @@ feedback on architecture before I dive into the reeds of the implementation.&lt;
     <item>
       <title>Go Plugins are as Easy as Pie</title>
       <link>https://npf.io/2015/05/pie/</link>
-      <pubDate>Mon, 25 May 2015 22:44:32 -0400</pubDate>
+      <pubDate>Mon, 25 May 2015 22:44:32 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2015/05/pie/</guid>
       <description>
@@ -1237,7 +1237,7 @@ in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
     <item>
       <title>Go Nitpicks</title>
       <link>https://npf.io/2014/10/go-nitpicks/</link>
-      <pubDate>Tue, 28 Oct 2014 06:17:21 -0400</pubDate>
+      <pubDate>Tue, 28 Oct 2014 06:17:21 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2014/10/go-nitpicks/</guid>
       <description>
@@ -1314,7 +1314,7 @@ b := &amp;amp;a
     <item>
       <title>Why Everyone Hates Go</title>
       <link>https://npf.io/2014/10/why-everyone-hates-go/</link>
-      <pubDate>Tue, 14 Oct 2014 10:46:28 -0400</pubDate>
+      <pubDate>Tue, 14 Oct 2014 10:46:28 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2014/10/why-everyone-hates-go/</guid>
       <description>&lt;p&gt;Obviously, not &lt;em&gt;everyone&lt;/em&gt; hates Go.  But there was a &lt;a href=&#34;https://www.quora.com/Why-does-Go-seem-to-be-the-most-heavily-
@@ -1416,7 +1416,7 @@ anyone I offended.&lt;/p&gt;
     <item>
       <title>Deploy Discourse with Juju in 8 minutes</title>
       <link>https://npf.io/2014/10/deploy-discourse-juju/</link>
-      <pubDate>Wed, 01 Oct 2014 06:31:49 -0400</pubDate>
+      <pubDate>Wed, 01 Oct 2014 06:31:49 EDT</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2014/10/deploy-discourse-juju/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://stevefrancia.com/&#34;&gt;Steve Francia&lt;/a&gt; asked me to help him get
@@ -1887,7 +1887,7 @@ automatically populated with the other posts in the series.  This turned out to
 be somewhat of a challenge, but doable with some effort&amp;hellip; hopefully someone
 else can learn from my work.&lt;/p&gt;
 
-&lt;p&gt;This now brings us to &lt;a href=&#34;http://hugo.spf13.com/taxonomies/overview&#34;&gt;Taxonomies&lt;/a&gt;.
+&lt;p&gt;This now brings us to &lt;a href=&#34;http://gohugo.io/taxonomies/overview&#34;&gt;Taxonomies&lt;/a&gt;.
 Taxonomies are basically just like tags, except that you can have any number of
 different types of tags.  So you might have &amp;ldquo;Tags&amp;rdquo; as a taxonomy, and thus you
 can give a content tags with values of &amp;ldquo;go&amp;rdquo; and &amp;ldquo;programming&amp;rdquo;.  You can also
@@ -1917,7 +1917,7 @@ automatically generate a list of posts in the series at the bottom of each post
 in the series.  This is where things get tricky, but that&amp;rsquo;s also where things
 get interesting.&lt;/p&gt;
 
-&lt;p&gt;The examples for &lt;a href=&#34;http://hugo.spf13.com/taxonomies/displaying&#34;&gt;displaying
+&lt;p&gt;The examples for &lt;a href=&#34;http://gohugo.io/taxonomies/displaying&#34;&gt;displaying
 Taxonomies&lt;/a&gt; all &amp;ldquo;hard code&amp;rdquo; the
 taxonomy value in the template&amp;hellip; this works great if you know ahead of time
 what value you want to display, like &amp;ldquo;all posts with tag = &amp;lsquo;featured&amp;rsquo;&amp;rdquo;.

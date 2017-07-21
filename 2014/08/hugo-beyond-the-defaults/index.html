@@ -148,7 +148,7 @@
     
     <a href="https://plus.google.com/&#43;NateFinch"><i class="fa fa-google-plus"></i></a> 
 
-    <p class="footnote">powered by <a href="http://hugo.spf13.com">Hugo</a> <br/> &copy; 2017 Nate Finch. All rights reserved.</p>
+    <p class="footnote">powered by <a href="http://gohugo.io">Hugo</a> <br/> &copy; 2017 Nate Finch. All rights reserved.</p>
 
   </div>
 </div>
@@ -174,7 +174,7 @@ can just run <code>hugo server -w</code>, and for final generation, I can just r
 of the world, but I really like seeing the date in post URLs, so that it&rsquo;s easy
 to tell if I&rsquo;m looking at something really, really old.  So, I went about
 looking at how to do that.  Turns out, it&rsquo;s trivial.  Hugo has a feature called
-<a href="http://hugo.spf13.com/extras/permalinks">permalinks</a>, where you can define the
+<a href="http://gohugo.io/extras/permalinks">permalinks</a>, where you can define the
 format of the url for a section (a section is a top level division of your site,
 denoted by a top level folder under content/).  So, all you have to do is, in
 your site&rsquo;s config file, put some config that looks like this:</p>
@@ -194,7 +194,7 @@ give it a permalink to show at the top level of the site.  Bam, awesome, done.</
 <p>But wait, this will move my &ldquo;Hugo is Friggin&rsquo; Awesome&rdquo; post to a different URL,
 and Steve Francia already tweeted about it with the old URL.  I don&rsquo;t want that
 url to send people to a 404 page!
-<a href="http://hugo.spf13.com/extras/aliases">Aliases</a> to the rescue.  Aliases are just
+<a href="http://gohugo.io/extras/aliases">Aliases</a> to the rescue.  Aliases are just
 a way to make redirects from old URLs to new ones.  So I just put <code>aliases =
 [&quot;/post/hugo-is-awesome/&quot;]</code> in the metadata at the top of that post, and now
 links to there will redirect to the new location.  Awesome.</p>
@@ -203,7 +203,7 @@ links to there will redirect to the new location.  Awesome.</p>
 under content/post/ &hellip; I&rsquo;d prefer them under content/blog, but still be of type
 &ldquo;post&rdquo;.  So let&rsquo;s change that too.  This is pretty easy, just rename the folder
 from post to blog, and then set up an
-<a href="http://hugo.spf13.com/content/archetypes">archetype</a> to default the metadata
+<a href="http://gohugo.io/content/archetypes">archetype</a> to default the metadata
 under /blog/ to type = &ldquo;post&rdquo;.  Archetypes are default metadata for a section,
 so in this case, I make a file archetypes/blog.md and add type= &ldquo;post&rdquo; to the
 archetype&rsquo;s metadata, and now all my content created with <code>hugo new
@@ -211,7 +211,7 @@ blog/foo.md</code> will be prepopulated as type &ldquo;post&rdquo;.  (does it ma
 is post vs. blog?  no.  But it matters to me ;)</p>
 
 <p><a href="https://twitter.com/mlafeldt">@mlafeldt</a> on Twitter pointed out my RSS feed was
-wonky&hellip;. wait, I have an RSS feed?  Yes, Hugo <a href="http://hugo.spf13.com/templates/rss">has that
+wonky&hellip;. wait, I have an RSS feed?  Yes, Hugo <a href="http://gohugo.io/templates/rss">has that
 too</a>.  There are feed XML files
 automatically output for most listing directories&hellip; and the base feed for the
 site is a list of recent content.  So, I looked at what Hugo had made for me

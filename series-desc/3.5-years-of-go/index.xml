@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
       <title>npf.io</title>
-      <generator uri="https://hugo.spf13.com">Hugo</generator>
+      <generator uri="https://gohugo.io">Hugo</generator>
     <link>https://npf.io/series-desc/3.5-years-of-go/</link>
     <language>en-us</language>
     <author>Nate Finch</author>

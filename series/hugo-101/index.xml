@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
       <title>npf.io</title>
-      <generator uri="https://hugo.spf13.com">Hugo</generator>
+      <generator uri="https://gohugo.io">Hugo</generator>
     <link>https://npf.io/series/hugo-101/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
@@ -22,7 +22,7 @@ automatically populated with the other posts in the series.  This turned out to
 be somewhat of a challenge, but doable with some effort&amp;hellip; hopefully someone
 else can learn from my work.&lt;/p&gt;
 
-&lt;p&gt;This now brings us to &lt;a href=&#34;http://hugo.spf13.com/taxonomies/overview&#34;&gt;Taxonomies&lt;/a&gt;.
+&lt;p&gt;This now brings us to &lt;a href=&#34;http://gohugo.io/taxonomies/overview&#34;&gt;Taxonomies&lt;/a&gt;.
 Taxonomies are basically just like tags, except that you can have any number of
 different types of tags.  So you might have &amp;ldquo;Tags&amp;rdquo; as a taxonomy, and thus you
 can give a content tags with values of &amp;ldquo;go&amp;rdquo; and &amp;ldquo;programming&amp;rdquo;.  You can also
@@ -52,7 +52,7 @@ automatically generate a list of posts in the series at the bottom of each post
 in the series.  This is where things get tricky, but that&amp;rsquo;s also where things
 get interesting.&lt;/p&gt;
 
-&lt;p&gt;The examples for &lt;a href=&#34;http://hugo.spf13.com/taxonomies/displaying&#34;&gt;displaying
+&lt;p&gt;The examples for &lt;a href=&#34;http://gohugo.io/taxonomies/displaying&#34;&gt;displaying
 Taxonomies&lt;/a&gt; all &amp;ldquo;hard code&amp;rdquo; the
 taxonomy value in the template&amp;hellip; this works great if you know ahead of time
 what value you want to display, like &amp;ldquo;all posts with tag = &amp;lsquo;featured&amp;rsquo;&amp;rdquo;.
@@ -143,7 +143,7 @@ can just run &lt;code&gt;hugo server -w&lt;/code&gt;, and for final generation, 
 of the world, but I really like seeing the date in post URLs, so that it&amp;rsquo;s easy
 to tell if I&amp;rsquo;m looking at something really, really old.  So, I went about
 looking at how to do that.  Turns out, it&amp;rsquo;s trivial.  Hugo has a feature called
-&lt;a href=&#34;http://hugo.spf13.com/extras/permalinks&#34;&gt;permalinks&lt;/a&gt;, where you can define the
+&lt;a href=&#34;http://gohugo.io/extras/permalinks&#34;&gt;permalinks&lt;/a&gt;, where you can define the
 format of the url for a section (a section is a top level division of your site,
 denoted by a top level folder under content/).  So, all you have to do is, in
 your site&amp;rsquo;s config file, put some config that looks like this:&lt;/p&gt;
@@ -163,7 +163,7 @@ give it a permalink to show at the top level of the site.  Bam, awesome, done.&l
 &lt;p&gt;But wait, this will move my &amp;ldquo;Hugo is Friggin&amp;rsquo; Awesome&amp;rdquo; post to a different URL,
 and Steve Francia already tweeted about it with the old URL.  I don&amp;rsquo;t want that
 url to send people to a 404 page!
-&lt;a href=&#34;http://hugo.spf13.com/extras/aliases&#34;&gt;Aliases&lt;/a&gt; to the rescue.  Aliases are just
+&lt;a href=&#34;http://gohugo.io/extras/aliases&#34;&gt;Aliases&lt;/a&gt; to the rescue.  Aliases are just
 a way to make redirects from old URLs to new ones.  So I just put &lt;code&gt;aliases =
 [&amp;quot;/post/hugo-is-awesome/&amp;quot;]&lt;/code&gt; in the metadata at the top of that post, and now
 links to there will redirect to the new location.  Awesome.&lt;/p&gt;
@@ -172,7 +172,7 @@ links to there will redirect to the new location.  Awesome.&lt;/p&gt;
 under content/post/ &amp;hellip; I&amp;rsquo;d prefer them under content/blog, but still be of type
 &amp;ldquo;post&amp;rdquo;.  So let&amp;rsquo;s change that too.  This is pretty easy, just rename the folder
 from post to blog, and then set up an
-&lt;a href=&#34;http://hugo.spf13.com/content/archetypes&#34;&gt;archetype&lt;/a&gt; to default the metadata
+&lt;a href=&#34;http://gohugo.io/content/archetypes&#34;&gt;archetype&lt;/a&gt; to default the metadata
 under /blog/ to type = &amp;ldquo;post&amp;rdquo;.  Archetypes are default metadata for a section,
 so in this case, I make a file archetypes/blog.md and add type= &amp;ldquo;post&amp;rdquo; to the
 archetype&amp;rsquo;s metadata, and now all my content created with &lt;code&gt;hugo new
@@ -180,7 +180,7 @@ blog/foo.md&lt;/code&gt; will be prepopulated as type &amp;ldquo;post&amp;rdquo;
 is post vs. blog?  no.  But it matters to me ;)&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://twitter.com/mlafeldt&#34;&gt;@mlafeldt&lt;/a&gt; on Twitter pointed out my RSS feed was
-wonky&amp;hellip;. wait, I have an RSS feed?  Yes, Hugo &lt;a href=&#34;http://hugo.spf13.com/templates/rss&#34;&gt;has that
+wonky&amp;hellip;. wait, I have an RSS feed?  Yes, Hugo &lt;a href=&#34;http://gohugo.io/templates/rss&#34;&gt;has that
 too&lt;/a&gt;.  There are feed XML files
 automatically output for most listing directories&amp;hellip; and the base feed for the
 site is a list of recent content.  So, I looked at what Hugo had made for me
@@ -205,7 +205,7 @@ post, as the next post in the series! :)&lt;/p&gt;
       <pubDate>Fri, 01 Aug 2014 06:45:00 UTC</pubDate>
       <author>Nate Finch</author>
       <guid>https://npf.io/2014/08/hugo-is-awesome/</guid>
-      <description>&lt;p&gt;This blog is powered by &lt;a href=&#34;http://hugo.spf13.com&#34;&gt;Hugo&lt;/a&gt;, a static site generator
+      <description>&lt;p&gt;This blog is powered by &lt;a href=&#34;http://gohugo.io&#34;&gt;Hugo&lt;/a&gt;, a static site generator
 written by Steve Francia (aka spf13).  It is, of course, written in Go.  It is
 pretty similar to &lt;a href=&#34;jekyllrb.com&#34;&gt;Jekyll&lt;/a&gt;, in that you write markdown, run a
 little program (hugo) and html pages come out the other end in the form of a
@@ -237,7 +237,7 @@ things like iterate over all the entries in a menu and print them out in a ul/li
 block, or iterate over all the posts in your blog and display them on the main
 page.&lt;/p&gt;
 
-&lt;p&gt;You can learn more about Hugo by going to &lt;a href=&#34;http://hugo.spf13.com&#34;&gt;its site&lt;/a&gt;,
+&lt;p&gt;You can learn more about Hugo by going to &lt;a href=&#34;http://gohugo.io&#34;&gt;its site&lt;/a&gt;,
 which, of course, is built using Hugo.&lt;/p&gt;
 
 &lt;p&gt;The static content for this site is hosted on github pages at
