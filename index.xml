@@ -7,7 +7,96 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2017 Nate Finch</copyright>
-    <updated>Sat, 15 Jul 2017 15:55:43 &#43;0100</updated>
+    <updated>Tue, 29 Aug 2017 12:40:19 EDT</updated>
+    
+    
+    <item>
+      <title>Code Must Never Lie</title>
+      <link>https://npf.io/2017/08/lies/</link>
+      <pubDate>Tue, 29 Aug 2017 12:40:19 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2017/08/lies/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;If you tell the truth, you don’t have to remember anything.&lt;/p&gt;
+
+&lt;p&gt;—Mark Twain&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In a code review recently, I asked the author to change some of their asserts to
+requires. Functions in testify&amp;rsquo;s assert package allow the test to continue,
+whereas those in the require package end the test immediately. Thus, you use
+require to avoid trying to continue running a test when we know it&amp;rsquo;ll be in a
+bad state.  (side note: don&amp;rsquo;t use an assert package, but that&amp;rsquo;s another post)
+Since testify&amp;rsquo;s assert and require packages have the same interface, the
+author&amp;rsquo;s solution was to simply change the import thusly:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import (
+    assert &amp;quot;github.com/stretchr/testify/require&amp;quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Bam, now all the assert.Foo calls would stop the test immediately, and we didn&amp;rsquo;t
+need a big changelist changing every use of assert to require.  All good,
+right?&lt;/p&gt;
+
+&lt;p&gt;No.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Hell No.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Why? Because it makes the code lie.  Anyone familiar with the testify package
+understands the difference between assert and require.  But we&amp;rsquo;ve now made code
+that &lt;em&gt;looks like&lt;/em&gt; an assert, but is actually a require.  People who are 200
+lines down in a test file may well not realize that those asserts are actually
+requires. They&amp;rsquo;ll assume the test function will continue processing after an
+assert fails.  They&amp;rsquo;ll be wrong, and they could accidentally write incorrect
+tests because of it - tests that fail with confusing error messages.&lt;/p&gt;
+
+&lt;p&gt;This is true in general - &lt;strong&gt;code must never lie&lt;/strong&gt;.  This is a cardinal sin
+amongst programmers.  This is an extension of the mantra that code should be
+written to be read.  If code looks like it&amp;rsquo;s doing one thing when it&amp;rsquo;s actually
+doing something else, someone down the road will read that code and
+misunderstand it, and use it or alter it in a way that causes bugs. If they&amp;rsquo;re
+lucky, the bugs will be immediate and obvious. If they&amp;rsquo;re unlucky, they&amp;rsquo;ll be
+subtle and only be figured out after a long debugging session and much head
+banging on keyboard. That someone might be you, even if it you was your code in
+the first place.&lt;/p&gt;
+
+&lt;p&gt;If, for some reason, you have to make code that lies (to fulfill an interface or
+some such), document the hell out of it.  Giant yelling comments that can&amp;rsquo;t be
+missed during a 2am debugging session.  Because chances are, that&amp;rsquo;s when you&amp;rsquo;re
+going to look at this code next, and you might forget that saveToMemory()
+function actually saves to a database in AWS&amp;rsquo;s Antarctica region.&lt;/p&gt;
+
+&lt;p&gt;So, don&amp;rsquo;t lie.  Furthermore, try not to even mislead.  Humans make assumptions
+all the time, it&amp;rsquo;s built into how we perceive the world.  As a coder, it&amp;rsquo;s your
+job to anticipate what assumptions a reader may have, and ensure that they are
+not incorrect, or if they are, do your best to disabuse them of their incorrect
+assumptions.&lt;/p&gt;
+
+&lt;p&gt;If possible, don&amp;rsquo;t resort to comments to inform the reader, but instead,
+structure the code itself in such a way as to indicate it&amp;rsquo;s not going to behave
+the way one might expect.  For example, if your type has a &lt;code&gt;Write(b []byte)
+(int, error)&lt;/code&gt; method that is not compatible with io.Writer, consider calling it
+something other than Write&amp;hellip; because everyone seeing &lt;code&gt;foo.Write&lt;/code&gt; is going to
+assume that function will work like an io.Write.  Instead maybe call it WriteOut
+or PrintOut or anything but Write.&lt;/p&gt;
+
+&lt;p&gt;Misleading code can be even more subtle than this.  In a recent code review, the
+author wrapped a single DB update in a transaction.  This set off
+alarm bells for me as a reviewer.  As a reader, I assumed that the code must be
+saving related data in multiple tables, and that&amp;rsquo;s why a transaction was needed.
+Turned out, the code didn&amp;rsquo;t actually need the transaction, it was just written
+that way to be consistent with some other code we had.  Unfortunately, in this
+case, being consistent was actually confusing&amp;hellip; because it caused the reader to
+make assumptions that were ultimately incorrect.&lt;/p&gt;
+
+&lt;p&gt;Do the poor sap that has to maintain your code 6 months or two years down the
+road a favor - don&amp;rsquo;t lie. Try not to mislead.  Because even if that poor sap
+isn&amp;rsquo;t you, they still don&amp;rsquo;t deserve the 2am headache you&amp;rsquo;ll likely be
+inflicting.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -1237,83 +1326,6 @@ well, you know.&lt;/p&gt;
 
 &lt;p&gt;I plan to be using pie in one of my own side projects.  Take it out for a spin
 in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Go Nitpicks</title>
-      <link>https://npf.io/2014/10/go-nitpicks/</link>
-      <pubDate>Tue, 28 Oct 2014 06:17:21 EDT</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2014/10/go-nitpicks/</guid>
-      <description>
-
-&lt;p&gt;I saw this tweet last night:&lt;/p&gt;
-
-&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; lang=&#34;en&#34;&gt;&lt;p&gt;A code interview I like to ask:&amp;#10;&amp;#10;&amp;quot;What would you change about &amp;lt;your favourite language&amp;gt;?&amp;quot;&amp;#10;&amp;#10;Having nothing to say to that is a big strike.&lt;/p&gt;&amp;mdash; karlseguin (@karlseguin) &lt;a href=&#34;https://twitter.com/karlseguin/status/526860386704695296&#34;&gt;October 27, 2014&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;I figured I&amp;rsquo;d answer it here about Go.  Luckily, Go is a very small language, so there&amp;rsquo;s not a lot of surface area to dislike. However, there&amp;rsquo;s definitely some things I wish were different. Most of these are nitpicks, thus the title.&lt;/p&gt;
-
-&lt;h4 id=&#34;1-bare-returns&#34;&gt;#1 Bare Returns&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code&gt;func foo() (i int, err error) {
-    i, err = strconv.ParseInt(&amp;quot;5&amp;quot;) 
-    return // wha??
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;For all that Go promotes readable and immediately understandable code, this seems like a ridiculous outlier. The way it works is that if you don&amp;rsquo;t declare what the function is returning, it&amp;rsquo;ll return the values stored in the named return variables.  Which seems logical and handy, until you see a 100 line function with multiple branches and a single bare return at the bottom, with no idea what is actually getting returned.&lt;/p&gt;
-
-&lt;p&gt;To all gophers out there: don&amp;rsquo;t use bare returns.  Ever.&lt;/p&gt;
-
-&lt;h4 id=&#34;2-new&#34;&gt;#2 New&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code&gt;a := new(MyStruct)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;New means &amp;ldquo;Create a zero value of the given type and return a pointer to it&amp;rdquo;.  It&amp;rsquo;s sorta like the C++ &lt;code&gt;new&lt;/code&gt;, which is probably why it exists.  The problem is that it&amp;rsquo;s nearly useless.  It&amp;rsquo;s mostly redundant with simply returning the address of a value thusly:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;a := &amp;amp;MyStruct{}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The above is a lot easier to read, it also gives you the ability to populate the value you&amp;rsquo;re constructing (if you wish).  The only time new is &amp;ldquo;useful&amp;rdquo; is if you want to initialize a pointer to a builtin (like a string or an int), because you can&amp;rsquo;t do this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;a := &amp;amp;int
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;but you can do this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;a := new(int)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Of course, you could always just do it in (&lt;em&gt;gasp&lt;/em&gt;) two lines:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;a := 0
-b := &amp;amp;a
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;To all the gophers out there: don&amp;rsquo;t use new. Always use &amp;amp;Foo{} with structs, maps, and slices. Use the two line version for numbers and strings.&lt;/p&gt;
-
-&lt;h4 id=&#34;3-close&#34;&gt;#3 Close&lt;/h4&gt;
-
-&lt;p&gt;The close built-in function closes a channel. If the channel is already closed, close will panic.  This pisses me off, because most of the time when I call close, I don&amp;rsquo;t actually care if it&amp;rsquo;s already closed.  I just want to ensure that it&amp;rsquo;s closed.  I&amp;rsquo;d much prefer if close returned a boolean that said whether or not it did anything, and then if &lt;strong&gt;I&lt;/strong&gt; choose to panic, I can.  Or, you know, not.&lt;/p&gt;
-
-&lt;h4 id=&#34;4-there-is-no-4&#34;&gt;#4 There is no 4&lt;/h4&gt;
-
-&lt;p&gt;That&amp;rsquo;s basically it.  There&amp;rsquo;s some things I think are necessary evils, like &lt;code&gt;goto&lt;/code&gt; and &lt;code&gt;panic&lt;/code&gt;.  There&amp;rsquo;s some things that are necessary ugliness, like the built-in functions &lt;code&gt;append&lt;/code&gt;, &lt;code&gt;make&lt;/code&gt;, &lt;code&gt;delete&lt;/code&gt;, etc.  I sorta wish &lt;code&gt;x := range foo&lt;/code&gt; returned the value in x and not the index, but I get that it&amp;rsquo;s to be consistent between maps and slices, and returning the value in maps would be odd, I think.&lt;/p&gt;
-
-&lt;p&gt;All these are even below the level of nitpicks, though.  They don&amp;rsquo;t bug me, really.  I understand that everything in programming is a tradeoff, and I think the decisions made for Go were the right ones in these cases.  Sometimes you need goto.  Sometimes you need to panic.  Making those functions built-ins rather than methods on the types means you don&amp;rsquo;t need any methods on the types, which keeps them simpler, and means they&amp;rsquo;re &amp;ldquo;just data&amp;rdquo;.  It also means you don&amp;rsquo;t lose any functionality if you make new named types based on them.&lt;/p&gt;
-
-&lt;p&gt;So that&amp;rsquo;s my list for Go.&lt;/p&gt;
-
-&lt;h4 id=&#34;postscript&#34;&gt;Postscript&lt;/h4&gt;
-
-&lt;p&gt;Someone on the twitter discussion mentioned he couldn&amp;rsquo;t think of anything he disliked about C#, which just about made me spit my coffee across the room.  I programmed in C# for ~9 years, starting out porting some 1.1 code to 2.0, and leaving as 5.0 came out.  The list of features in C# as of 5.0 is gigantic.  Even being a developer writing in it 40+ hours a week for 9 years, there was still stuff I had to look up to remember how it worked.&lt;/p&gt;
-
-&lt;p&gt;I feel like my mastery of Go after a year of side projects was about equivalent to my mastery of C# after 9 years of full time development.  If we assume 1:1 correlation between time to master and size of the language, an order of magnitude sounds about right.&lt;/p&gt;
 </description>
     </item>
     

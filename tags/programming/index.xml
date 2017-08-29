@@ -6,8 +6,97 @@
     <link>https://npf.io/tags/programming/</link>
     <language>en-us</language>
     <author>Nate Finch</author>
-    <copyright>2016 Nate Finch</copyright>
-    <updated>Tue, 18 Oct 2016 22:08:09 EDT</updated>
+    <copyright>2017 Nate Finch</copyright>
+    <updated>Tue, 29 Aug 2017 12:40:19 EDT</updated>
+    
+    
+    <item>
+      <title>Code Must Never Lie</title>
+      <link>https://npf.io/2017/08/lies/</link>
+      <pubDate>Tue, 29 Aug 2017 12:40:19 EDT</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2017/08/lies/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;If you tell the truth, you don’t have to remember anything.&lt;/p&gt;
+
+&lt;p&gt;—Mark Twain&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In a code review recently, I asked the author to change some of their asserts to
+requires. Functions in testify&amp;rsquo;s assert package allow the test to continue,
+whereas those in the require package end the test immediately. Thus, you use
+require to avoid trying to continue running a test when we know it&amp;rsquo;ll be in a
+bad state.  (side note: don&amp;rsquo;t use an assert package, but that&amp;rsquo;s another post)
+Since testify&amp;rsquo;s assert and require packages have the same interface, the
+author&amp;rsquo;s solution was to simply change the import thusly:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import (
+    assert &amp;quot;github.com/stretchr/testify/require&amp;quot;
+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Bam, now all the assert.Foo calls would stop the test immediately, and we didn&amp;rsquo;t
+need a big changelist changing every use of assert to require.  All good,
+right?&lt;/p&gt;
+
+&lt;p&gt;No.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Hell No.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Why? Because it makes the code lie.  Anyone familiar with the testify package
+understands the difference between assert and require.  But we&amp;rsquo;ve now made code
+that &lt;em&gt;looks like&lt;/em&gt; an assert, but is actually a require.  People who are 200
+lines down in a test file may well not realize that those asserts are actually
+requires. They&amp;rsquo;ll assume the test function will continue processing after an
+assert fails.  They&amp;rsquo;ll be wrong, and they could accidentally write incorrect
+tests because of it - tests that fail with confusing error messages.&lt;/p&gt;
+
+&lt;p&gt;This is true in general - &lt;strong&gt;code must never lie&lt;/strong&gt;.  This is a cardinal sin
+amongst programmers.  This is an extension of the mantra that code should be
+written to be read.  If code looks like it&amp;rsquo;s doing one thing when it&amp;rsquo;s actually
+doing something else, someone down the road will read that code and
+misunderstand it, and use it or alter it in a way that causes bugs. If they&amp;rsquo;re
+lucky, the bugs will be immediate and obvious. If they&amp;rsquo;re unlucky, they&amp;rsquo;ll be
+subtle and only be figured out after a long debugging session and much head
+banging on keyboard. That someone might be you, even if it you was your code in
+the first place.&lt;/p&gt;
+
+&lt;p&gt;If, for some reason, you have to make code that lies (to fulfill an interface or
+some such), document the hell out of it.  Giant yelling comments that can&amp;rsquo;t be
+missed during a 2am debugging session.  Because chances are, that&amp;rsquo;s when you&amp;rsquo;re
+going to look at this code next, and you might forget that saveToMemory()
+function actually saves to a database in AWS&amp;rsquo;s Antarctica region.&lt;/p&gt;
+
+&lt;p&gt;So, don&amp;rsquo;t lie.  Furthermore, try not to even mislead.  Humans make assumptions
+all the time, it&amp;rsquo;s built into how we perceive the world.  As a coder, it&amp;rsquo;s your
+job to anticipate what assumptions a reader may have, and ensure that they are
+not incorrect, or if they are, do your best to disabuse them of their incorrect
+assumptions.&lt;/p&gt;
+
+&lt;p&gt;If possible, don&amp;rsquo;t resort to comments to inform the reader, but instead,
+structure the code itself in such a way as to indicate it&amp;rsquo;s not going to behave
+the way one might expect.  For example, if your type has a &lt;code&gt;Write(b []byte)
+(int, error)&lt;/code&gt; method that is not compatible with io.Writer, consider calling it
+something other than Write&amp;hellip; because everyone seeing &lt;code&gt;foo.Write&lt;/code&gt; is going to
+assume that function will work like an io.Write.  Instead maybe call it WriteOut
+or PrintOut or anything but Write.&lt;/p&gt;
+
+&lt;p&gt;Misleading code can be even more subtle than this.  In a recent code review, the
+author wrapped a single DB update in a transaction.  This set off
+alarm bells for me as a reviewer.  As a reader, I assumed that the code must be
+saving related data in multiple tables, and that&amp;rsquo;s why a transaction was needed.
+Turned out, the code didn&amp;rsquo;t actually need the transaction, it was just written
+that way to be consistent with some other code we had.  Unfortunately, in this
+case, being consistent was actually confusing&amp;hellip; because it caused the reader to
+make assumptions that were ultimately incorrect.&lt;/p&gt;
+
+&lt;p&gt;Do the poor sap that has to maintain your code 6 months or two years down the
+road a favor - don&amp;rsquo;t lie. Try not to mislead.  Because even if that poor sap
+isn&amp;rsquo;t you, they still don&amp;rsquo;t deserve the 2am headache you&amp;rsquo;ll likely be
+inflicting.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -1110,18 +1199,6 @@ that error:&lt;/p&gt;
       <author>Nate Finch</author>
       <guid>https://npf.io/2013/04/statically-typed-generic-data-structures-in-go/</guid>
       <description>&lt;p&gt;&lt;br /&gt;I gave a talk at the &lt;a href=&#34;https://plus.google.com/u/0/communities/103337146295481792015&#34; target=&#34;_blank&#34;&gt;Go Boston&lt;/a&gt; meetup last night and figured I should write it up and put it here.&lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;br /&gt;The second thing everyone says when they read up on Go is &amp;ldquo;There are no generics!&amp;rdquo;. &lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;(The first thing people say is &amp;ldquo;There are no exceptions!&amp;rdquo;)&lt;br /&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Both are only mostly true, &amp;nbsp;but we&amp;rsquo;re only going to talk about generics today.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;Go has generic built-in data structures - arrays, slices, maps, and channels. You just can&amp;rsquo;t create your own new type, and you can&amp;rsquo;t create generic functions. So, what&amp;rsquo;s a programmer to do? Find another language?&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;No. Many, possibly even most, problems can be solved with the built-in data structures. You can write pretty huge applications just using maps and slices and the occasional channel. There may be a tiny bit of code duplication, but probably not much, and certainly not any tricky code.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;However, there definitely are times when you need more complicated data structures. Most people writing Go solve this problem by using Interface{}, the empty interface, which is basically like Object in C# or Java or void * in C/C++. &amp;nbsp;It&amp;rsquo;s a thing that can hold any type&amp;hellip; but then you need to type cast it to get at the actual type. This breaks static typing, since the compiler can&amp;rsquo;t tell if you make a mistake and pass the wrong type into something that takes an Interface{}, and it can&amp;rsquo;t tell until runtime if a cast will succeed or not.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;So, is there any solution? Yes. The inspiration comes from the standard library&amp;rsquo;s&lt;a href=&#34;http://golang.org/pkg/sort/#Interface&#34; target=&#34;_blank&#34;&gt; sort package&lt;/a&gt;. Package sort can sort a slice of any type, it can even sort things that aren&amp;rsquo;t slices, if you&amp;rsquo;ve made your own custom data structure. How does it do that? To sort something, it must support the methods on sort.Interface. Most interesting is Less(i, j int). Less returns true if the item at index i in your data structure is Less than the object at index j in your data structure. Your code has to implement what &amp;ldquo;Less&amp;rdquo; means&amp;hellip; and by only using indices, sort doesn&amp;rsquo;t need to know the types of objects held in your data structure.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;This use of indices to blindly access data in a separate data structure is how we&amp;rsquo;ll implement our strongly typed tree. The tree structure will hold an index as its data value in each node, and the indices will index into a data structure that holds the actual objects. To make a tree of a new type, you simply implement a Compare function that the tree can use to compare the values at two indices in your data structure. You can use whatever data structure you like, probably a slice or a map, as long as you can use integers to reference values in the data structure.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;In this way we separate the organization of the data from the storage of the data. The tree structure holds the organization, a slice or map (or something custom) stores the data. The indices are the generic pointers into the storage that holds the actual strongly typed values.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;This does require a little code for each new tree type, just as using package sort requires a little code for each type. However, it&amp;rsquo;s only a few lines for a few functions, wrapping a tree and your data.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;You can check out an example binary search tree I wrote that uses this technique in my github account&lt;br /&gt;&lt;br /&gt;&lt;a href=&#34;https://github.com/natefinch/tree&#34;&gt;https://github.com/natefinch/tree&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;or go get the runnable sample tree:&lt;br /&gt;&lt;br /&gt;go get github.com/natefinch/treesample&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;This required only 36 lines of code to make the actual tree structure (including empty lines and comments).&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;In some simple benchmarks, this implementation of a tree is about 25% faster than using the same code with Interface{} as the values and casting at runtime&amp;hellip;. plus it&amp;rsquo;s strongly typed.&lt;/div&gt;&lt;/div&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    
-    
-    <item>
-      <title>Go is for Open Source</title>
-      <link>https://npf.io/2013/01/go-is-for-open-source/</link>
-      <pubDate>Tue, 29 Jan 2013 07:45:00 UTC</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2013/01/go-is-for-open-source/</guid>
-      <description>&lt;p&gt;The Go programming language is built from the ground up to implicitly encourage Go projects to be open source. If you want your project not only to contribute to open source, but to encourage other people to write open source code, Go is a great language to choose.&lt;br /&gt;&lt;br /&gt;Let&amp;rsquo;s look at how Go does this. These first two points are overly obvious, but we should get them out of the way.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;The language is open source&lt;/h3&gt;You can go look at the &lt;a href=&#34;https://code.google.com/p/go/source/browse/&#34; target=&#34;_blank&#34;&gt;source code&lt;/a&gt;&amp;nbsp;for the language, the compilers, and the build tools for the language. It&amp;rsquo;s a fully open source project. Even though a lot of the work is being done by Google engineers, there are hundreds of names on the &lt;a href=&#34;https://code.google.com/p/go/source/browse/CONTRIBUTORS&#34; target=&#34;_blank&#34;&gt;list of contributors&lt;/a&gt; of people who are not Google employees.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;The standard library is open source&lt;/h3&gt;&lt;div&gt;Want to see high quality example code? Look at the code in the standard library. It has been carefully reviewed to be of the best quality, and in canonical Go style. Reading the standard library is a great way to learn the best ways to use and write Go.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;span style=&#34;color: red;&#34;&gt;Ok, that&amp;rsquo;s great, but what about all the code that isn&amp;rsquo;t part of Go itself?&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;The design of Go really shows its embrace of open source in how third party code is used in day to day projects.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Go makes it trivial to use someone&amp;nbsp;else&amp;rsquo;s code in your project&lt;/h3&gt;&lt;div&gt;Go has distributed version control built-in from the ground up. If you want to use a package from github, for example, you just specify the URL in the imports, as if it were a local package:&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;pre class=&#34;brush: go; gutter: false&#34;&gt;import (&lt;br /&gt;    &amp;ldquo;bytes&amp;rdquo; // std lib package&lt;br /&gt;    &amp;ldquo;github.com/fake/foo&amp;rdquo; // 3rd party package&lt;br /&gt;)&lt;/pre&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;You don&amp;rsquo;t have to go find and download fake/foo from github and put it in a special directory or anything. Just run &amp;ldquo;go get github.com/fake/foo&amp;rdquo;. Go will then download, build, and install the code, so that you can reference it&amp;hellip; nicely stored in a directory defined by the URL, in this case $GOPATH/src/github.com/fake/foo. Go will even figure out what source control system is used on the other side so you don&amp;rsquo;t have to (support for git, svn, mercurial, and bazaar).&lt;br /&gt;&lt;br /&gt;What&amp;rsquo;s even better is that the auto-download happens for anyone who calls &amp;ldquo;go get&amp;rdquo; on&amp;nbsp;&lt;i&gt;your&lt;/i&gt;&amp;nbsp;code repository. No more giving long drawn-out installation instructions about getting half a dozen 3rd party libraries first. If someone wants your code, they type &amp;ldquo;go get path.to/your/code&amp;rdquo;, and Go will download your code, and any remote imports you have (like the one for github above), any remote imports &lt;i&gt;that&lt;/i&gt; code has, etc, and then builds everything.&lt;br /&gt;&lt;br /&gt;The fact that this is available from the command line tools that come with the language makes it the de facto standard for how all Go code is written. There&amp;rsquo;s no fragmentation in the community about how packages are stored, accessed, used, etc. This means zero overhead for using third party code, it&amp;rsquo;s as easy to use as if it were built into the Go standard library.&lt;br /&gt;&lt;br /&gt;&lt;h3&gt;Sharing code is the default&lt;/h3&gt;&lt;/div&gt;&lt;div&gt;Like most scripting languages (and unlike many compiled languages), using source code from another project is the default way to use third party code in Go. Go creates a monolithic executable during its build, so there are no DLLs to create and distribute in the way you often see with other compiled languages. In theory you could distribute the compiled .a files from your project for other people to link to in their project, but this is not encouraged by the tooling, and I&amp;rsquo;ve personally never seen anyone do it.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;All Go code uses the same style&lt;/h3&gt;&lt;div&gt;Have you ever gone to read the source for a project you&amp;rsquo;d like to contribute to, and had your eyes cross over at the bizarre formatting the authors used? That almost never happens with Go. Go comes with a code formatting tool called gofmt that automatically formats Go code to the same style. The use of gofmt is strongly encouraged in the Go community, and nearly everyone uses it. Most text editors have an extension to automatically format your code with gofmt on save, so you don&amp;rsquo;t even have to think about it. You never have to worry about having a poorly formatted library to work with&amp;hellip; and in the very rare situation where you do, you can just run it through gofmt and you&amp;rsquo;re good to go.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Easy cross platform support&lt;/h3&gt;&lt;div&gt;Go makes it easy to support multiple platforms. The tooling &lt;a href=&#34;http://dave.cheney.net/2012/09/08/an-introduction-to-cross-compilation-with-go&#34; target=&#34;_blank&#34;&gt;can create native binaries&lt;/a&gt; for any popular operating system from the same source on a single machine. If you need platform-specific code, it&amp;rsquo;s easy to specify code that only gets compiled for a single platform, by simply appending _&amp;lt;os&amp;gt; to a file name &lt;i&gt;.e.g&lt;/i&gt;&amp;nbsp;path_windows.go will only be compiled for builds targeting Windows.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Built-in documentation and testing&lt;/h3&gt;&lt;div&gt;Go comes with a documentation generator that spits generates HTML or plain text from minimally formatted comments in the code. It also comes with a standard testing package that can run unit tests, performance benchmarks, and runnable example code. Because this is all available in the standard library and with the standard tools, nearly everyone uses it&amp;hellip; which means it&amp;rsquo;s easy to look at the documentation for any random Go package, and easy check if the tests pass, without having to go install some third party support tool. Because it&amp;rsquo;s all standardized, several popular websites have popped up to &lt;a href=&#34;http://godoc.org/&#34; target=&#34;_blank&#34;&gt;automate generating&lt;/a&gt;&amp;nbsp;(and hosting) the documentation for your project, and you can easily run &lt;a href=&#34;http://about.travis-ci.org/docs/user/languages/go/&#34; target=&#34;_blank&#34;&gt;continuous integration&lt;/a&gt; on your package, with only a single line in the setup script - &amp;ldquo;language: go&amp;rdquo;.&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;Conclusion&lt;/h3&gt;&lt;div&gt;Everything about Go encourages standardization and openness&amp;hellip; which not only makes it &lt;i&gt;possible &lt;/i&gt;to use other people&amp;rsquo;s code, it makes it &lt;b&gt;easy&lt;/b&gt;&lt;i&gt;&amp;nbsp;&lt;/i&gt;to use other people&amp;rsquo;s code. I hope to see Go blossom as a language embraced by the open source community, as they discover the strengths that make it uniquely qualified for open source projects.&lt;/div&gt;&lt;/p&gt;
 </description>
     </item>
     
