@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+
+  <title> Code Must Never Lie  &middot; npf.io </title>
+
+  
+  <link rel="stylesheet" href="https://npf.io/css/poole.css">
+  <link rel="stylesheet" href="https://npf.io/css/syntax.css">
+  <link rel="stylesheet" href="https://npf.io/css/hyde.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="npf.io" />
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+  <link href='https://fonts.googleapis.com/css?family=Fira+Sans:400,300' rel='stylesheet' type='text/css'>
+
+  <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Fira Sans']
+      }
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about" align=center>
+      <h1 class="brand"><a href="https://npf.io">npf.io</a></h1>
+      <img src="/moose.svg" width=50% />
+      <p class="lead">
+         code by Nate Finch 
+      </p>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="https://npf.io/blog">Posts</a></li>
+      
+      <li><a href="/about/">About </a></li>
+      
+      <br/> 
+      <li>Code:</li>
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+      <li><a href="https://github.com/natefinch/deputy">Deputy </a></li>
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+      <li><a href="https://github.com/natefinch/gorram">Gorram </a></li>
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+      <li><a href="https://github.com/natefinch/lumberjack">Lumberjack </a></li>
+       
+       
+       
+      <li><a href="https://github.com/natefinch/npipe">NPipe </a></li>
+       
+       
+       
+       
+      <li><a href="https://github.com/natefinch/pie">Pie </a></li>
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+      
+    </ul>
+    <a href="https://twitter.com/natethefinch"><i class="fa fa-twitter-square"></i></a>&nbsp;&nbsp; 
+    
+    
+     <a href="https://github.com/natefinch"><i class="fa fa-github-square"></i></a>&nbsp;&nbsp; 
+    
+    <a href="https://plus.google.com/&#43;NateFinch"><i class="fa fa-google-plus"></i></a> 
+
+    <p class="footnote">powered by <a href="http://gohugo.io">Hugo</a> <br/> &copy; 2017 Nate Finch. All rights reserved.</p>
+
+  </div>
+</div>
+
+  <div class="content container">
+    <div class="post">
+    <h1 class="post-title">Code Must Never Lie</h1>
+    <span class="post-date">Aug 29, 2017</span>
+    
+    <blockquote>
+<p>If you tell the truth, you don’t have to remember anything.</p>
+
+<p>—Mark Twain</p>
+</blockquote>
+
+<p>In a code review recently, I asked the author to change some of their asserts to
+requires. Functions in testify&rsquo;s assert package allow the test to continue,
+whereas those in the require package end the test immediately. Thus, you use
+require to avoid trying to continue running a test when we know it&rsquo;ll be in a
+bad state.  (side note: don&rsquo;t use an assert package, but that&rsquo;s another post)
+Since testify&rsquo;s assert and require packages have the same interface, the
+author&rsquo;s solution was to simply change the import thusly:</p>
+
+<pre><code>import (
+    assert &quot;github.com/stretchr/testify/require&quot;
+)
+</code></pre>
+
+<p>Bam, now all the assert.Foo calls would stop the test immediately, and we didn&rsquo;t
+need a big changelist changing every use of assert to require.  All good,
+right?</p>
+
+<p>No.</p>
+
+<p><strong>Hell No.</strong></p>
+
+<p>Why? Because it makes the code lie.  Anyone familiar with the testify package
+understands the difference between assert and require.  But we&rsquo;ve now made code
+that <em>looks like</em> an assert, but is actually a require.  People who are 200
+lines down in a test file may well not realize that those asserts are actually
+requires. They&rsquo;ll assume the test function will continue processing after an
+assert fails.  They&rsquo;ll be wrong, and they could accidentally write incorrect
+tests because of it - tests that fail with confusing error messages.</p>
+
+<p>This is true in general - <strong>code must never lie</strong>.  This is a cardinal sin
+amongst programmers.  This is an extension of the mantra that code should be
+written to be read.  If code looks like it&rsquo;s doing one thing when it&rsquo;s actually
+doing something else, someone down the road will read that code and
+misunderstand it, and use it or alter it in a way that causes bugs. If they&rsquo;re
+lucky, the bugs will be immediate and obvious. If they&rsquo;re unlucky, they&rsquo;ll be
+subtle and only be figured out after a long debugging session and much head
+banging on keyboard. That someone might be you, even if it you was your code in
+the first place.</p>
+
+<p>If, for some reason, you have to make code that lies (to fulfill an interface or
+some such), document the hell out of it.  Giant yelling comments that can&rsquo;t be
+missed during a 2am debugging session.  Because chances are, that&rsquo;s when you&rsquo;re
+going to look at this code next, and you might forget that saveToMemory()
+function actually saves to a database in AWS&rsquo;s Antarctica region.</p>
+
+<p>So, don&rsquo;t lie.  Furthermore, try not to even mislead.  Humans make assumptions
+all the time, it&rsquo;s built into how we perceive the world.  As a coder, it&rsquo;s your
+job to anticipate what assumptions a reader may have, and ensure that they are
+not incorrect, or if they are, do your best to disabuse them of their incorrect
+assumptions.</p>
+
+<p>If possible, don&rsquo;t resort to comments to inform the reader, but instead,
+structure the code itself in such a way as to indicate it&rsquo;s not going to behave
+the way one might expect.  For example, if your type has a <code>Write(b []byte)
+(int, error)</code> method that is not compatible with io.Writer, consider calling it
+something other than Write&hellip; because everyone seeing <code>foo.Write</code> is going to
+assume that function will work like an io.Write.  Instead maybe call it WriteOut
+or PrintOut or anything but Write.</p>
+
+<p>Misleading code can be even more subtle than this.  In a recent code review, the
+author wrapped a single DB update in a transaction.  This set off
+alarm bells for me as a reviewer.  As a reader, I assumed that the code must be
+saving related data in multiple tables, and that&rsquo;s why a transaction was needed.
+Turned out, the code didn&rsquo;t actually need the transaction, it was just written
+that way to be consistent with some other code we had.  Unfortunately, in this
+case, being consistent was actually confusing&hellip; because it caused the reader to
+make assumptions that were ultimately incorrect.</p>
+
+<p>Do the poor sap that has to maintain your code 6 months or two years down the
+road a favor - don&rsquo;t lie. Try not to mislead.  Because even if that poor sap
+isn&rsquo;t you, they still don&rsquo;t deserve the 2am headache you&rsquo;ll likely be
+inflicting.</p>
+
+    
+
+     
+	
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") 
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'npfio';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by <a href="http://disqus.com/?ref_noscript">Disqus.</a></noscript>
+</div>
+</div> 
+
+</body>w
+</html>
