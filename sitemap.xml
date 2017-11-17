@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://npf.io/2017/11/comments/</loc>
+    <lastmod>2017-11-17T14:48:09-05:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://npf.io/2017/08/lies/</loc>
     <lastmod>2017-08-29T12:40:19-04:00</lastmod>
   </url>
@@ -242,7 +247,7 @@
   
   <url>
     <loc>https://npf.io/blog/</loc>
-    <lastmod>2017-08-29T12:40:19-04:00</lastmod>
+    <lastmod>2017-11-17T14:48:09-05:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -398,7 +403,7 @@
   
   <url>
     <loc>https://npf.io/</loc>
-    <lastmod>2017-08-29T12:40:19-04:00</lastmod>
+    <lastmod>2017-11-17T14:48:09-05:00</lastmod>
     <priority>0</priority>
   </url>
   

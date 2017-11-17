@@ -7,7 +7,186 @@
     <language>en-us</language>
     <author>Nate Finch</author>
     <copyright>2017 Nate Finch</copyright>
-    <updated>Tue, 29 Aug 2017 12:40:19 EDT</updated>
+    <updated>Fri, 17 Nov 2017 14:48:09 EST</updated>
+    
+    
+    <item>
+      <title>Comment Your Code</title>
+      <link>https://npf.io/2017/11/comments/</link>
+      <pubDate>Fri, 17 Nov 2017 14:48:09 EST</pubDate>
+      <author>Nate Finch</author>
+      <guid>https://npf.io/2017/11/comments/</guid>
+      <description>
+
+&lt;p&gt;There&amp;rsquo;s a disturbing thread that pops up every once in a while where People On
+The Internet say that comments are bad and the only reason you need them is
+because you and/or your code aren&amp;rsquo;t good enough.  I&amp;rsquo;m here to say that&amp;rsquo;s bullshit.&lt;/p&gt;
+
+&lt;h2 id=&#34;code-sucks&#34;&gt;Code Sucks&lt;/h2&gt;
+
+&lt;p&gt;They&amp;rsquo;re not entirely wrong&amp;hellip; your code isn&amp;rsquo;t good enough.  Neither is mine or
+anyone else&amp;rsquo;s.  Code sucks.  You know when it sucks the most?  When you haven&amp;rsquo;t
+touched it in 6 months.  And you look back at the code and wonder &amp;ldquo;what in the
+hell was the author thinking?&amp;rdquo; (and then you git blame and it&amp;rsquo;s you&amp;hellip; because
+it&amp;rsquo;s always you).&lt;/p&gt;
+
+&lt;p&gt;The premise of the anti-commenters is that the only reason you need comments is
+because your code isn&amp;rsquo;t &amp;ldquo;clean&amp;rdquo; enough.  If it were refactored better, named
+better, written better, it wouldn&amp;rsquo;t need that comment.&lt;/p&gt;
+
+&lt;p&gt;But of course, what is clean and obvious and well-written to you, today, while
+the entire project and problem space are fully loaded in your brain&amp;hellip; might not
+be obvious to you, six months from now, or to the poor schmuck that has to debug
+your code with their manager breathing down their neck beacuse the CTO just ran
+into a critical bug in prod.&lt;/p&gt;
+
+&lt;p&gt;Learning to look at a piece of code that you understand, and trying to figure out
+how someone else might fail to understand it is a difficult skill to master. But
+it is incredibly valuable&amp;hellip; one that is nearly as important as the
+ability to write good code in the first place.  In industry, almost no one codes
+alone.  And even if you &lt;em&gt;do&lt;/em&gt; code alone, you&amp;rsquo;re gonna forget why you wrote some
+of your code, or what exactly this gnarly piece of late night &amp;ldquo;engineering&amp;rdquo; is
+doing.  And someday you&amp;rsquo;re going to leave, and the person they hire to replace
+you is going to have to figure out every little quirk that was in your head at
+the time.&lt;/p&gt;
+
+&lt;p&gt;So, throwing in comments that may seem overly obvious in the moment is not a bad
+thing. Sometimes it can be a huge help.&lt;/p&gt;
+
+&lt;h2 id=&#34;avoiding-comments-often-makes-your-code-worse&#34;&gt;Avoiding Comments Often Makes Your Code Worse&lt;/h2&gt;
+
+&lt;p&gt;Some people claim that if you remove comments, it makes your code better,
+because you have to make your code clearer to compensate.  I call BS on this as
+well, because I don&amp;rsquo;t think anyone is realistically writing sub-par code and
+then excusing it by slapping a comment on it (aside from &lt;code&gt;// TODO: this is a
+temporary hack, I&#39;ll fix it later&lt;/code&gt;).  We all write the best code we know howm,
+given the various external constraints (usually time).&lt;/p&gt;
+
+&lt;p&gt;The problem with refactoring your code to avoid needing comments is that
+it often leads to &lt;em&gt;worse&lt;/em&gt; code, not better.  The canonical example is factoring
+out a complicated line of code into a function with a descriptive name.  Which
+sounds good, except now you&amp;rsquo;ve introduced a context switch for the person reading
+the code.. instead of the actual line of code, they have a function call&amp;hellip; they
+have to scroll to where the function call is, remember and map the arguments
+from the call site to the function declaration, and then map the return value
+back to the call site&amp;rsquo;s return.&lt;/p&gt;
+
+&lt;p&gt;In addition, the clarity of a function&amp;rsquo;s name is only applicable to very trivial
+comments.  Any comment that is more than a couple words cannot (or should not)
+be made into a function name.  Thus, you end up with&amp;hellip; a function with a
+comment above it.&lt;/p&gt;
+
+&lt;p&gt;Indeed, even the existence of a very short function may cause confusion and more
+complicated code.  If I see such a function, I may search to see where else that
+function is used. If it&amp;rsquo;s only used in one place, I then have to wonder if this
+is actually a general piece of code that represents global logic&amp;hellip; (e.g.
+&lt;code&gt;NameToUserID&lt;/code&gt;) or if this function is bespoke code that relies heavily on the
+specific state and implementation of its call site and may well not do the right
+thing elsewhere. By breaking it out into a function, you&amp;rsquo;re in essence exposing
+this implementation detail to the rest of the codebase, and this is not a
+decision that should be taken lightly. Even if you know that this is not
+actually a function anyone else should call, someone else &lt;em&gt;will&lt;/em&gt; call it at some
+point, even where not appropriate.&lt;/p&gt;
+
+&lt;p&gt;The problems with small functions are better detailed in Cindy Sridharan&amp;rsquo;s &lt;a href=&#34;https://medium.com/@copyconstruct/small-functions-considered-harmful-91035d316c29&#34;&gt;medium post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;We could dive into long variable names vs. short, but I&amp;rsquo;ll stop and just
+say that you can&amp;rsquo;t save yourself by making variable names longer.  Unless your
+variable name is the entire comment that you&amp;rsquo;re avoiding writing, then you&amp;rsquo;re
+still losing information that could have been added to the comment.  And I think
+we can all agee that &lt;code&gt;usernameStrippedOfSpacesWithDotCSVExtension&lt;/code&gt; is a terrible
+variable name.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not trying to say that you shouldn&amp;rsquo;t strive to make your code clear and
+obvious.  You definitely should.  It&amp;rsquo;s the hallmark of a good developer.  But
+code clarity is orthogonal to the existence of comments.  And good comments are
+&lt;em&gt;also&lt;/em&gt; the hallmark of a good developer.&lt;/p&gt;
+
+&lt;h2 id=&#34;there-are-no-bad-comments&#34;&gt;There are no bad comments&lt;/h2&gt;
+
+&lt;p&gt;The examples of bad comments often given in these discussions are trivially
+bad, and almost never encountered in code written outside of a programming 101
+class.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// instantiate an error
+var err error
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Yes, clearly, this is not a useful comment.  But at the same time, it&amp;rsquo;s not
+really &lt;em&gt;harmful&lt;/em&gt;.  It&amp;rsquo;s some noise that is easily ignored when browsing the
+code.  I would rather see a hundred of the above comments if it means the dev
+leaves in one useful comment that saves me hours of head banging on keyboard.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m pretty sure I&amp;rsquo;ve never read any code and said &amp;ldquo;man, this code would be so
+much easier to understand if it weren&amp;rsquo;t for all these comments.&amp;rdquo;  It&amp;rsquo;s nearly
+100% the opposite.&lt;/p&gt;
+
+&lt;p&gt;In fact, I&amp;rsquo;ll even call out some code that I think is egregious in its lack of
+comments - the Go standard library.  While the code may be very correct and well
+structured.. in many cases, if you don&amp;rsquo;t have a deep understanding of what the
+code is doing &lt;em&gt;before&lt;/em&gt; you look at the it, it can be a challenge to understand
+why it&amp;rsquo;s doing what it&amp;rsquo;s doing.  A sprinkling of comments about what the logic
+is doing and why would make a lot of the go standard library a lot easier to
+read.  In this I am specifically talking about comments inside the
+implementation, not doc comments on exported functions in general (those are
+generally pretty good).&lt;/p&gt;
+
+&lt;h2 id=&#34;any-comment-is-better-than-no-comment&#34;&gt;Any comment is better than no comment&lt;/h2&gt;
+
+&lt;p&gt;Another chestnut the anti-commenters like to bring out is the wisdom can be
+illustrated with a pithy image:&lt;/p&gt;
+
+
+&lt;figure &gt;
+    
+        &lt;img src=&#34;https://npf.io/comments.jpg&#34; width=&#34;200&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+
+
+&lt;p&gt;Ah, hilarious, someone updated the contents and didn&amp;rsquo;t update the comment.&lt;/p&gt;
+
+&lt;p&gt;But, that was a problem 20 years ago, when code reviews were not (generally) a
+thing.  But they are a thing now.  And if checking that comments match the
+implementation isn&amp;rsquo;t part of your code review process, then you should probably
+review your code review process.&lt;/p&gt;
+
+&lt;p&gt;Which is not to say that mistakes can&amp;rsquo;t be made&amp;hellip; in fact I filed a &amp;ldquo;comment
+doesn&amp;rsquo;t match implementation&amp;rdquo; bug just yesterday.  The saying goes something
+like &amp;ldquo;no comment is better than an incorrect comment&amp;rdquo; which sounds obviously
+true, except when you realize that if there is no comment, then devs will just
+&lt;em&gt;guess&lt;/em&gt; what the code does, and probably be wrong more often than a comment would
+be wrong.&lt;/p&gt;
+
+&lt;p&gt;Even if this &lt;em&gt;does&lt;/em&gt; happen, and the code has changed, you still have valuable
+information about what the code used to do.  Chances are, the code still does
+basically the same thing, just slightly differently.  In this world of
+versioning and backwards compatbility, how often does the same function get
+drastically changed in functionality while maintaining the same name and
+signature?  Probably not often.&lt;/p&gt;
+
+&lt;p&gt;Take the bug I filed yesterday&amp;hellip; the place where we were using the function was
+calling &lt;code&gt;client.SetKeepAlive(60)&lt;/code&gt;.  The comment on SetKeepAlive was
+&amp;ldquo;SetKeepAlive will set the amount of time (in seconds) that the client should
+wait before sending a PING request&amp;rdquo;. Cool, right? Except I noticed that
+SetKeepAlive takes a time.Duration.  Without any other units specified for the
+value of 60, Go&amp;rsquo;s duration type defaults to&amp;hellip;. nanoseconds.  Oops.  Someone had
+updated the function to take a Duration rather than an Int.  Interestingly, it
+&lt;em&gt;did&lt;/em&gt; still round the duration down to the nearest second, so the comment was
+not incorrect per se, it was just misleading.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;I feel like the line between what&amp;rsquo;s a useful comment and what&amp;rsquo;s not is difficult
+to find (outside of trivial examples), so I&amp;rsquo;d rather people err on the
+side of writing too many comments.  You never know who may be reading your code
+next, so do them the favor you wish was done for you&amp;hellip; write a bunch of
+comments.  Keep writing comments until it feels like too many, then write a few
+more.  That&amp;rsquo;s probably about the right amount.&lt;/p&gt;
+</description>
+    </item>
+    
     
     
     <item>
@@ -1260,74 +1439,6 @@ feedback on architecture before I dive into the reeds of the implementation.&lt;
     </item>
     
     
-    
-    
-    
-    <item>
-      <title>Go Plugins are as Easy as Pie</title>
-      <link>https://npf.io/2015/05/pie/</link>
-      <pubDate>Mon, 25 May 2015 22:44:32 EDT</pubDate>
-      <author>Nate Finch</author>
-      <guid>https://npf.io/2015/05/pie/</guid>
-      <description>
-
-&lt;p&gt;When people hear that Go only supports static linking, one of the things they
-eventually realize is that they can&amp;rsquo;t have traditional plugins via dlls/libs (in
-compiled languages) or scripts (in interpreted languages).  However, that
-doesn&amp;rsquo;t mean that you can&amp;rsquo;t have plugins.  Some people suggest doing &amp;ldquo;compiled-
-in&amp;rdquo; plugins - but to me, that&amp;rsquo;s not a plugin, that&amp;rsquo;s just code.  Some people
-suggest just running sub processes and sending messages via their CLI, but that
-runs into CLI parsing issues and requires runnnig a new process for every
-request.  The last option people think of is using RPC to an external process,
-which may also seem cumbersome, but it doesn&amp;rsquo;t have to be.&lt;/p&gt;
-
-&lt;h3 id=&#34;serving-up-some-pie&#34;&gt;Serving up some pie&lt;/h3&gt;
-
-&lt;p&gt;I&amp;rsquo;d like to introduce you to &lt;a href=&#34;https://github.com/natefinch/pie&#34;&gt;https://github.com/natefinch/pie&lt;/a&gt; - this is a Go
-package which contains a toolkit for writing plugins in Go.  It uses processes
-external to the main program as the plugins, and communicates with them via RPC
-over the plugin&amp;rsquo;s stdin and stout.  Having the plugin as an external process can
-actually has several benefits:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;If the plugin crashes, it won&amp;rsquo;t crash your process.&lt;/li&gt;
-&lt;li&gt;The plugin is not in your process&amp;rsquo; memory space, so it can&amp;rsquo;t do anything nasty.&lt;/li&gt;
-&lt;li&gt;The plugin can be written in any language, not just Go.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I think this last point is actually the most valuable.  One of the nicest things
-about Go applications is that they&amp;rsquo;re just copy-and-run.  No one even needs to
-know they were written in Go.  With plugins as external processes, this remains
-true.  People wanting to extend your application can do so in the language of
-their choice, so long as it supports the codec your application has chosen for
-RPC.&lt;/p&gt;
-
-&lt;p&gt;The fact that the communication occurs over stdin and stdout means that there is
-no need to worry about negotiating ports, it&amp;rsquo;s easily cross platform compatible,
-and it&amp;rsquo;s very secure.&lt;/p&gt;
-
-&lt;h3 id=&#34;orthogonality&#34;&gt;Orthogonality&lt;/h3&gt;
-
-&lt;p&gt;Pie is written to be a very simple set of functions that help you set up
-communication between your process and a plugin process.  Once you make a couple
-calls to pie, you then need to work out your own way to use the RPC connection
-created.  Pie does not attempt to be an all-in-one plugin framework, though you
-could certainly use it as the basis for one.&lt;/p&gt;
-
-&lt;h3 id=&#34;why-is-it-called-pie&#34;&gt;Why is it called pie?&lt;/h3&gt;
-
-&lt;p&gt;Because if you pronounce API like &amp;ldquo;a pie&amp;rdquo;, then all this consuming and serving
-of APIs becomes a lot more palatable.  Also, pies are the ultimate pluggable
-interface - depending on what&amp;rsquo;s inside, you can get dinner, dessert, a snack, or
-even breakfast.  Plus, then I get to say that plugins in Go are as easy as&amp;hellip;
-well, you know.&lt;/p&gt;
-
-&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
-
-&lt;p&gt;I plan to be using pie in one of my own side projects.  Take it out for a spin
-in one of your projects and let me know what you think.  Happy eating!&lt;/p&gt;
-</description>
-    </item>
     
     
   </channel>

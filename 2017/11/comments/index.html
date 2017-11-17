@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  
+
+  <title> Comment Your Code  &middot; npf.io </title>
+
+  
+  <link rel="stylesheet" href="https://npf.io/css/poole.css">
+  <link rel="stylesheet" href="https://npf.io/css/syntax.css">
+  <link rel="stylesheet" href="https://npf.io/css/hyde.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="npf.io" />
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+  <link href='https://fonts.googleapis.com/css?family=Fira+Sans:400,300' rel='stylesheet' type='text/css'>
+
+  <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ['Fira Sans']
+      }
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about" align=center>
+      <h1 class="brand"><a href="https://npf.io">npf.io</a></h1>
+      <img src="/moose.svg" width=50% />
+      <p class="lead">
+         code by Nate Finch 
+      </p>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="https://npf.io/blog">Posts</a></li>
+      
+      <li><a href="/about/">About </a></li>
+      
+      <br/> 
+      <li>Code:</li>
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+      <li><a href="https://github.com/natefinch/deputy">Deputy </a></li>
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+      <li><a href="https://github.com/natefinch/gorram">Gorram </a></li>
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+      <li><a href="https://github.com/natefinch/lumberjack">Lumberjack </a></li>
+       
+       
+       
+      <li><a href="https://github.com/natefinch/npipe">NPipe </a></li>
+       
+       
+       
+       
+      <li><a href="https://github.com/natefinch/pie">Pie </a></li>
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+      
+    </ul>
+    <a href="https://twitter.com/natethefinch"><i class="fa fa-twitter-square"></i></a>&nbsp;&nbsp; 
+    
+    
+     <a href="https://github.com/natefinch"><i class="fa fa-github-square"></i></a>&nbsp;&nbsp; 
+    
+    <a href="https://plus.google.com/&#43;NateFinch"><i class="fa fa-google-plus"></i></a> 
+
+    <p class="footnote">powered by <a href="http://gohugo.io">Hugo</a> <br/> &copy; 2017 Nate Finch. All rights reserved.</p>
+
+  </div>
+</div>
+
+  <div class="content container">
+    <div class="post">
+    <h1 class="post-title">Comment Your Code</h1>
+    <span class="post-date">Nov 17, 2017</span>
+    
+    
+
+<p>There&rsquo;s a disturbing thread that pops up every once in a while where People On
+The Internet say that comments are bad and the only reason you need them is
+because you and/or your code aren&rsquo;t good enough.  I&rsquo;m here to say that&rsquo;s bullshit.</p>
+
+<h2 id="code-sucks">Code Sucks</h2>
+
+<p>They&rsquo;re not entirely wrong&hellip; your code isn&rsquo;t good enough.  Neither is mine or
+anyone else&rsquo;s.  Code sucks.  You know when it sucks the most?  When you haven&rsquo;t
+touched it in 6 months.  And you look back at the code and wonder &ldquo;what in the
+hell was the author thinking?&rdquo; (and then you git blame and it&rsquo;s you&hellip; because
+it&rsquo;s always you).</p>
+
+<p>The premise of the anti-commenters is that the only reason you need comments is
+because your code isn&rsquo;t &ldquo;clean&rdquo; enough.  If it were refactored better, named
+better, written better, it wouldn&rsquo;t need that comment.</p>
+
+<p>But of course, what is clean and obvious and well-written to you, today, while
+the entire project and problem space are fully loaded in your brain&hellip; might not
+be obvious to you, six months from now, or to the poor schmuck that has to debug
+your code with their manager breathing down their neck beacuse the CTO just ran
+into a critical bug in prod.</p>
+
+<p>Learning to look at a piece of code that you understand, and trying to figure out
+how someone else might fail to understand it is a difficult skill to master. But
+it is incredibly valuable&hellip; one that is nearly as important as the
+ability to write good code in the first place.  In industry, almost no one codes
+alone.  And even if you <em>do</em> code alone, you&rsquo;re gonna forget why you wrote some
+of your code, or what exactly this gnarly piece of late night &ldquo;engineering&rdquo; is
+doing.  And someday you&rsquo;re going to leave, and the person they hire to replace
+you is going to have to figure out every little quirk that was in your head at
+the time.</p>
+
+<p>So, throwing in comments that may seem overly obvious in the moment is not a bad
+thing. Sometimes it can be a huge help.</p>
+
+<h2 id="avoiding-comments-often-makes-your-code-worse">Avoiding Comments Often Makes Your Code Worse</h2>
+
+<p>Some people claim that if you remove comments, it makes your code better,
+because you have to make your code clearer to compensate.  I call BS on this as
+well, because I don&rsquo;t think anyone is realistically writing sub-par code and
+then excusing it by slapping a comment on it (aside from <code>// TODO: this is a
+temporary hack, I'll fix it later</code>).  We all write the best code we know howm,
+given the various external constraints (usually time).</p>
+
+<p>The problem with refactoring your code to avoid needing comments is that
+it often leads to <em>worse</em> code, not better.  The canonical example is factoring
+out a complicated line of code into a function with a descriptive name.  Which
+sounds good, except now you&rsquo;ve introduced a context switch for the person reading
+the code.. instead of the actual line of code, they have a function call&hellip; they
+have to scroll to where the function call is, remember and map the arguments
+from the call site to the function declaration, and then map the return value
+back to the call site&rsquo;s return.</p>
+
+<p>In addition, the clarity of a function&rsquo;s name is only applicable to very trivial
+comments.  Any comment that is more than a couple words cannot (or should not)
+be made into a function name.  Thus, you end up with&hellip; a function with a
+comment above it.</p>
+
+<p>Indeed, even the existence of a very short function may cause confusion and more
+complicated code.  If I see such a function, I may search to see where else that
+function is used. If it&rsquo;s only used in one place, I then have to wonder if this
+is actually a general piece of code that represents global logic&hellip; (e.g.
+<code>NameToUserID</code>) or if this function is bespoke code that relies heavily on the
+specific state and implementation of its call site and may well not do the right
+thing elsewhere. By breaking it out into a function, you&rsquo;re in essence exposing
+this implementation detail to the rest of the codebase, and this is not a
+decision that should be taken lightly. Even if you know that this is not
+actually a function anyone else should call, someone else <em>will</em> call it at some
+point, even where not appropriate.</p>
+
+<p>The problems with small functions are better detailed in Cindy Sridharan&rsquo;s <a href="https://medium.com/@copyconstruct/small-functions-considered-harmful-91035d316c29">medium post</a>.</p>
+
+<p>We could dive into long variable names vs. short, but I&rsquo;ll stop and just
+say that you can&rsquo;t save yourself by making variable names longer.  Unless your
+variable name is the entire comment that you&rsquo;re avoiding writing, then you&rsquo;re
+still losing information that could have been added to the comment.  And I think
+we can all agee that <code>usernameStrippedOfSpacesWithDotCSVExtension</code> is a terrible
+variable name.</p>
+
+<p>I&rsquo;m not trying to say that you shouldn&rsquo;t strive to make your code clear and
+obvious.  You definitely should.  It&rsquo;s the hallmark of a good developer.  But
+code clarity is orthogonal to the existence of comments.  And good comments are
+<em>also</em> the hallmark of a good developer.</p>
+
+<h2 id="there-are-no-bad-comments">There are no bad comments</h2>
+
+<p>The examples of bad comments often given in these discussions are trivially
+bad, and almost never encountered in code written outside of a programming 101
+class.</p>
+
+<pre><code>// instantiate an error
+var err error
+</code></pre>
+
+<p>Yes, clearly, this is not a useful comment.  But at the same time, it&rsquo;s not
+really <em>harmful</em>.  It&rsquo;s some noise that is easily ignored when browsing the
+code.  I would rather see a hundred of the above comments if it means the dev
+leaves in one useful comment that saves me hours of head banging on keyboard.</p>
+
+<p>I&rsquo;m pretty sure I&rsquo;ve never read any code and said &ldquo;man, this code would be so
+much easier to understand if it weren&rsquo;t for all these comments.&rdquo;  It&rsquo;s nearly
+100% the opposite.</p>
+
+<p>In fact, I&rsquo;ll even call out some code that I think is egregious in its lack of
+comments - the Go standard library.  While the code may be very correct and well
+structured.. in many cases, if you don&rsquo;t have a deep understanding of what the
+code is doing <em>before</em> you look at the it, it can be a challenge to understand
+why it&rsquo;s doing what it&rsquo;s doing.  A sprinkling of comments about what the logic
+is doing and why would make a lot of the go standard library a lot easier to
+read.  In this I am specifically talking about comments inside the
+implementation, not doc comments on exported functions in general (those are
+generally pretty good).</p>
+
+<h2 id="any-comment-is-better-than-no-comment">Any comment is better than no comment</h2>
+
+<p>Another chestnut the anti-commenters like to bring out is the wisdom can be
+illustrated with a pithy image:</p>
+
+
+<figure >
+    
+        <img src="/comments.jpg" width="200" />
+    
+    
+</figure>
+
+
+<p>Ah, hilarious, someone updated the contents and didn&rsquo;t update the comment.</p>
+
+<p>But, that was a problem 20 years ago, when code reviews were not (generally) a
+thing.  But they are a thing now.  And if checking that comments match the
+implementation isn&rsquo;t part of your code review process, then you should probably
+review your code review process.</p>
+
+<p>Which is not to say that mistakes can&rsquo;t be made&hellip; in fact I filed a &ldquo;comment
+doesn&rsquo;t match implementation&rdquo; bug just yesterday.  The saying goes something
+like &ldquo;no comment is better than an incorrect comment&rdquo; which sounds obviously
+true, except when you realize that if there is no comment, then devs will just
+<em>guess</em> what the code does, and probably be wrong more often than a comment would
+be wrong.</p>
+
+<p>Even if this <em>does</em> happen, and the code has changed, you still have valuable
+information about what the code used to do.  Chances are, the code still does
+basically the same thing, just slightly differently.  In this world of
+versioning and backwards compatbility, how often does the same function get
+drastically changed in functionality while maintaining the same name and
+signature?  Probably not often.</p>
+
+<p>Take the bug I filed yesterday&hellip; the place where we were using the function was
+calling <code>client.SetKeepAlive(60)</code>.  The comment on SetKeepAlive was
+&ldquo;SetKeepAlive will set the amount of time (in seconds) that the client should
+wait before sending a PING request&rdquo;. Cool, right? Except I noticed that
+SetKeepAlive takes a time.Duration.  Without any other units specified for the
+value of 60, Go&rsquo;s duration type defaults to&hellip;. nanoseconds.  Oops.  Someone had
+updated the function to take a Duration rather than an Int.  Interestingly, it
+<em>did</em> still round the duration down to the nearest second, so the comment was
+not incorrect per se, it was just misleading.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I feel like the line between what&rsquo;s a useful comment and what&rsquo;s not is difficult
+to find (outside of trivial examples), so I&rsquo;d rather people err on the
+side of writing too many comments.  You never know who may be reading your code
+next, so do them the favor you wish was done for you&hellip; write a bunch of
+comments.  Keep writing comments until it feels like too many, then write a few
+more.  That&rsquo;s probably about the right amount.</p>
+
+    
+
+     
+	
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") 
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'npfio';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the comments powered by <a href="http://disqus.com/?ref_noscript">Disqus.</a></noscript>
+</div>
+</div> 
+
+</body>w
+</html>
